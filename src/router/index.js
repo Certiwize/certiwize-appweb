@@ -4,9 +4,11 @@ import Dashboard from '../views/Dashboard.vue';
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/contact', component: () => import('../views/Contact.vue') }, // Lazy loading
+  { path: '/features', component: () => import('../views/Features.vue') },
+  { path: '/contact', component: () => import('../views/Contact.vue') },
+  { path: '/faq', component: () => import('../views/FAQ.vue') },
   { path: '/login', component: () => import('../views/Login.vue') },
-  { path: '/dashboard', component: Dashboard }, // Ajoutera une 'meta: { requiresAuth: true }' plus tard
+  { path: '/dashboard', component: Dashboard },
 ];
 
 const router = createRouter({
