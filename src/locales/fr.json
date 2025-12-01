@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "features": "Fonctionnalités",
+    "contact": "Contact",
+    "login": "Connexion",
+    "dashboard": "Espace Client"
+  },
+  "home": {
+    "hero_title": "Automatisez votre gestion Qualiopi",
+    "hero_subtitle": "Gagnez du temps sur vos processus administratifs avec Certiwize.",
+    "cta": "Commencer maintenant"
+  },
+  "dashboard": {
+    "welcome": "Bienvenue sur votre tableau de bord",
+    "actions": "Actions Rapides"
+  }
+}

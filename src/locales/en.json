@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "contact": "Contact",
+    "login": "Login",
+    "dashboard": "Dashboard"
+  },
+  "home": {
+    "hero_title": "Automate your Qualiopi management",
+    "hero_subtitle": "Save time on your administrative processes with Certiwize.",
+    "cta": "Get started now"
+  },
+  "dashboard": {
+    "welcome": "Welcome to your dashboard",
+    "actions": "Quick Actions"
+  }
+}
