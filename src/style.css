@@ -6,14 +6,14 @@
   --color-primary-dark: #5a8c43;
 }
 
-/* Base styles pour le mode sombre/clair */
+/* Configuration du mode sombre pour Tailwind CSS v4 */
+@variant dark (&:where(.dark, .dark *));
+
+/* Indication du mode couleur pour le navigateur */
 :root {
-  color-scheme: light dark;
-  background-color: #f8fafc;
-  color: #1e293b;
+  color-scheme: light;
 }
 
-.dark {
-  background-color: #0f172a;
-  color: #e2e8f0;
+:root.dark {
+  color-scheme: dark;
 }
