@@ -1,10 +1,12 @@
 <script setup>
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useAuthStore } from '../stores/auth';
 
+const authStore = useAuthStore();
 const { t } = useI18n();
 
-// Liste des 15 fonctionnalités automatisées
+/* Liste des 15 fonctionnalités automatisées
 const features = [
   { id: 1, titleKey: 'dashboard.feature_1', icon: 'pi-file', endpoint: '/webhook/convention' },
   { id: 2, titleKey: 'dashboard.feature_2', icon: 'pi-user-plus', endpoint: '/webhook/sign' },
@@ -28,6 +30,44 @@ const triggerWorkflow = (feature) => {
   console.log(`Déclenchement du workflow : ${title} via ${feature.endpoint}`);
   alert(`${t('dashboard.simulation_prefix')} "${title}" lancé !`);
   // TODO: Appel axios vers le webhook n8n
+  
+};*/
+const triggerWorkflow = async (feature) => {
+  const title = t(feature.titleKey);
+  
+  if (!confirm(`Voulez-vous lancer l'automatisation : "${title}" ?`)) return;
+
+  try {
+    const response = await fetch('/api/trigger-workflow', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // On envoie le token de l'utilisateur connecté
+        'Authorization': `Bearer ${authStore.session?.access_token}`
+      },
+      body: JSON.stringify({
+        featureId: feature.id, // On envoie l'ID (1 à 15)
+        data: {
+          timestamp: new Date().toISOString(),
+          userEmail: authStore.user?.email
+          // Ici tu pourras ajouter d'autres données contextuelles plus tard
+        }
+      })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      alert(`Succès : Le workflow "${title}" a été déclenché.`);
+      console.log('Réponse n8n:', result);
+    } else {
+      alert(`Erreur : ${result.error}`);
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert("Erreur de communication avec le serveur.");
+  }
 };
 </script>
 
