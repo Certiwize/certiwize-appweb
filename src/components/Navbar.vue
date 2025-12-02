@@ -3,10 +3,12 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useThemeStore } from '../stores/theme';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
 
 const { t, locale } = useI18n();
 const themeStore = useThemeStore();
 const router = useRouter();
+const authStore = useAuthStore();
 
 const isScrolled = ref(false);
 
@@ -26,7 +28,10 @@ const toggleLanguage = () => {
   locale.value = locale.value === 'fr' ? 'en' : 'fr';
 };
 
-const isAuthenticated = false;
+const logout = async () => {
+  await authStore.signOut();
+  router.push('/');
+};
 </script>
 
 <template>
@@ -60,7 +65,7 @@ const isAuthenticated = false;
           </router-link>
           
           <router-link 
-            v-if="!isAuthenticated" 
+            v-if="!authStore.user" 
             to="/contact" 
             class="text-gray-600 dark:text-gray-300 hover:text-primary transition"
             :class="!isScrolled ? 'text-gray-700 dark:text-white' : ''"
@@ -77,20 +82,24 @@ const isAuthenticated = false;
           </router-link>
           
           <router-link 
-            v-if="!isAuthenticated" 
+            v-if="!authStore.user" 
             to="/login" 
             class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md transition"
           >
             {{ t('nav.login') }}
           </router-link>
-          
-          <router-link 
-            v-else 
-            to="/dashboard" 
-            class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md transition"
-          >
-            {{ t('nav.dashboard') }}
-          </router-link>
+
+          <div v-else class="flex items-center gap-2">
+            <router-link 
+              to="/dashboard" 
+              class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md transition"
+            >
+              {{ t('nav.dashboard') }}
+            </router-link>
+            <button @click="logout" class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-red-500 transition">
+              <i class="pi pi-sign-out"></i>
+            </button>
+          </div>
 
           <div class="flex items-center border-l pl-4 ml-4 space-x-2 border-gray-300 dark:border-gray-600">
             <button 

@@ -3,22 +3,28 @@ import { createPinia } from 'pinia';
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 import App from './App.vue';
-import router from './router';
+import router from './router'; // Import router d'abord
 import i18n from './i18n';
 import './style.css';
+import { useAuthStore } from './stores/auth'; // Import store après createPinia
 
 const app = createApp(App);
+const pinia = createPinia();
 
-app.use(createPinia());
+app.use(pinia);
 app.use(router);
 app.use(i18n);
 app.use(PrimeVue, {
     theme: {
         preset: Aura,
         options: {
-            darkModeSelector: '.dark', // Important pour le switch manuel
+            darkModeSelector: '.dark',
         }
     }
 });
 
-app.mount('#app');
+// Initialiser l'auth avant de monter l'app
+const authStore = useAuthStore();
+authStore.initializeAuth().then(() => {
+    app.mount('#app');
+});
