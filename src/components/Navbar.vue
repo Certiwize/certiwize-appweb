@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import { useThemeStore } from '../stores/theme';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
+import Menu from 'primevue/menu';
 
 const { t, locale } = useI18n();
 const themeStore = useThemeStore();
@@ -11,6 +12,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const isScrolled = ref(false);
+const profileMenu = ref();
 
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 20;
@@ -31,6 +33,26 @@ const toggleLanguage = () => {
 const logout = async () => {
   await authStore.signOut();
   router.push('/');
+};
+
+const profileMenuItems = ref([
+  {
+    label: 'Paramètres',
+    icon: 'pi pi-cog',
+    command: () => router.push('/settings')
+  },
+  {
+    separator: true
+  },
+  {
+    label: 'Se déconnecter',
+    icon: 'pi pi-sign-out',
+    command: logout
+  }
+]);
+
+const toggleProfileMenu = (event) => {
+  profileMenu.value.toggle(event);
 };
 </script>
 
@@ -96,9 +118,15 @@ const logout = async () => {
             >
               {{ t('nav.dashboard') }}
             </router-link>
-            <button @click="logout" class="p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-red-500 transition">
-              <i class="pi pi-sign-out"></i>
+            
+            <!-- Bouton Profil avec menu déroulant -->
+            <button 
+              @click="toggleProfileMenu"
+              class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-primary hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+            >
+              <i class="pi pi-user"></i>
             </button>
+            <Menu ref="profileMenu" :model="profileMenuItems" popup />
           </div>
 
           <div class="flex items-center border-l pl-4 ml-4 space-x-2 border-gray-300 dark:border-gray-600">

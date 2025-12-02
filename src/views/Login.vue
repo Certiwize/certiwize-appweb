@@ -50,9 +50,27 @@ const handleLogin = async () => {
           <Password v-model="password" :feedback="false" toggleMask class="w-full" inputClass="w-full" required />
         </div>
 
+        <div class="text-right">
+          <router-link to="/forgot-password" class="text-sm text-primary hover:underline">
+            Mot de passe oublié ?
+          </router-link>
+        </div>
+
         <Message v-if="errorMsg" severity="error" :closable="false">{{ errorMsg }}</Message>
 
         <Button type="submit" label="Se connecter" :loading="loading" class="w-full" />
+
+        <div class="text-center mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+            Vous n'avez pas encore de compte ?
+          </p>
+          <router-link 
+            to="/register" 
+            class="text-primary hover:text-primary-dark font-semibold transition"
+          >
+            Créer un compte gratuitement
+          </router-link>
+        </div>
       </form>
     </div>
   </div>
