@@ -28,7 +28,7 @@ export async function onRequestPost(context) {
   // On utilise l'ID de la feature pour trouver la bonne URL
   const webhookMap = {
     1: env.N8N_HOOK_CONVENTION,      // Convention
-    2: env.N8N_HOOK_SIGNATURE,       // Signature
+    /*2: env.N8N_HOOK_SIGNATURE,       // Signature
     3: env.N8N_HOOK_DRIVE,           // Drive
     4: env.N8N_HOOK_CONVOC_GEN,      // Générer Convoc
     5: env.N8N_HOOK_QUEST_POS,       // Quest. Positionnement
@@ -41,7 +41,7 @@ export async function onRequestPost(context) {
     12: env.N8N_HOOK_SEND_RESP,      // Envoi Responsable
     13: env.N8N_HOOK_SEND_APPR,      // Envoi Apprenants
     14: env.N8N_HOOK_FROID,          // Quest. Froid
-    15: env.N8N_HOOK_PENNYLANE       // Pennylane
+    15: env.N8N_HOOK_PENNYLANE       // Pennylane*/
   };
 
   const targetUrl = webhookMap[featureId];

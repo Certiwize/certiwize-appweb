@@ -6,7 +6,7 @@ import { useAuthStore } from '../stores/auth';
 const authStore = useAuthStore();
 const { t } = useI18n();
 
-/* Liste des 15 fonctionnalités automatisées
+// Liste des 15 fonctionnalités automatisées
 const features = [
   { id: 1, titleKey: 'dashboard.feature_1', icon: 'pi-file', endpoint: '/webhook/convention' },
   { id: 2, titleKey: 'dashboard.feature_2', icon: 'pi-user-plus', endpoint: '/webhook/sign' },
@@ -25,13 +25,6 @@ const features = [
   { id: 15, titleKey: 'dashboard.feature_15', icon: 'pi-sync', endpoint: '/webhook/pennylane' },
 ];
 
-const triggerWorkflow = (feature) => {
-  const title = t(feature.titleKey);
-  console.log(`Déclenchement du workflow : ${title} via ${feature.endpoint}`);
-  alert(`${t('dashboard.simulation_prefix')} "${title}" lancé !`);
-  // TODO: Appel axios vers le webhook n8n
-  
-};*/
 const triggerWorkflow = async (feature) => {
   const title = t(feature.titleKey);
   
@@ -67,8 +60,9 @@ const triggerWorkflow = async (feature) => {
   } catch (error) {
     console.error(error);
     alert("Erreur de communication avec le serveur.");
-  }
+  } 
 };
+
 </script>
 
 <template>
