@@ -151,12 +151,81 @@
     "q4": "Dois-je installer un logiciel ?",
     "a4": "Non, Certiwize est 100% accessible via votre navigateur web."
   },
+  "login": {
+    "title": "Connexion Espace Client",
+    "subtitle": "Accédez à votre outil d'automatisation",
+    "email": "Email",
+    "password": "Mot de passe",
+    "forgot_password": "Mot de passe oublié ?",
+    "submit": "Se connecter",
+    "error": "Identifiants incorrects ou erreur de connexion.",
+    "no_account": "Vous n'avez pas encore de compte ?",
+    "create_account": "Créer un compte gratuitement"
+  },
+  "register": {
+    "title": "Créer un compte",
+    "full_name": "Nom complet",
+    "email": "Email",
+    "password": "Mot de passe",
+    "submit": "S'inscrire",
+    "success": "Compte créé ! Veuillez vérifier vos emails pour confirmer.",
+    "have_account": "Déjà un compte ?",
+    "login": "Se connecter"
+  },
+  "forgot_password": {
+    "title": "Mot de passe oublié",
+    "email": "Votre Email",
+    "submit": "Envoyer le lien",
+    "success": "vous recevrez un lien de réinitialisation.",
+    "back_to_login": "Retour à la connexion"
+  },
+  "update_password": {
+    "title": "Nouveau mot de passe",
+    "new_password": "Entrez votre nouveau mot de passe",
+    "confirm_password": "Confirmez votre nouveau mot de passe",
+    "submit": "Confirmer",
+    "error_mismatch": "Les mots de passe ne correspondent pas.",
+    "success": "Mot de passe mis à jour !"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Gérez votre profil et vos préférences",
+    "tab_profile": "Profil",
+    "tab_password": "Mot de passe",
+    "tab_preferences": "Préférences",
+    "profile_title": "Informations personnelles",
+    "full_name": "Nom complet",
+    "email": "Email",
+    "email_note": "L'email ne peut pas être modifié",
+    "save_changes": "Enregistrer les modifications",
+    "profile_success": "Profil mis à jour avec succès !",
+    "password_title": "Changer le mot de passe",
+    "current_password": "Mot de passe actuel",
+    "current_password_note": "Pour des raisons de sécurité, veuillez confirmer votre mot de passe actuel",
+    "new_password": "Nouveau mot de passe",
+    "confirm_password": "Confirmer le mot de passe",
+    "update_password": "Mettre à jour le mot de passe",
+    "password_mismatch": "Les mots de passe ne correspondent pas.",
+    "password_required": "Veuillez entrer votre mot de passe actuel.",
+    "password_incorrect": "Mot de passe actuel incorrect.",
+    "password_success": "Mot de passe mis à jour avec succès !",
+    "preferences_title": "Préférences du compte",
+    "danger_zone": "Zone dangereuse",
+    "danger_desc": "La suppression de votre compte est irréversible. Toutes vos données seront définitivement supprimées.",
+    "delete_account": "Supprimer mon compte",
+    "delete_confirm": "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.",
+    "delete_coming": "Fonctionnalité de suppression de compte à venir"
+  },
   "dashboard": {
     "title": "Tableau de bord Automation",
     "welcome": "Bienvenue dans votre espace client",
     "actions": "Actions Rapides",
     "click_to_execute": "Cliquer pour exécuter",
     "simulation_prefix": "Simulation : Workflow",
+    "confirm_trigger": "Voulez-vous lancer l'automatisation : \"{title}\" ?",
+    "success": "Succès : Le workflow \"{title}\" a été déclenché.",
+    "error": "Erreur : {error}",
+    "communication_error": "Erreur de communication avec le serveur.",
     "feature_1": "Convention de formation",
     "feature_2": "Signature & Airtable",
     "feature_3": "Dossier Drive Client",
@@ -179,5 +248,9 @@
     "contact_title": "Contact",
     "location": "3 PL. Martin Levasseu, 93400 Saint-Ouen-Sur-Seine",
     "copyright": "Tous droits réservés."
+  },
+  "navbar": {
+    "settings": "Paramètres",
+    "logout": "Se déconnecter"
   }
 }

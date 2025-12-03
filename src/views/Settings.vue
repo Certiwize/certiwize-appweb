@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue';
 import { useAuthStore } from '../stores/auth';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
@@ -12,6 +13,7 @@ import Tab from 'primevue/tab';
 import TabPanels from 'primevue/tabpanels';
 import TabPanel from 'primevue/tabpanel';
 
+const { t } = useI18n();
 const authStore = useAuthStore();
 const router = useRouter();
 
@@ -27,7 +29,7 @@ const updateProfile = async () => {
   
   try {
     await authStore.updateProfile(fullName.value);
-    profileMsg.value = { type: 'success', content: 'Profil mis à jour avec succès !' };
+    profileMsg.value = { type: 'success', content: t('settings.profile_success') };
   } catch (error) {
     profileMsg.value = { type: 'error', content: error.message };
   } finally {
@@ -44,12 +46,12 @@ const passwordMsg = ref({ type: '', content: '' });
 
 const updatePassword = async () => {
   if (newPassword.value !== confirmPassword.value) {
-    passwordMsg.value = { type: 'error', content: 'Les mots de passe ne correspondent pas.' };
+    passwordMsg.value = { type: 'error', content: t('settings.password_mismatch') };
     return;
   }
 
   if (!currentPassword.value) {
-    passwordMsg.value = { type: 'error', content: 'Veuillez entrer votre mot de passe actuel.' };
+    passwordMsg.value = { type: 'error', content: t('settings.password_required') };
     return;
   }
 
@@ -63,22 +65,22 @@ const updatePassword = async () => {
     // Si la vérification réussit, mettre à jour le mot de passe
     await authStore.updateUserPassword(newPassword.value);
     
-    passwordMsg.value = { type: 'success', content: 'Mot de passe mis à jour avec succès !' };
+    passwordMsg.value = { type: 'success', content: t('settings.password_success') };
     currentPassword.value = '';
     newPassword.value = '';
     confirmPassword.value = '';
   } catch (error) {
-    passwordMsg.value = { type: 'error', content: error.message || 'Mot de passe actuel incorrect.' };
+    passwordMsg.value = { type: 'error', content: error.message || t('settings.password_incorrect') };
   } finally {
     loadingPassword.value = false;
   }
 };
 
 const deleteAccount = async () => {
-  if (confirm('Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.')) {
+  if (confirm(t('settings.delete_confirm'))) {
     try {
       // TODO: Implémenter la suppression de compte
-      alert('Fonctionnalité de suppression de compte à venir');
+      alert(t('settings.delete_coming'));
     } catch (error) {
       alert('Erreur lors de la suppression du compte');
     }
@@ -90,8 +92,8 @@ const deleteAccount = async () => {
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
     <div class="max-w-4xl mx-auto">
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Paramètres</h1>
-        <p class="text-gray-600 dark:text-gray-400">Gérez votre profil et vos préférences</p>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{{ t('settings.title') }}</h1>
+        <p class="text-gray-600 dark:text-gray-400">{{ t('settings.subtitle') }}</p>
       </div>
 
       <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
@@ -99,15 +101,15 @@ const deleteAccount = async () => {
           <TabList>
             <Tab value="0">
               <i class="pi pi-user mr-2"></i>
-              Profil
+              {{ t('settings.tab_profile') }}
             </Tab>
             <Tab value="1">
               <i class="pi pi-lock mr-2"></i>
-              Mot de passe
+              {{ t('settings.tab_password') }}
             </Tab>
             <Tab value="2">
               <i class="pi pi-cog mr-2"></i>
-              Préférences
+              {{ t('settings.tab_preferences') }}
             </Tab>
           </TabList>
 
@@ -115,25 +117,25 @@ const deleteAccount = async () => {
             <!-- Onglet Profil -->
             <TabPanel value="0">
               <div class="p-6">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">Informations personnelles</h2>
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">{{ t('settings.profile_title') }}</h2>
                 
                 <form @submit.prevent="updateProfile" class="space-y-6">
                   <div class="flex flex-col gap-2">
-                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Nom complet</label>
+                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('settings.full_name') }}</label>
                     <InputText v-model="fullName" class="w-full" />
                   </div>
 
                   <div class="flex flex-col gap-2">
-                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('settings.email') }}</label>
                     <InputText v-model="email" type="email" class="w-full" disabled />
-                    <small class="text-gray-500">L'email ne peut pas être modifié</small>
+                    <small class="text-gray-500">{{ t('settings.email_note') }}</small>
                   </div>
 
                   <Message v-if="profileMsg.content" :severity="profileMsg.type" :closable="false">
                     {{ profileMsg.content }}
                   </Message>
 
-                  <Button type="submit" label="Enregistrer les modifications" :loading="loadingProfile" />
+                  <Button type="submit" :label="t('settings.save_changes')" :loading="loadingProfile" />
                 </form>
               </div>
             </TabPanel>
@@ -141,22 +143,22 @@ const deleteAccount = async () => {
             <!-- Onglet Mot de passe -->
             <TabPanel value="1">
               <div class="p-6">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">Changer le mot de passe</h2>
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">{{ t('settings.password_title') }}</h2>
                 
                 <form @submit.prevent="updatePassword" class="space-y-6">
                   <div class="flex flex-col gap-2">
-                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Mot de passe actuel</label>
+                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('settings.current_password') }}</label>
                     <Password v-model="currentPassword" toggleMask :feedback="false" class="w-full" inputClass="w-full" required />
-                    <small class="text-gray-500">Pour des raisons de sécurité, veuillez confirmer votre mot de passe actuel</small>
+                    <small class="text-gray-500">{{ t('settings.current_password_note') }}</small>
                   </div>
 
                   <div class="flex flex-col gap-2">
-                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Nouveau mot de passe</label>
+                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('settings.new_password') }}</label>
                     <Password v-model="newPassword" toggleMask class="w-full" inputClass="w-full" required />
                   </div>
 
                   <div class="flex flex-col gap-2">
-                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Confirmer le mot de passe</label>
+                    <label class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ t('settings.confirm_password') }}</label>
                     <Password v-model="confirmPassword" toggleMask :feedback="false" class="w-full" inputClass="w-full" required />
                   </div>
 
@@ -164,7 +166,7 @@ const deleteAccount = async () => {
                     {{ passwordMsg.content }}
                   </Message>
 
-                  <Button type="submit" label="Mettre à jour le mot de passe" :loading="loadingPassword" />
+                  <Button type="submit" :label="t('settings.update_password')" :loading="loadingPassword" />
                 </form>
               </div>
             </TabPanel>
@@ -172,16 +174,16 @@ const deleteAccount = async () => {
             <!-- Onglet Préférences -->
             <TabPanel value="2">
               <div class="p-6">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">Préférences du compte</h2>
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">{{ t('settings.preferences_title') }}</h2>
                 
                 <div class="space-y-6">
                   <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-                    <h3 class="text-lg font-semibold text-red-600 mb-4">Zone dangereuse</h3>
+                    <h3 class="text-lg font-semibold text-red-600 mb-4">{{ t('settings.danger_zone') }}</h3>
                     <p class="text-gray-600 dark:text-gray-400 mb-4">
-                      La suppression de votre compte est irréversible. Toutes vos données seront définitivement supprimées.
+                      {{ t('settings.danger_desc') }}
                     </p>
                     <Button 
-                      label="Supprimer mon compte" 
+                      :label="t('settings.delete_account')" 
                       severity="danger" 
                       outlined
                       @click="deleteAccount"

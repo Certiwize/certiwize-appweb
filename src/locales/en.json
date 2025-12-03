@@ -151,12 +151,81 @@
     "q4": "Do I need to install software?",
     "a4": "No, Certiwize is 100% accessible via your web browser."
   },
+  "login": {
+    "title": "Client Area Login",
+    "subtitle": "Access your automation tool",
+    "email": "Email",
+    "password": "Password",
+    "forgot_password": "Forgot password?",
+    "submit": "Sign in",
+    "error": "Incorrect credentials or connection error.",
+    "no_account": "Don't have an account yet?",
+    "create_account": "Create a free account"
+  },
+  "register": {
+    "title": "Create an account",
+    "full_name": "Full name",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign up",
+    "success": "Account created! Please check your emails to confirm.",
+    "have_account": "Already have an account?",
+    "login": "Sign in"
+  },
+  "forgot_password": {
+    "title": "Forgot password",
+    "email": "Your Email",
+    "submit": "Send link",
+    "success": "you will receive a reset link.",
+    "back_to_login": "Back to login"
+  },
+  "update_password": {
+    "title": "New password",
+    "new_password": "Enter your new password",
+    "confirm_password": "Confirm your new password",
+    "submit": "Confirm",
+    "error_mismatch": "Passwords do not match.",
+    "success": "Password updated!"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your profile and preferences",
+    "tab_profile": "Profile",
+    "tab_password": "Password",
+    "tab_preferences": "Preferences",
+    "profile_title": "Personal information",
+    "full_name": "Full name",
+    "email": "Email",
+    "email_note": "Email cannot be changed",
+    "save_changes": "Save changes",
+    "profile_success": "Profile updated successfully!",
+    "password_title": "Change password",
+    "current_password": "Current password",
+    "current_password_note": "For security reasons, please confirm your current password",
+    "new_password": "New password",
+    "confirm_password": "Confirm password",
+    "update_password": "Update password",
+    "password_mismatch": "Passwords do not match.",
+    "password_required": "Please enter your current password.",
+    "password_incorrect": "Current password incorrect.",
+    "password_success": "Password updated successfully!",
+    "preferences_title": "Account preferences",
+    "danger_zone": "Danger zone",
+    "danger_desc": "Deleting your account is irreversible. All your data will be permanently deleted.",
+    "delete_account": "Delete my account",
+    "delete_confirm": "Are you sure you want to delete your account? This action is irreversible.",
+    "delete_coming": "Account deletion feature coming soon"
+  },
   "dashboard": {
     "title": "Automation Dashboard",
     "welcome": "Welcome to your dashboard",
     "actions": "Quick Actions",
     "click_to_execute": "Click to execute",
     "simulation_prefix": "Simulation: Workflow",
+    "confirm_trigger": "Do you want to launch the automation: \"{title}\"?",
+    "success": "Success: The workflow \"{title}\" has been triggered.",
+    "error": "Error: {error}",
+    "communication_error": "Server communication error.",
     "feature_1": "Training Agreement",
     "feature_2": "Signature & Airtable",
     "feature_3": "Client Drive Folder",
@@ -179,5 +248,9 @@
     "contact_title": "Contact",
     "location": "3 PL. Martin Levasseu, 93400 Saint-Ouen-Sur-Seine",
     "copyright": "All rights reserved."
+  },
+  "navbar": {
+    "settings": "Settings",
+    "logout": "Logout"
   }
 }

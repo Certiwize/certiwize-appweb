@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useThemeStore } from '../stores/theme';
 import { useRouter } from 'vue-router';
@@ -35,9 +35,9 @@ const logout = async () => {
   router.push('/');
 };
 
-const profileMenuItems = ref([
+const profileMenuItems = computed(() => [
   {
-    label: 'Paramètres',
+    label: t('navbar.settings'),
     icon: 'pi pi-cog',
     command: () => router.push('/settings')
   },
@@ -45,7 +45,7 @@ const profileMenuItems = ref([
     separator: true
   },
   {
-    label: 'Se déconnecter',
+    label: t('navbar.logout'),
     icon: 'pi pi-sign-out',
     command: logout
   }
