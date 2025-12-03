@@ -9,11 +9,19 @@ import Message from 'primevue/message';
 const auth = useAuthStore();
 const router = useRouter();
 const password = ref('');
+const confirmPassword = ref('');
 const loading = ref(false);
 const msg = ref('');
 
 const handleUpdate = async () => {
+  if (password.value !== confirmPassword.value) {
+    msg.value = "Les mots de passe ne correspondent pas.";
+    return;
+  }
+
   loading.value = true;
+  msg.value = '';
+  
   try {
     await auth.updateUserPassword(password.value);
     alert('Mot de passe mis à jour !');
@@ -34,6 +42,10 @@ const handleUpdate = async () => {
         <div class="flex flex-col gap-2">
           <label class="text-gray-700 dark:text-gray-300">Entrez votre nouveau mot de passe</label>
           <Password v-model="password" toggleMask class="w-full" inputClass="w-full" required />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label class="text-gray-700 dark:text-gray-300">Confirmez votre nouveau mot de passe</label>
+          <Password v-model="confirmPassword" toggleMask :feedback="false" class="w-full" inputClass="w-full" required />
         </div>
         <Message v-if="msg" severity="error" :closable="false">{{ msg }}</Message>
         <Button type="submit" label="Confirmer" :loading="loading" class="w-full" />
