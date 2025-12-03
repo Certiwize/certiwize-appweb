@@ -15,7 +15,9 @@ const routes = [
   { 
     path: '/update-password', 
     component: () => import('../views/UpdatePassword.vue'), 
-    meta: { requiresAuth: true } 
+    // CORRECTION : On retire 'meta: { requiresAuth: true }' ici
+    // Supabase va connecter l'utilisateur via le lien URL, mais le routeur
+    // doit laisser passer l'utilisateur avant que la connexion ne soit effective.
   },
   { 
     path: '/settings', 

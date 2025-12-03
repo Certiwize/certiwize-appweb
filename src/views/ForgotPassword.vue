@@ -15,7 +15,7 @@ const handleReset = async () => {
   msg.value = { type: '', content: '' };
   try {
     await auth.resetPasswordEmail(email.value);
-    msg.value = { type: 'success', content: 'Si cet email existe, vous recevrez un lien de réinitialisation.' };
+    msg.value = { type: 'success', content: 'vous recevrez un lien de réinitialisation.' };
   } catch (error) {
     msg.value = { type: 'error', content: error.message };
   } finally {
