@@ -242,6 +242,14 @@
     "feature_14": "Cold Questionnaire",
     "feature_15": "Pennylane Sync"
   },
+  "chat": {
+    "title": "Certiwize Assistant",
+    "placeholder": "Ask a question...",
+    "send": "Send",
+    "typing": "Typing...",
+    "welcome": "Hello! I am the virtual assistant. How can I help you with Qualiopi or your documents?",
+    "error": "Sorry, I cannot reach the server."
+  },
   "footer": {
     "description": "The SaaS solution that automates your Qualiopi management. Save time, stay compliant.",
     "navigation": "Navigation",

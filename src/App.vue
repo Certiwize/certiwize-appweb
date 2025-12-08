@@ -1,6 +1,7 @@
 <script setup>
 import Navbar from './components/Navbar.vue';
 import Footer from './components/Footer.vue';
+import ChatWidget from './components/ChatWidget.vue';
 </script>
 
 <template>
@@ -12,5 +13,7 @@ import Footer from './components/Footer.vue';
     </main>
     
     <Footer />
+    
+    <ChatWidget />
   </div>
 </template>

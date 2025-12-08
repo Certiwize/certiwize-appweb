@@ -242,6 +242,14 @@
     "feature_14": "Questionnaire À froid",
     "feature_15": "Synchro Pennylane"
   },
+  "chat": {
+    "title": "Assistant Certiwize",
+    "placeholder": "Posez votre question...",
+    "send": "Envoyer",
+    "typing": "En train d'écrire...",
+    "welcome": "Bonjour ! Je suis l'assistant virtuel. Comment puis-je vous aider avec Qualiopi ou vos documents ?",
+    "error": "Désolé, je ne parviens pas à joindre le serveur."
+  },
   "footer": {
     "description": "La solution SaaS qui automatise votre gestion Qualiopi. Gagnez du temps, restez conforme.",
     "navigation": "Navigation",
