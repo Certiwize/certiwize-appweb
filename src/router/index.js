@@ -14,10 +14,7 @@ const routes = [
   { path: '/forgot-password', component: () => import('../views/ForgotPassword.vue') },
   { 
     path: '/update-password', 
-    component: () => import('../views/UpdatePassword.vue'), 
-    // CORRECTION : On retire 'meta: { requiresAuth: true }' ici
-    // Supabase va connecter l'utilisateur via le lien URL, mais le routeur
-    // doit laisser passer l'utilisateur avant que la connexion ne soit effective.
+    component: () => import('../views/UpdatePassword.vue')
   },
   { 
     path: '/settings', 
@@ -29,6 +26,11 @@ const routes = [
     component: Dashboard,
     meta: { requiresAuth: true }
   },
+  {
+    path: '/generate-convention',
+    component: () => import('../views/GenerateConvention.vue'),
+    meta: { requiresAuth: true }
+  }
 ];
 
 const router = createRouter({
