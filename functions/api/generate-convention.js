@@ -23,9 +23,9 @@ export async function onRequestPost(context) {
 
   // 3. Validation des données requises
   const requiredFields = [
-    'trainingName', 'companyName', 'companyAddress', 'siret', 
-    'managerName', 'trainingType', 'duration', 'period', 
-    'nbDays', 'date', 'rate', 'fees', 'total'
+    'nom_formation', 'nom_entreprise', 'adresse_entreprise', 'siret', 
+    'nom_gerant', 'type_formation', 'duree', 'periode', 
+    'nb_jours', 'date', 'tarif', 'frais', 'total_tarif'
   ];
 
   for (const field of requiredFields) {
