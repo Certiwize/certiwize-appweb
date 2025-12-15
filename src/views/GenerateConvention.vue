@@ -103,8 +103,12 @@ const generateDocument = async () => {
 
     const result = await response.json();
 
-    if (response.ok && result.pdfUrl) {
-      pdfUrl.value = result.pdfUrl;
+    if (response.ok && result.pdfData) {
+      // Convertir le base64 en Blob
+      const pdfBlob = base64ToBlob(result.pdfData, 'application/pdf');
+      const blobUrl = URL.createObjectURL(pdfBlob);
+      
+      pdfUrl.value = blobUrl;
       showPdfPreview.value = true;
       msg.value = { 
         type: 'success', 
@@ -112,7 +116,7 @@ const generateDocument = async () => {
       };
 
       // Télécharger automatiquement le PDF
-      downloadPdf(result.pdfUrl);
+      downloadPdf(blobUrl);
     } else {
       msg.value = { 
         type: 'error', 
@@ -128,6 +132,17 @@ const generateDocument = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+// Convertir base64 en Blob
+const base64ToBlob = (base64, mimeType) => {
+  const byteCharacters = atob(base64);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  return new Blob([byteArray], { type: mimeType });
 };
 
 const downloadPdf = (url) => {

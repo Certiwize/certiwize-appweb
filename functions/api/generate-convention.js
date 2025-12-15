@@ -72,16 +72,17 @@ export async function onRequestPost(context) {
       throw new Error(`Erreur n8n: ${n8nResponse.statusText}`);
     }
 
-    const result = await n8nResponse.json();
+    // Récupérer le PDF en binaire depuis n8n
+    const pdfBuffer = await n8nResponse.arrayBuffer();
 
-    // n8n doit retourner { "pdfUrl": "https://..." }
-    if (!result.pdfUrl) {
-      throw new Error('n8n n\'a pas retourné l\'URL du PDF');
-    }
+    // Convertir en base64 pour l'envoyer au frontend
+    const pdfBase64 = btoa(
+      new Uint8Array(pdfBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
 
     return new Response(JSON.stringify({ 
       success: true, 
-      pdfUrl: result.pdfUrl,
+      pdfData: pdfBase64,
       message: 'Convention générée avec succès'
     }), {
       status: 200,
