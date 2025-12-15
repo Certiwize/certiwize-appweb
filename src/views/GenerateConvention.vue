@@ -92,7 +92,7 @@ const generateDocument = async () => {
       timestamp: new Date().toISOString()
     };
 
-    const response = await fetch('/api/genetarif-convention', {
+    const response = await fetch('/api/generate-convention', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
