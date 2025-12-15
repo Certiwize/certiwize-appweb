@@ -15,7 +15,7 @@ const authStore = useAuthStore();
 
 const form = ref({
   nom_formation: '',
-  nom_formation: '',
+  nom_entreprise: '',
   adresse_entreprise: '',
   siret: '',
   nom_gerant: '',
@@ -38,7 +38,7 @@ const type_formations = [
   { label: 'Hybride', value: 'hybrid' }
 ];
 
-// Calcul automatique du total_tarif
+// Calcul automatique du total
 const total_tarif = computed(() => {
   const tarif = form.value.tarif || 0;
   const frais = form.value.frais || 0;
@@ -49,7 +49,7 @@ const total_tarif = computed(() => {
 const isFormValid = computed(() => {
   return (
     form.value.nom_formation &&
-    form.value.nom_formation &&
+    form.value.nom_entreprise &&
     form.value.adresse_entreprise &&
     form.value.siret &&
     form.value.nom_gerant &&
@@ -65,7 +65,7 @@ const isFormValid = computed(() => {
   );
 });
 
-const genetarifDocument = async () => {
+const generateDocument = async () => {
   msg.value = { type: '', content: '' };
   loading.value = true;
 
@@ -76,7 +76,7 @@ const genetarifDocument = async () => {
 
     const payload = {
       nom_formation: form.value.nom_formation,
-      nom_formation: form.value.nom_formation,
+      nom_entreprise: form.value.nom_entreprise,
       adresse_entreprise: form.value.adresse_entreprise,
       siret: form.value.siret,
       nom_gerant: form.value.nom_gerant,
@@ -133,7 +133,7 @@ const genetarifDocument = async () => {
 const downloadPdf = (url) => {
   const link = document.createElement('a');
   link.href = url;
-  link.download = `convention_${form.value.nom_formation.replace(/\s+/g, '_')}.pdf`;
+  link.download = `convention_${form.value.nom_entreprise.replace(/\s+/g, '_')}.pdf`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -142,7 +142,7 @@ const downloadPdf = (url) => {
 const resetForm = () => {
   form.value = {
     nom_formation: '',
-    nom_formation: '',
+    nom_entreprise: '',
     adresse_entreprise: '',
     siret: '',
     nom_gerant: '',
@@ -177,7 +177,7 @@ const resetForm = () => {
         <!-- Formulaire -->
         <div class="lg:col-span-2">
           <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
-            <form @submit.prevent="genetarifDocument" class="space-y-6">
+            <form @submit.prevent="generateDocument" class="space-y-6">
               <!-- Informations de la formation -->
               <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
@@ -371,7 +371,7 @@ const resetForm = () => {
 
                     <div class="flex flex-col gap-2">
                       <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        total_tarif (€)
+                        Total (€)
                       </label>
                       <div class="bg-primary/10 dark:bg-primary/20 border border-primary p-3 rounded-lg">
                         <p class="text-2xl font-bold text-primary">
@@ -396,7 +396,7 @@ const resetForm = () => {
               <div class="flex gap-4 pt-4">
                 <Button 
                   type="submit" 
-                  :label="'Générer le document'" 
+                  label="Générer le document" 
                   icon="pi pi-download"
                   :loading="loading"
                   :disabled="!isFormValid"
@@ -454,7 +454,7 @@ const resetForm = () => {
                 </div>
                 <div>
                   <p class="text-sm text-gray-600 dark:text-gray-400">Entreprise</p>
-                  <p class="font-semibold text-gray-900 dark:text-white">{{ form.nom_formation }}</p>
+                  <p class="font-semibold text-gray-900 dark:text-white">{{ form.nom_entreprise }}</p>
                 </div>
                 <div>
                   <p class="text-sm text-gray-600 dark:text-gray-400">total_tarif</p>
