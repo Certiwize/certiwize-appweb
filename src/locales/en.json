@@ -265,5 +265,73 @@
   "navbar": {
     "settings": "Settings",
     "logout": "Logout"
+  },
+  "tiers": {
+    "title": "Create Third Party",
+    "subtitle": "New prospect, client or supplier",
+    "cancel": "Cancel",
+    "create": "Create Entity",
+    "save": "Save",
+    "general": {
+      "title": "General Information",
+      "name": "Entity Name",
+      "name_placeholder": "Company Name",
+      "alt_name": "Alternative Name",
+      "alt_name_placeholder": "Commercial name, brand...",
+      "type": "Entity Type",
+      "prospect": "Prospect",
+      "client": "Client",
+      "supplier": "Supplier",
+      "client_code": "Client Code",
+      "supplier_code": "Supplier Code",
+      "status": "Status",
+      "status_open": "Open",
+      "status_closed": "Closed",
+      "barcode": "Barcode"
+    },
+    "contact": {
+      "title": "Contact Details",
+      "address": "Address",
+      "zip": "Zip Code",
+      "city": "City",
+      "country": "Country",
+      "department": "Department / State",
+      "phone": "Phone",
+      "mobile": "Mobile",
+      "email": "Email",
+      "website": "Website",
+      "refuse_mass_email": "Refuse Mass Emails",
+      "show_socials": "Show Social Networks",
+      "hide_socials": "Hide Social Networks"
+    },
+    "legal": {
+      "title": "Legal Information",
+      "siren": "SIREN",
+      "siret": "SIRET",
+      "naf": "NAF-APE",
+      "rcs": "RCS / RM",
+      "eori": "EORI Number",
+      "rna": "RNA Number",
+      "vat_subject": "VAT Subject",
+      "vat_number": "VAT Number",
+      "check_vat": "Verify",
+      "capital": "Capital"
+    },
+    "financial": {
+      "title": "Commercial & Financial Parameters",
+      "currency": "Currency",
+      "payment_terms": "Payment Terms",
+      "select": "Select...",
+      "days_30": "30 days",
+      "receipt": "On Receipt"
+    },
+    "attachments": {
+      "title": "Attachments & Relations",
+      "logo": "Logo",
+      "logo_placeholder": "Drag a file or click to select",
+      "assign_reps": "Assign Sales Reps",
+      "add_rep_placeholder": "Sales rep name...",
+      "add": "Add"
+    }
   }
 }

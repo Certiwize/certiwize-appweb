@@ -265,5 +265,73 @@
   "navbar": {
     "settings": "Paramètres",
     "logout": "Se déconnecter"
+  },
+  "tiers": {
+    "title": "Création d'un Tiers",
+    "subtitle": "Nouveau prospect, client ou fournisseur",
+    "cancel": "Annuler",
+    "create": "Créer le tiers",
+    "save": "Enregistrer",
+    "general": {
+      "title": "Informations Générales",
+      "name": "Nom du tiers",
+      "name_placeholder": "Nom de la société",
+      "alt_name": "Nom alternatif",
+      "alt_name_placeholder": "Nom commercial, marque...",
+      "type": "Type de tiers",
+      "prospect": "Prospect",
+      "client": "Client",
+      "supplier": "Fournisseur",
+      "client_code": "Code Client",
+      "supplier_code": "Code Fournisseur",
+      "status": "État",
+      "status_open": "Ouvert",
+      "status_closed": "Fermé",
+      "barcode": "Code-barres"
+    },
+    "contact": {
+      "title": "Coordonnées",
+      "address": "Adresse",
+      "zip": "Code Postal",
+      "city": "Ville",
+      "country": "Pays",
+      "department": "Département / Canton",
+      "phone": "Téléphone",
+      "mobile": "Mobile",
+      "email": "Email",
+      "website": "Site Web",
+      "refuse_mass_email": "Refuser e-mails de masse",
+      "show_socials": "Afficher réseaux sociaux",
+      "hide_socials": "Masquer réseaux sociaux"
+    },
+    "legal": {
+      "title": "Informations Légales",
+      "siren": "SIREN",
+      "siret": "SIRET",
+      "naf": "NAF-APE",
+      "rcs": "RCS / RM",
+      "eori": "Numéro EORI",
+      "rna": "Numéro RNA",
+      "vat_subject": "Assujetti à la TVA",
+      "vat_number": "Numéro de TVA",
+      "check_vat": "Vérifier",
+      "capital": "Capital"
+    },
+    "financial": {
+      "title": "Paramètres Commerciaux & Financiers",
+      "currency": "Devise",
+      "payment_terms": "Conditions de règlement",
+      "select": "Sélectionner...",
+      "days_30": "30 jours",
+      "receipt": "Réception"
+    },
+    "attachments": {
+      "title": "Rattachements",
+      "logo": "Logo",
+      "logo_placeholder": "Glissez un fichier ou cliquez pour sélectionner",
+      "assign_reps": "Assigner commerciaux",
+      "add_rep_placeholder": "Nom du commercial...",
+      "add": "Ajouter"
+    }
   }
 }
