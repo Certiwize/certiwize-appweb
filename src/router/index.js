@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import Home from '../views/Home.vue';
-import Dashboard from '../views/Dashboard.vue';
+import Dashboard from '../views/dashboard/DashboardHome.vue';
 import Login from '../views/Login.vue';
 
 const routes = [
@@ -39,6 +39,11 @@ const routes = [
       {
         path: 'tiers/create',
         name: 'dashboard-tiers-create',
+        component: () => import('../views/dashboard/TiersCreate.vue')
+      },
+      {
+        path: 'tiers/edit/:id',
+        name: 'dashboard-tiers-edit',
         component: () => import('../views/dashboard/TiersCreate.vue')
       },
       {

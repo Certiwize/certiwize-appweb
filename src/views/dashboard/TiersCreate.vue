@@ -1,409 +1,365 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useI18n } from 'vue-i18n';
+import { ref, onMounted } from 'vue';
+import { useDataStore } from '../../stores/data';
+import { useRouter, useRoute } from 'vue-router';
+// Supabase import retiré car plus besoin de charger la liste des utilisateurs
+
+// Imports PrimeVue
+import InputText from 'primevue/inputtext';
+import Textarea from 'primevue/textarea';
+import Button from 'primevue/button';
+import Dropdown from 'primevue/dropdown';
+import Checkbox from 'primevue/checkbox';
+import InputNumber from 'primevue/inputnumber';
+import FileUpload from 'primevue/fileupload';
+// MultiSelect retiré
+import Message from 'primevue/message';
+import Accordion from 'primevue/accordion';
+import AccordionPanel from 'primevue/accordionpanel';
+import AccordionHeader from 'primevue/accordionheader';
+import AccordionContent from 'primevue/accordioncontent';
+import Chips from 'primevue/chips';
 
 const router = useRouter();
-const { t } = useI18n();
+const route = useRoute();
+const dataStore = useDataStore();
+
+// --- Données du formulaire ---
+// ... (rest of form definition)
+
+// ...
+
+// --- Actions ---
 
 const form = ref({
-  // General
-  name: '',
-  altName: '',
-  types: {
-    prospect: false,
-    client: false,
-    supplier: false
-  },
-  clientCode: 'CU2512-00038', // Mock auto-gen
-  supplierCode: 'SU2512-00001', // Mock auto-gen
-  status: 'Open',
-  barcode: '',
-  
-  // Contact
-  address: '',
-  zip: '',
-  city: '',
-  country: 'FR',
-  department: '',
-  phone: '',
-  mobile: '',
-  fax: '',
-  website: '',
-  email: '',
-  refuseMassEmail: 'No',
-  socialNetworks: false,
-  
-  // Legal
-  siren: '',
-  siret: '',
-  naf: '',
-  rcs: '',
-  eori: '',
-  rna: '',
-  vatSubject: false,
-  vatNumber: '',
-  tierType: '',
-  legalEntityType: '',
-  workforce: null,
-  capital: 0,
-  
-  // Financial
-  defaultLanguage: 'fr',
-  paymentTerms: '',
-  paymentMode: '',
-  clientTags: [],
-  supplierTags: [],
-  currency: 'EUR',
-  
-  // Attachments
-  parentCompany: null,
-  salesReps: [],
-  logo: null
+    // 1 & 2. Identité
+    name: '',
+    alt_name: '',
+    tier_type: [],
+    code_client: '',
+    code_fournisseur: '',
+    state: 'Ouvert',
+    barcode: '',
+    
+    // 3. Coordonnées
+    address: '',
+    zip_code: '',
+    city: '',
+    country: 'FR',
+    department: null,
+    phone: '',
+    mobile: '',
+    fax: '',
+    website: '',
+    email: '',
+    refuse_mass_mail: false,
+    show_socials: false,
+
+    // 4. Infos légales
+    siren: '',
+    siret: '',
+    naf_ape: '',
+    rcs_rm: '',
+    eori_number: '',
+    rna_number: '',
+    tva_subject: false,
+    tva_number: '',
+    legal_entity_type: null,
+    workforce: 0,
+    capital: 0,
+
+    // 5. Paramètres
+    default_lang: 'Français',
+    payment_conditions: null,
+    payment_mode: null,
+    tags_client: [], 
+    tags_supplier: [],
+    currency: 'EUR',
+
+    // 6. Ressources
+    assigned_to: ''
 });
 
-// Sales Rep Logic
-const newSalesRep = ref('');
-const addSalesRep = () => {
-  if (newSalesRep.value.trim()) {
-    form.value.salesReps.push(newSalesRep.value.trim());
-    newSalesRep.value = '';
-  }
+// --- Actions ---
+
+const isEditing = ref(false);
+const tierId = ref(null);
+
+onMounted(async () => {
+    // Vérification sir mode édition
+    if (route.params.id) {
+        isEditing.value = true;
+        tierId.value = route.params.id; 
+        
+        console.log("Mode édition détecté, ID:", tierId.value);
+        
+        // Charger les données
+        const tier = await dataStore.getTierById(tierId.value);
+        if (tier) {
+            console.log("Tiers trouvé:", tier);
+            
+            // On fusionne les données existantes avec le formulaire
+            form.value = { 
+                ...form.value, 
+                ...tier,
+                // Restauration des valeurs par défaut pour les tableaux si null en base
+                tier_type: tier.tier_type || [],
+                tags_client: tier.tags_client || [],
+                tags_supplier: tier.tags_supplier || []
+            };
+        } else {
+            console.error("Tiers retourné null pour l'ID", tierId.value);
+            errorMsg.value = "Impossible de charger les données du tiers (ID non trouvé).";
+        }
+    }
+});
+
+
+// --- Options des listes ---
+const typeOptions = ['Prospect', 'Client', 'Fournisseur'];
+const stateOptions = ['Ouvert', 'Fermé', 'En sommeil'];
+const countryOptions = [{label: 'France (FR)', value: 'FR'}, {label: 'Belgique (BE)', value: 'BE'}];
+const deptOptions = ['75 - Paris', '91 - Essonne', '92 - Hauts-de-Seine', '33 - Gironde', '69 - Rhône']; 
+const yesNoOptions = [{ label: 'Oui', value: true }, { label: 'Non', value: false }];
+const legalEntities = ['SAS', 'SARL', 'EURL', 'Auto-entrepreneur', 'SA', 'SCI'];
+const langOptions = ['Français', 'Anglais', 'Espagnol'];
+const payConditions = ['30 jours fin de mois', 'Comptant', '45 jours', '60 jours'];
+const payModes = ['Virement', 'Chèque', 'Prélèvement', 'Carte Bancaire'];
+const currencyOptions = [{label: 'Euros (€)', value: 'EUR'}, {label: 'Dollars ($)', value: 'USD'}];
+
+const submitting = ref(false);
+const errorMsg = ref('');
+
+// --- Actions ---
+
+
+
+const handleSubmit = async () => {
+    submitting.value = true;
+    errorMsg.value = '';
+
+    let result;
+    if (isEditing.value) {
+        result = await dataStore.updateTier(tierId.value, form.value);
+    } else {
+        result = await dataStore.createTier(form.value);
+    }
+
+    if (result.success) {
+        router.push('/dashboard/tiers');
+    } else {
+        errorMsg.value = "Erreur lors de l'enregistrement : " + result.error;
+    }
+    submitting.value = false;
 };
-const removeSalesRep = (index) => {
-  form.value.salesReps.splice(index, 1);
+
+const verifyTva = () => {
+    alert("Simulation : Numéro de TVA vérifié (VIES API).");
 };
 
-// Mock lists
-const countries = [
-  { code: 'FR', name: 'France' },
-  { code: 'BE', name: 'Belgique' },
-  { code: 'CH', name: 'Suisse' },
-  { code: 'CA', name: 'Canada' },
-];
-
-const currencies = [
-  { code: 'EUR', symbol: '€', name: 'Euro' },
-  { code: 'USD', symbol: '$', name: 'US Dollar' },
-];
-
-const cancel = () => {
-  router.push('/dashboard/tiers');
-};
-
-const save = () => {
-  console.log('Saving tiers:', form.value);
-  alert(t('tiers.create') + ' (Simulation)');
-  router.push('/dashboard/tiers');
-};
-
-const handleLogoUpload = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    form.value.logo = file;
-  }
+const onLogoUpload = (event) => {
+    console.log("Fichier logo sélectionné:", event.files[0]);
 };
 </script>
 
 <template>
-  <div class="p-4 sm:p-8 max-w-5xl mx-auto">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('tiers.title') }}</h1>
-        <p class="text-gray-500 mt-1">{{ t('tiers.subtitle') }}</p>
-      </div>
-      <div class="flex gap-3">
-        <button 
-          @click="cancel"
-          class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-        >
-          {{ t('tiers.cancel') }}
-        </button>
-        <button 
-          @click="save"
-          class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition shadow-lg shadow-primary/25"
-        >
-          {{ t('tiers.create') }}
-        </button>
-      </div>
-    </div>
-
-    <!-- Form -->
-    <div class="space-y-6">
-      
-      <!-- 1. Informations Générales -->
-      <section class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-        <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-          <i class="pi pi-id-card text-primary"></i>
-          {{ t('tiers.general.title') }}
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="col-span-full md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.general.name') }} *</label>
-            <input v-model="form.name" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition" :placeholder="t('tiers.general.name_placeholder')">
-          </div>
-          <div class="col-span-full md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.general.alt_name') }}</label>
-            <input v-model="form.altName" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition" :placeholder="t('tiers.general.alt_name_placeholder')">
-          </div>
-          
-          <div class="col-span-full">
-             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{{ t('tiers.general.type') }}</label>
-             <div class="flex gap-6">
-               <label class="flex items-center gap-2 cursor-pointer">
-                 <input v-model="form.types.prospect" type="checkbox" class="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
-                 <span class="text-gray-700 dark:text-gray-300">{{ t('tiers.general.prospect') }}</span>
-               </label>
-               <label class="flex items-center gap-2 cursor-pointer">
-                 <input v-model="form.types.client" type="checkbox" class="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
-                 <span class="text-gray-700 dark:text-gray-300">{{ t('tiers.general.client') }}</span>
-               </label>
-               <label class="flex items-center gap-2 cursor-pointer">
-                 <input v-model="form.types.supplier" type="checkbox" class="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
-                 <span class="text-gray-700 dark:text-gray-300">{{ t('tiers.general.supplier') }}</span>
-               </label>
-             </div>
-          </div>
-
-          <div v-if="form.types.client" class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.general.client_code') }}</label>
-             <div class="relative">
-              <input v-model="form.clientCode" type="text" disabled class="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800 text-gray-500 cursor-not-allowed">
-              <i class="pi pi-lock absolute right-3 top-3 text-gray-400"></i>
+    <div class="max-w-5xl mx-auto bg-gray-50 dark:bg-gray-900 pb-20">
+        
+        <div class="bg-white dark:bg-gray-800 p-6 shadow-sm sticky top-0 z-10 mb-6 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-4">
+                <Button icon="pi pi-arrow-left" text rounded @click="router.back()" :aria-label="$t('tiers.cancel')" />
+                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ isEditing ? $t('tiers.edit_title') : $t('tiers.new_title') }}</h1>
             </div>
-          </div>
-          <div v-if="form.types.supplier" class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.general.supplier_code') }}</label>
-             <div class="relative">
-              <input v-model="form.supplierCode" type="text" disabled class="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800 text-gray-500 cursor-not-allowed">
-              <i class="pi pi-lock absolute right-3 top-3 text-gray-400"></i>
-            </div>
-          </div>
-
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.general.status') }}</label>
-            <select v-model="form.status" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-              <option value="Open">{{ t('tiers.general.status_open') }}</option>
-              <option value="Closed">{{ t('tiers.general.status_closed') }}</option>
-            </select>
-          </div>
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.general.barcode') }}</label>
-            <input v-model="form.barcode" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-          </div>
-        </div>
-      </section>
-
-      <!-- 2. Coordonnées -->
-      <section class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-        <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-          <i class="pi pi-map-marker text-primary"></i>
-          {{ t('tiers.contact.title') }}
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-           <div class="col-span-full">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.contact.address') }}</label>
-            <textarea v-model="form.address" rows="2" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition"></textarea>
-          </div>
-          
-          <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.contact.zip') }}</label>
-            <input v-model="form.zip" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-          </div>
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.contact.city') }}</label>
-            <input v-model="form.city" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-          </div>
-          
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.contact.country') }}</label>
-            <select v-model="form.country" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-              <option v-for="c in countries" :key="c.code" :value="c.code">{{ c.name }}</option>
-            </select>
-          </div>
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.contact.department') }}</label>
-            <input v-model="form.department" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-          </div>
-          
-          <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.contact.phone') }}</label>
-            <input v-model="form.phone" type="tel" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-          </div>
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.contact.mobile') }}</label>
-            <input v-model="form.mobile" type="tel" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-          </div>
-          
-          <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.contact.email') }}</label>
-            <input v-model="form.email" type="email" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-          </div>
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.contact.website') }}</label>
-            <input v-model="form.website" type="url" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition" placeholder="https://">
-          </div>
-          
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.contact.refuse_mass_email') }}</label>
-            <select v-model="form.refuseMassEmail" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-              <option value="No">Non</option>
-              <option value="Yes">Oui</option>
-            </select>
-          </div>
-          
-           <div class="md:col-span-1 flex items-end mb-2">
-              <button 
-                @click="form.socialNetworks = !form.socialNetworks"
-                class="text-primary hover:underline text-sm font-medium flex items-center gap-1"
-              >
-                <i class="pi" :class="form.socialNetworks ? 'pi-angle-up' : 'pi-angle-down'"></i>
-                {{ form.socialNetworks ? t('tiers.contact.hide_socials') : t('tiers.contact.show_socials') }}
-              </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- 3. Informations Légales -->
-      <section class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-        <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-          <i class="pi pi-building text-primary"></i>
-          {{ t('tiers.legal.title') }}
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.legal.siren') }}</label>
-            <input v-model="form.siren" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-          </div>
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.legal.siret') }}</label>
-            <input v-model="form.siret" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-          </div>
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.legal.naf') }}</label>
-            <input v-model="form.naf" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-          </div>
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.legal.rcs') }}</label>
-            <input v-model="form.rcs" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-          </div>
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.legal.eori') }}</label>
-            <input v-model="form.eori" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-          </div>
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.legal.rna') }}</label>
-            <input v-model="form.rna" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-          </div>
-          
-           <div class="col-span-full">
-               <label class="flex items-center gap-2 cursor-pointer mb-2">
-                 <input v-model="form.vatSubject" type="checkbox" class="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
-                 <span class="font-medium text-gray-700 dark:text-gray-300">{{ t('tiers.legal.vat_subject') }}</span>
-               </label>
-               <div v-if="form.vatSubject" class="flex gap-2 max-w-md">
-                 <input v-model="form.vatNumber" type="text" :placeholder="t('tiers.legal.vat_number')" class="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-                 <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg text-sm font-medium transition">
-                   {{ t('tiers.legal.check_vat') }}
-                  </button>
-               </div>
-          </div>
-          
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.legal.capital') }}</label>
-            <div class="relative">
-              <input v-model.number="form.capital" type="number" class="w-full pl-4 pr-8 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-              <span class="absolute right-3 top-2 text-gray-500">€</span>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      <!-- 4. Paramètres Commerciaux -->
-      <section class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-        <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-          <i class="pi pi-briefcase text-primary"></i>
-          {{ t('tiers.financial.title') }}
-        </h2>
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.financial.currency') }}</label>
-            <select v-model="form.currency" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-               <option v-for="c in currencies" :key="c.code" :value="c.code">{{ c.code }} - {{ c.name }}</option>
-            </select>
-          </div>
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.financial.payment_terms') }}</label>
-            <select v-model="form.paymentTerms" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition">
-               <option value="">{{ t('tiers.financial.select') }}</option>
-               <option value="30days">{{ t('tiers.financial.days_30') }}</option>
-               <option value="receipt">{{ t('tiers.financial.receipt') }}</option>
-            </select>
-          </div>
-        </div>
-      </section>
-      
-       <!-- 5. Rattachements -->
-      <section class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
-        <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-          <i class="pi pi-link text-primary"></i>
-          {{ t('tiers.attachments.title') }}
-        </h2>
-         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.attachments.logo') }}</label>
-            <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:bg-gray-50 dark:hover:bg-gray-900/50 transition cursor-pointer relative">
-               <input type="file" @change="handleLogoUpload" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-               <i class="pi pi-image text-3xl text-gray-400 mb-2"></i>
-               <p class="text-sm text-gray-500" v-if="!form.logo">{{ t('tiers.attachments.logo_placeholder') }}</p>
-               <p class="text-sm text-primary font-medium" v-else>{{ form.logo.name }}</p>
-            </div>
-          </div>
-           <div class="md:col-span-1">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('tiers.attachments.assign_reps') }}</label>
-            
-            <!-- List of assigned reps -->
-            <div class="flex flex-wrap gap-2 mb-3">
-              <div v-for="(rep, index) in form.salesReps" :key="index" class="p-2 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 flex items-center gap-2">
-                 <div class="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs font-bold">{{ rep.charAt(0).toUpperCase() }}</div>
-                 <span class="text-sm font-medium">{{ rep }}</span>
-                 <button @click="removeSalesRep(index)" class="text-red-500 hover:text-red-700 ml-1">
-                   <i class="pi pi-times text-xs"></i>
-                 </button>
-              </div>
-            </div>
-
-            <!-- Add rep input -->
             <div class="flex gap-2">
-              <input 
-                v-model="newSalesRep" 
-                @keyup.enter="addSalesRep"
-                type="text" 
-                class="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-900 focus:ring-2 focus:ring-primary/20 focus:border-primary transition" 
-                :placeholder="t('tiers.attachments.add_rep_placeholder')">
-              <button @click="addSalesRep" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg text-sm font-medium transition">
-                {{ t('tiers.attachments.add') }}
-              </button>
+                <Button :label="$t('tiers.cancel')" severity="secondary" @click="router.back()" />
+                <Button :label="isEditing ? $t('tiers.save_modifications') : $t('tiers.create')" icon="pi pi-check" :loading="submitting" @click="handleSubmit" />
             </div>
-          </div>
         </div>
-      </section>
+
+        <form @submit.prevent="handleSubmit" class="px-4 sm:px-6 space-y-6">
+            
+            <Message v-if="errorMsg" severity="error" :closable="false" class="mb-4">{{ errorMsg }}</Message>
+
+            <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <h2 class="text-xl font-semibold mb-4 text-primary border-b pb-2">{{ $t('tiers.general.title') }}</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.general.name') }} *</label>
+                        <InputText v-model="form.name" required :placeholder="$t('tiers.general.name_placeholder')" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.general.alt_name') }}</label>
+                        <InputText v-model="form.alt_name" :placeholder="$t('tiers.general.alt_name_placeholder')" />
+                    </div>
+                    
+                    <div class="col-span-1 md:col-span-2">
+                        <label class="block mb-2 text-sm font-medium">{{ $t('tiers.general.type') }}</label>
+                        <div class="flex flex-wrap gap-4">
+                            <div v-for="type in typeOptions" :key="type" class="flex items-center">
+                                <Checkbox v-model="form.tier_type" :inputId="type" :value="type" />
+                                <label :for="type" class="ml-2 cursor-pointer select-none">{{ type }}</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.general.client_code') }} (Auto)</label>
+                        <InputText v-model="form.code_client" placeholder="Généré automatiquement si vide" disabled class="bg-gray-100 opacity-70" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.general.supplier_code') }} (Auto)</label>
+                        <InputText v-model="form.code_fournisseur" placeholder="Généré automatiquement si vide" disabled class="bg-gray-100 opacity-70" />
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.general.status') }}</label>
+                        <Dropdown v-model="form.state" :options="stateOptions" :placeholder="$t('tiers.financial.select')" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.general.barcode') }}</label>
+                        <InputText v-model="form.barcode" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <h2 class="text-xl font-semibold mb-4 text-primary border-b pb-2">{{ $t('tiers.contact.title') }}</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="col-span-1 md:col-span-2 flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.contact.address') }}</label>
+                        <Textarea v-model="form.address" rows="3" autoResize placeholder="Rue, numéro, bâtiment..." />
+                    </div>
+                    
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.contact.zip') }}</label>
+                        <InputText v-model="form.zip_code" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.contact.city') }}</label>
+                        <InputText v-model="form.city" />
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.contact.country') }}</label>
+                        <Dropdown v-model="form.country" :options="countryOptions" optionLabel="label" optionValue="value" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.contact.department') }}</label>
+                        <Dropdown v-model="form.department" :options="deptOptions" :placeholder="$t('tiers.financial.select')" />
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.contact.phone') }}</label>
+                        <InputText v-model="form.phone" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.contact.mobile') }}</label>
+                        <InputText v-model="form.mobile" />
+                    </div>
+                    
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.contact.website') }}</label>
+                        <InputText v-model="form.website" placeholder="https://" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-sm font-medium">{{ $t('tiers.contact.email') }}</label>
+                        <InputText v-model="form.email" type="email" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label>{{ $t('tiers.contact.refuse_mass_email') }}</label>
+                        <Dropdown v-model="form.refuse_mass_mail" :options="yesNoOptions" optionLabel="label" optionValue="value" />
+                    </div>
+                    <div class="flex items-center mt-6">
+                        <Checkbox v-model="form.show_socials" :binary="true" inputId="socials" />
+                        <label for="socials" class="ml-2 font-medium cursor-pointer">{{ $t('tiers.contact.show_socials') }}</label>
+                    </div>
+                </div>
+            </div>
+
+            <Accordion :multiple="true" :activeIndex="[0]">
+                
+                <AccordionPanel value="0">
+                    <AccordionHeader>{{ $t('tiers.legal.title') }}</AccordionHeader>
+                    <AccordionContent>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.siren') }}</label><InputText v-model="form.siren" /></div>
+                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.siret') }}</label><InputText v-model="form.siret" /></div>
+                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.naf') }}</label><InputText v-model="form.naf_ape" /></div>
+                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.rcs') }}</label><InputText v-model="form.rcs_rm" /></div>
+                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.eori') }}</label><InputText v-model="form.eori_number" /></div>
+                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.rna') }}</label><InputText v-model="form.rna_number" /></div>
+                        </div>
+
+                        <div class="mt-6 border-t pt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="flex flex-col gap-2">
+                                <div class="flex items-center mb-2">
+                                    <Checkbox v-model="form.tva_subject" :binary="true" inputId="tva" />
+                                    <label for="tva" class="ml-2 cursor-pointer font-medium">{{ $t('tiers.legal.vat_subject') }}</label>
+                                </div>
+                                <div class="flex gap-2" v-if="form.tva_subject">
+                                    <InputText v-model="form.tva_number" :placeholder="$t('tiers.legal.vat_number')" class="flex-1" />
+                                    <Button :label="$t('tiers.legal.check_vat')" icon="pi pi-search" severity="info" outlined @click="verifyTva" />
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-col gap-2">
+                                <label class="text-sm font-medium">Type d'entité légale</label>
+                                <Dropdown v-model="form.legal_entity_type" :options="legalEntities" :placeholder="$t('tiers.financial.select')" />
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-sm font-medium">Effectifs</label>
+                                <InputNumber v-model="form.workforce" />
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-sm font-medium">{{ $t('tiers.legal.capital') }} (€)</label>
+                                <InputNumber v-model="form.capital" mode="currency" currency="EUR" locale="fr-FR" />
+                            </div>
+                        </div>
+                    </AccordionContent>
+                </AccordionPanel>
+
+                <AccordionPanel value="1">
+                    <AccordionHeader>{{ $t('tiers.financial.title') }}</AccordionHeader>
+                    <AccordionContent>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.financial.default_lang') }}</label><Dropdown v-model="form.default_lang" :options="langOptions" /></div>
+                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.financial.currency') }}</label><Dropdown v-model="form.currency" :options="currencyOptions" optionLabel="label" optionValue="value" /></div>
+                            
+                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.financial.payment_terms') }}</label><Dropdown v-model="form.payment_conditions" :options="payConditions" :placeholder="$t('tiers.financial.select')" /></div>
+                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.financial.payment_mode') }}</label><Dropdown v-model="form.payment_mode" :options="payModes" :placeholder="$t('tiers.financial.select')" /></div>
+                            <div class="flex flex-col gap-2">
+                                <label>{{ $t('tiers.financial.tags_client') }}</label>
+                                <Chips v-model="form.tags_client" separator="," placeholder="Entrez un tag et validez" />
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label>{{ $t('tiers.financial.tags_supplier') }}</label>
+                                <Chips v-model="form.tags_supplier" separator="," placeholder="Entrez un tag et validez" />
+                            </div>
+                        </div>
+                    </AccordionContent>
+                </AccordionPanel>
+
+                <AccordionPanel value="2">
+                    <AccordionHeader>{{ $t('tiers.attachments.title') }}</AccordionHeader>
+                    <AccordionContent>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                            <div class="flex flex-col gap-2">
+                                <label class="text-sm font-medium">{{ $t('tiers.attachments.assign_reps') }}</label>
+                                <InputText 
+                                    v-model="form.assigned_to" 
+                                    :placeholder="$t('tiers.attachments.add_rep_placeholder')" 
+                                    class="w-full"
+                                />
+                            </div>
+                            
+                            <div class="flex flex-col gap-2">
+                                <label class="block mb-2 text-sm font-medium">{{ $t('tiers.attachments.logo') }}</label>
+                                <FileUpload mode="basic" name="logo" accept="image/*" :maxFileSize="1000000" @select="onLogoUpload" :chooseLabel="$t('tiers.attachments.logo_choose')" />
+                            </div>
+                        </div>
+                    </AccordionContent>
+                </AccordionPanel>
+            </Accordion>
+        </form>
     </div>
-    
-     <div class="flex justify-end gap-3 mt-8">
-        <button 
-          @click="cancel"
-          class="px-6 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-        >
-          {{ t('tiers.cancel') }}
-        </button>
-        <button 
-          @click="save"
-          class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition shadow-lg shadow-primary/25 font-medium"
-        >
-          {{ t('tiers.create') }}
-        </button>
-      </div>
-  </div>
 </template>

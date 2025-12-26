@@ -245,7 +245,20 @@
     "feature_12": "Envoi au responsable",
     "feature_13": "Envoi aux apprenants",
     "feature_14": "Évaluation (à froid)",
-    "feature_15": "Synchronisation comptable"
+    "feature_15": "Synchronisation comptable",
+    "hello": "Bonjour",
+    "status_today": "Voici ce qui se passe aujourd'hui.",
+    "total_clients": "Clients Totaux",
+    "active_formations": "Formations Actives",
+    "active_projects": "Projets en cours",
+    "recent_clients": "Derniers Clients",
+    "recent_formations": "Dernières Formations",
+    "recent_projects": "Derniers Projets",
+    "no_clients": "Aucun client encore.",
+    "loading": "Chargement...",
+    "quick_action_title": "Besoin d'une action rapide ?",
+    "add_client": "+ Ajouter un client",
+    "launch_automation": "→ Lancer une automatisation"
   },
   "chat": {
     "title": "Assistant Certiwize",
@@ -268,10 +281,25 @@
   },
   "tiers": {
     "title": "Création d'un Tiers",
+    "new_title": "Nouveau Tiers",
+    "edit_title": "Modifier le Tiers",
     "subtitle": "Nouveau prospect, client ou fournisseur",
     "cancel": "Annuler",
     "create": "Créer le tiers",
     "save": "Enregistrer",
+    "save_modifications": "Enregistrer les modifications",
+    "list_title": "Liste des Clients",
+    "new_client_btn": "Nouveau Client",
+    "empty_list": "Aucun client trouvé.",
+    "loading_data": "Chargement des données...",
+    "delete_confirm": "Voulez-vous vraiment supprimer ce client ?",
+    "columns": {
+      "company": "Entreprise",
+      "city": "Ville",
+      "email": "Email",
+      "status": "Statut",
+      "actions": "Actions"
+    },
     "general": {
       "title": "Informations Générales",
       "name": "Nom du tiers",
@@ -323,12 +351,17 @@
       "payment_terms": "Conditions de règlement",
       "select": "Sélectionner...",
       "days_30": "30 jours",
-      "receipt": "Réception"
+      "receipt": "Réception",
+      "default_lang": "Langue par défaut",
+      "payment_mode": "Mode de règlement",
+      "tags_client": "Tags Clients",
+      "tags_supplier": "Tags Fournisseurs"
     },
     "attachments": {
       "title": "Rattachements",
       "logo": "Logo",
       "logo_placeholder": "Glissez un fichier ou cliquez pour sélectionner",
+      "logo_choose": "Choisir un fichier",
       "assign_reps": "Assigner commerciaux",
       "add_rep_placeholder": "Nom du commercial...",
       "add": "Ajouter"
