@@ -3,6 +3,7 @@ import { useAuthStore } from '../stores/auth';
 import Home from '../views/Home.vue';
 import Dashboard from '../views/dashboard/DashboardHome.vue';
 import Login from '../views/Login.vue';
+import ProjectCreate from '../views/dashboard/ProjetCreate.vue';
 
 const routes = [
   { path: '/', component: Home },
@@ -62,6 +63,26 @@ const routes = [
     path: '/generate-convention',
     component: () => import('../views/GenerateConvention.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/dashboard/projets/create',
+    component: () => import('../views/dashboard/ProjetCreate.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/dashboard/projets/edit/:id',
+    component: () => import('../views/dashboard/ProjetCreate.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/dashboard/catalogue/create',
+    component: () => import('../views/dashboard/TrainingCreate.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/dashboard/catalogue/edit/:id',
+    component: () => import('../views/dashboard/TrainingCreate.vue'),
+    meta: { requiresAuth: true }
   }
 ];
 
@@ -70,8 +91,18 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
+
+  // Attendre que l'authentification soit initialisée avant de vérifier
+  if (!authStore.initialized && to.meta.requiresAuth) {
+    // Attendre max 2 secondes que l'auth soit initialisée
+    const maxWait = 2000;
+    const startTime = Date.now();
+    while (!authStore.initialized && (Date.now() - startTime) < maxWait) {
+      await new Promise(resolve => setTimeout(resolve, 50));
+    }
+  }
 
   if (to.meta.requiresAuth && !authStore.user) {
     next('/login');

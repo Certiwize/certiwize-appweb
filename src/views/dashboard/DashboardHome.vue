@@ -1,18 +1,27 @@
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, computed } from 'vue';
 import { useDataStore } from '../../stores/data';
+import { useTrainingStore } from '../../stores/training';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from '../../stores/auth';
+import Button from 'primevue/button';
 
 const authStore = useAuthStore();
 const dataStore = useDataStore();
+const trainingStore = useTrainingStore();
 const { stats, loading } = storeToRefs(dataStore);
+const { formations } = storeToRefs(trainingStore);
+
+// Calculer le nombre total de formations
+const totalFormations = computed(() => formations.value.length);
 
 onMounted(() => {
-    // On charge les tiers pour calculer les stats (si ce n'est pas déjà fait)
+    // Charger les tiers pour calculer les stats
     if (dataStore.tiers.length === 0) {
         dataStore.fetchTiers();
     }
+    // Charger les vraies formations
+    trainingStore.fetchFormations();
 });
 </script>
 
@@ -34,7 +43,8 @@ onMounted(() => {
             
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
                 <div class="text-gray-500 mb-1 text-sm font-medium">{{ $t('dashboard.active_formations') }}</div>
-                <div class="text-3xl font-bold">{{ stats.activeFormations }}</div> 
+                <div class="text-3xl font-bold" v-if="!trainingStore.loading">{{ totalFormations }}</div>
+                <div class="text-3xl font-bold animate-pulse" v-else>...</div>
             </div>
 
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border-l-4 border-orange-500">
@@ -60,12 +70,16 @@ onMounted(() => {
             <!-- Dernières Formations -->
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
                 <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 border-b pb-2">{{ $t('dashboard.recent_formations') }}</h3>
-                <ul class="space-y-3">
-                    <li v-for="formation in dataStore.formations.slice(0, 3)" :key="formation.id" class="flex justify-between items-center text-sm">
-                        <span class="font-medium text-gray-700 dark:text-gray-300">{{ formation.name }}</span>
-                        <span class="text-xs text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">{{ formation.client }}</span>
+                <ul class="space-y-3" v-if="!trainingStore.loading">
+                    <li v-for="formation in formations.slice(0, 3)" :key="formation.id" class="flex justify-between items-center text-sm">
+                        <span class="font-medium text-gray-700 dark:text-gray-300">{{ formation.title }}</span>
+                        <span class="text-xs text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded">
+                            {{ new Date(formation.updated_at).toLocaleDateString('fr-FR') }}
+                        </span>
                     </li>
+                    <li v-if="formations.length === 0" class="text-gray-400 text-sm italic">Aucune formation créée</li>
                 </ul>
+                <div v-else class="text-sm text-gray-400">{{ $t('dashboard.loading') }}</div>
             </div>
 
             <!-- Derniers Projets -->
@@ -88,6 +102,9 @@ onMounted(() => {
                 </router-link>
                 <router-link to="/dashboard/catalogue" class="text-primary hover:underline font-medium">
                      {{ $t('dashboard.launch_automation') }}
+                </router-link>
+                <router-link to="/dashboard/projets/create">
+                    <Button label="Nouveau Projet" icon="pi pi-plus" />
                 </router-link>
             </div>
         </div>

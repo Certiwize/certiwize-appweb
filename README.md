@@ -14,3 +14,5 @@ src/
 ├── views/           # Pages (Home, Contact, Dashboard)
 ├── App.vue          # Point d'entrée
 └── main.js          # Initialisation
+
+npx wrangler pages dev --proxy 5173
