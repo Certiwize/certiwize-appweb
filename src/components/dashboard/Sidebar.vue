@@ -9,6 +9,7 @@ const navigation = [
   { name: 'Tiers', href: '/dashboard/tiers', icon: 'pi-users' },
   { name: 'Catalogue', href: '/dashboard/catalogue', icon: 'pi-book' },
   { name: 'Projets', href: '/dashboard/projets', icon: 'pi-briefcase' },
+  { name: 'Manuel Qualiopi', href: '/dashboard/manuel-qualiopi', icon: 'pi-book' },
 ];
 
 const isCurrent = (path) => {
@@ -41,7 +42,7 @@ const isCurrent = (path) => {
         <span class="font-medium">{{ item.name }}</span>
       </router-link>
     </nav>
-
+    
     <div class="p-4 border-t border-slate-800">
       <router-link
         to="/login"

@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import Home from '../views/Home.vue';
-import Dashboard from '../views/dashboard/DashboardHome.vue';
 import Login from '../views/Login.vue';
 import ProjectCreate from '../views/dashboard/ProjetCreate.vue';
 
@@ -56,6 +55,11 @@ const routes = [
         path: 'projets',
         name: 'dashboard-projets',
         component: () => import('../views/dashboard/Projet.vue')
+      },
+      {
+        path: 'manuel-qualiopi', 
+        component: () => import('../views/dashboard/ManuelQualiopi.vue'),
+        meta: { requiresAuth: true }
       }
     ]
   },
