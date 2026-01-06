@@ -58,7 +58,7 @@ export const useDataStore = defineStore('data', () => {
 
             let query = supabase
                 .from('tiers')
-                .select('*')
+                .select('*, profiles(email)')
                 .order('created_at', { ascending: false });
 
             // Filtrer par user_id sauf si admin

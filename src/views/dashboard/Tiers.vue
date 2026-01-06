@@ -9,9 +9,11 @@ import Tag from 'primevue/tag';
 import InputText from 'primevue/inputtext';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { useAuthStore } from '../../stores/auth';
 
 const router = useRouter();
 const dataStore = useDataStore();
+const authStore = useAuthStore();
 const { tiers, loading } = storeToRefs(dataStore); // Réactivité directe
 const filters = ref({});
 const { t } = useI18n();
@@ -57,6 +59,11 @@ const editTier = (id) => {
             <Column field="name" :header="$t('tiers.columns.company')" sortable style="width: 25%"></Column>
             <Column field="city" :header="$t('tiers.columns.city')" sortable style="width: 20%"></Column>
             <Column field="email" :header="$t('tiers.columns.email')" style="width: 25%"></Column>
+            <Column v-if="authStore.isAdmin" header="Créé par" style="width: 20%">
+                <template #body="slotProps">
+                    <span class="text-sm text-gray-500">{{ slotProps.data.profiles?.email || 'N/A' }}</span>
+                </template>
+            </Column>
             <Column field="state" :header="$t('tiers.columns.status')" sortable style="width: 15%">
                 <template #body="slotProps">
                     <Tag :value="slotProps.data.state" :severity="getSeverity(slotProps.data.state)" />

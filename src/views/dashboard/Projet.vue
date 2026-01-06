@@ -28,7 +28,7 @@ const fetchProjects = async () => {
 
     let query = supabase
       .from('projects')
-      .select('*')
+      .select('*, profiles(email)')
       .order('updated_at', { ascending: false });
 
     // Filtrer par user_id sauf si admin
@@ -118,6 +118,11 @@ const validateProject = async (id) => {
       <template #loading>Chargement...</template>
 
       <Column field="name" header="Nom du Projet" sortable style="width: 30%"></Column>
+      <Column v-if="auth.isAdmin" header="Créé par" style="width: 20%">
+        <template #body="slotProps">
+          <span class="text-sm text-gray-500">{{ slotProps.data.profiles?.email || 'N/A' }}</span>
+        </template>
+      </Column>
       
       <Column field="status" header="Statut" sortable style="width: 15%">
         <template #body="slotProps">

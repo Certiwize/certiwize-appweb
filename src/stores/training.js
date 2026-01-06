@@ -24,7 +24,7 @@ export const useTrainingStore = defineStore('training', () => {
 
             let query = supabase
                 .from('formations')
-                .select('*')
+                .select('*, profiles(email)')
                 .order('updated_at', { ascending: false });
 
             // Filtrer par user_id sauf si admin

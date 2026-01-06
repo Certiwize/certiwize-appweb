@@ -2,6 +2,7 @@
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useTrainingStore } from '../../stores/training';
+import { useAuthStore } from '../../stores/auth';
 import { storeToRefs } from 'pinia';
 import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
@@ -10,6 +11,7 @@ import Tag from 'primevue/tag';
 
 const router = useRouter();
 const trainingStore = useTrainingStore();
+const authStore = useAuthStore();
 const { formations, loading } = storeToRefs(trainingStore);
 
 onMounted(() => {
@@ -52,6 +54,11 @@ const formatDate = (date) => {
         <template #loading>Chargement des formations...</template>
 
         <Column field="title" header="Titre" sortable style="width: 40%"></Column>
+        <Column v-if="authStore.isAdmin" header="Créé par" style="width: 20%">
+            <template #body="slotProps">
+                <span class="text-sm text-gray-500">{{ slotProps.data.profiles?.email || 'N/A' }}</span>
+            </template>
+        </Column>
         <Column field="updated_at" header="Dernière modification" sortable style="width: 25%">
           <template #body="slotProps">
             {{ formatDate(slotProps.data.updated_at) }}
