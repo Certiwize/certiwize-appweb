@@ -57,7 +57,12 @@ const routes = [
         component: () => import('../views/dashboard/Projet.vue')
       },
       {
-        path: 'manuel-qualiopi', 
+        path: 'analyse-doc',
+        name: 'dashboard-analyse-doc',
+        component: () => import('../views/dashboard/DocumentAnalysis.vue')
+      },
+      {
+        path: 'manuel-qualiopi',
         component: () => import('../views/dashboard/ManuelQualiopi.vue'),
         meta: { requiresAuth: true }
       }

@@ -9,6 +9,7 @@ const navigation = [
   { name: 'Tiers', href: '/dashboard/tiers', icon: 'pi-users' },
   { name: 'Catalogue', href: '/dashboard/catalogue', icon: 'pi-book' },
   { name: 'Projets', href: '/dashboard/projets', icon: 'pi-briefcase' },
+  { name: 'Analyse Doc', href: '/dashboard/analyse-doc', icon: 'pi-search' },
   { name: 'Manuel Qualiopi', href: '/dashboard/manuel-qualiopi', icon: 'pi-book' },
 ];
 
