@@ -43,10 +43,16 @@ export const useDataStore = defineStore('data', () => {
 
     // 1. Récupérer les tiers (filtrés par user_id sauf si admin)
     const fetchTiers = async () => {
+        // Vérifier que l'utilisateur est connecté
+        if (!auth.user?.id) {
+            console.warn('fetchTiers: Utilisateur non connecté, requête ignorée');
+            loading.value = false;
+            return;
+        }
+
         loading.value = true;
         error.value = null;
         try {
-            // Attendre un peu si le rôle n'est pas encore chargé
             const checkAdmin = auth.userRole === 'admin';
             console.log("Récupération des tiers... (userRole:", auth.userRole, ", isAdmin:", checkAdmin, ")");
 
@@ -57,7 +63,7 @@ export const useDataStore = defineStore('data', () => {
 
             // Filtrer par user_id sauf si admin
             if (!checkAdmin) {
-                query = query.eq('user_id', auth.user?.id);
+                query = query.eq('user_id', auth.user.id);
             }
 
             const { data, error: err } = await query;
@@ -65,10 +71,10 @@ export const useDataStore = defineStore('data', () => {
             if (err) throw err;
 
             console.log("Tiers récupérés:", data?.length);
-            tiers.value = data;
+            tiers.value = data || [];
 
             // Mise à jour safe des stats
-            if (stats.value) stats.value.totalTiers = data.length;
+            if (stats.value) stats.value.totalTiers = tiers.value.length;
 
         } catch (err) {
             console.error('Erreur chargement tiers:', err.message);

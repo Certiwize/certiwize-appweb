@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
+import Tooltip from 'primevue/tooltip';
 import App from './App.vue';
 import router from './router'; // Import router d'abord
 import i18n from './i18n';
@@ -22,6 +23,9 @@ app.use(PrimeVue, {
         }
     }
 });
+
+// Enregistrer la directive Tooltip globalement
+app.directive('tooltip', Tooltip);
 
 // Initialiser l'auth avant de monter l'app
 const authStore = useAuthStore();

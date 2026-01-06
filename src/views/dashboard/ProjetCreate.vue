@@ -88,6 +88,8 @@ const form = ref({
     accueil_handicap: ''     // {accueil_handicap}
 });
 
+// État de chargement pour les boutons de génération
+const generatingDoc = ref(null); // 'etude', 'convention', 'convocation', 'livret' ou null
 onMounted(async () => {
     // Charger clients
     if (dataStore.tiers.length === 0) await dataStore.fetchTiers();
@@ -101,9 +103,21 @@ onMounted(async () => {
             const savedData = projectStore.currentProject.form_data || {};
             form.value = { ...form.value, ...savedData };
             
-            // Conversion dates
-            if(form.value.date) form.value.date = new Date(form.value.date);
-            if(form.value.date_now) form.value.date_now = new Date(form.value.date_now);
+            // Conversion sécurisée des dates
+            const safeParseDate = (val) => {
+                if (!val) return null;
+                try {
+                    const parsed = new Date(val);
+                    return isNaN(parsed.getTime()) ? null : parsed;
+                } catch {
+                    return null;
+                }
+            };
+
+            // Tous les champs date du formulaire
+            if (savedData.date) form.value.date = safeParseDate(savedData.date) || new Date();
+            if (savedData.date_now) form.value.date_now = safeParseDate(savedData.date_now) || new Date();
+            if (savedData.date_livret) form.value.date_livret = safeParseDate(savedData.date_livret) || new Date();
         }
     } else {
         // Nouveau projet: réinitialiser le state
@@ -114,7 +128,20 @@ onMounted(async () => {
 // Computed pour l'état du projet
 const status = computed(() => projectStore.currentProject?.status || 'Brouillon');
 const isValidated = computed(() => status.value === 'Validé' || status.value === 'Terminé');
-const docs = computed(() => projectStore.currentProject?.documents || {});
+
+// Documents disponibles (colonnes individuelles dans la table)
+const docs = computed(() => ({
+    etude: projectStore.currentProject?.identification,
+    convention: projectStore.currentProject?.convention,
+    convocation: projectStore.currentProject?.convocation,
+    livret: projectStore.currentProject?.livret
+}));
+
+// Phase 1 verrouillée après soumission (En attente ou Validé)
+const isPhase1Locked = computed(() => status.value !== 'Brouillon');
+
+// Vérifier que les 2 documents Phase 1 sont générés
+const bothDocsGenerated = computed(() => !!docs.value.etude && !!docs.value.convention);
 
 // Validation Document 1 : Identification du Projet
 const isDoc1Valid = computed(() => {
@@ -135,6 +162,9 @@ const isDoc2Valid = computed(() => {
            form.value.lieu_conv?.trim() !== '' &&
            form.value.cout_ht > 0;
 });
+
+// Peut soumettre Phase 1 seulement si les 2 docs sont générés
+const canSubmitPhase1 = computed(() => isDoc1Valid.value && isDoc2Valid.value && bothDocsGenerated.value);
 
 // Validation Document 3 : Convocation
 const isDoc3Valid = computed(() => {
@@ -169,12 +199,16 @@ const save = async () => {
 
 // Génération générique
 const generate = async (docType) => {
-    await save(); // Toujours sauvegarder avant
-    const res = await projectStore.generateDoc(docType, form.value);
-    if(res.success) {
-        alert("Document généré avec succès !");
-    } else {
-        alert("Erreur: " + res.error);
+    generatingDoc.value = docType;
+    try {
+        await save(); // Toujours sauvegarder avant
+        const res = await projectStore.generateDoc(docType, form.value);
+        if(!res.success) {
+            alert("Erreur: " + res.error);
+        }
+        // Pas besoin d'alert succès, le ✅ apparaît automatiquement
+    } finally {
+        generatingDoc.value = null;
     }
 };
 
@@ -206,7 +240,16 @@ const submitForValidation = async () => {
             <h2 class="text-xl font-bold mb-4 flex justify-between">
                 Phase 1 : Étude de Faisabilité & Convention
                 <i v-if="isValidated" class="pi pi-check-circle text-green-500"></i>
+                <i v-else-if="isPhase1Locked" class="pi pi-lock text-yellow-500"></i>
             </h2>
+
+            <!-- Bannière Phase 1 verrouillée (seulement en attente, pas après validation) -->
+            <div v-if="status === 'En attente'" class="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
+                <p class="text-yellow-700 dark:text-yellow-300 text-sm">
+                    <i class="pi pi-lock mr-2"></i>
+                    <strong>Phase 1 verrouillée</strong> — En attente de validation. Les informations ne peuvent plus être modifiées.
+                </p>
+            </div>
 
             <Accordion :multiple="true" :activeIndex="[0, 1]">
                 
@@ -215,6 +258,7 @@ const submitForValidation = async () => {
                     <AccordionContent>
                         <p class="text-sm text-gray-500 mb-4 italic">Document 1 — Toutes les balises seront envoyées à n8n</p>
                         
+                        <fieldset :disabled="isPhase1Locked" class="contents">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <!-- Informations générales -->
                             <div class="md:col-span-2 border-b pb-2 mb-2">
@@ -292,6 +336,7 @@ const submitForValidation = async () => {
                                 <Textarea v-model="form.autres" rows="2" placeholder="Informations complémentaires" />
                             </div>
                         </div>
+                        </fieldset>
                         
                         <div class="mt-6 flex justify-between items-center bg-gray-50 dark:bg-gray-700/30 p-3 rounded">
                             <span class="text-sm text-gray-500" v-if="docs.etude">✅ Document généré</span>
@@ -299,7 +344,10 @@ const submitForValidation = async () => {
                             
                             <div class="flex gap-2">
                                 <a v-if="docs.etude" :href="docs.etude" target="_blank"><Button icon="pi pi-eye" label="Voir PDF" severity="secondary" /></a>
-                                <Button label="Générer Document 1" icon="pi pi-file-pdf" @click="generate('etude')" :disabled="status !== 'Brouillon' || !isDoc1Valid" />
+                                <Button label="Générer Document 1" icon="pi pi-file-pdf" 
+                                        @click="generate('etude')" 
+                                        :disabled="status !== 'Brouillon' || !isDoc1Valid || generatingDoc !== null" 
+                                        :loading="generatingDoc === 'etude'" />
                             </div>
                         </div>
                     </AccordionContent>
@@ -310,6 +358,7 @@ const submitForValidation = async () => {
                     <AccordionContent>
                         <p class="text-sm text-gray-500 mb-4 italic">Document 2 — Convention de formation professionnelle</p>
                         
+                        <fieldset :disabled="isPhase1Locked" class="contents">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <!-- Identification des parties -->
                             <div class="md:col-span-2 border-b pb-2 mb-2">
@@ -397,6 +446,7 @@ const submitForValidation = async () => {
                                 <Calendar v-model="form.date_now" dateFormat="dd/mm/yy" showIcon />
                             </div>
                         </div>
+                        </fieldset>
 
                         <div class="mt-6 flex justify-between items-center bg-gray-50 dark:bg-gray-700/30 p-3 rounded">
                             <span class="text-sm text-gray-500" v-if="docs.convention">✅ Document généré</span>
@@ -404,15 +454,22 @@ const submitForValidation = async () => {
                             
                             <div class="flex gap-2">
                                 <a v-if="docs.convention" :href="docs.convention" target="_blank"><Button icon="pi pi-eye" label="Voir PDF" severity="secondary" /></a>
-                                <Button label="Générer Document 2" icon="pi pi-file-pdf" @click="generate('convention')" :disabled="status !== 'Brouillon' || !isDoc2Valid" />
+                                <Button label="Générer Document 2" icon="pi pi-file-pdf" 
+                                        @click="generate('convention')" 
+                                        :disabled="status !== 'Brouillon' || !isDoc2Valid || generatingDoc !== null" 
+                                        :loading="generatingDoc === 'convention'" />
                             </div>
                         </div>
                     </AccordionContent>
                 </AccordionPanel>
             </Accordion>
 
-            <div class="mt-6 flex justify-end" v-if="status === 'Brouillon'">
-                <Button label="Soumettre l'étude pour validation" icon="pi pi-send" severity="warning" @click="submitForValidation" :disabled="!isDoc1Valid || !isDoc2Valid" />
+            <div class="mt-6 flex flex-col items-end gap-2" v-if="status === 'Brouillon'">
+                <Button label="Soumettre l'étude pour validation" icon="pi pi-send" severity="warning" @click="submitForValidation" :disabled="!canSubmitPhase1" />
+                <p v-if="!bothDocsGenerated" class="text-sm text-orange-500">
+                    <i class="pi pi-exclamation-triangle mr-1"></i>
+                    Générez les 2 documents de la Phase 1 avant de soumettre.
+                </p>
             </div>
             <div v-else-if="status === 'En attente'" class="mt-4 text-center p-4 bg-yellow-50 text-yellow-700 rounded">
                 <i class="pi pi-clock mr-2"></i> En attente de validation par Certiwize.
@@ -473,7 +530,10 @@ const submitForValidation = async () => {
                             
                             <div class="flex gap-2">
                                 <a v-if="docs.convocation" :href="docs.convocation" target="_blank"><Button icon="pi pi-eye" label="Voir PDF" severity="secondary" /></a>
-                                <Button label="Générer Document 3" icon="pi pi-file-pdf" @click="generate('convocation')" :disabled="!isDoc3Valid" />
+                                <Button label="Générer Document 3" icon="pi pi-file-pdf" 
+                                        @click="generate('convocation')" 
+                                        :disabled="!isDoc3Valid || generatingDoc !== null" 
+                                        :loading="generatingDoc === 'convocation'" />
                             </div>
                         </div>
                     </AccordionContent>
@@ -530,7 +590,10 @@ const submitForValidation = async () => {
                             
                             <div class="flex gap-2">
                                 <a v-if="docs.livret" :href="docs.livret" target="_blank"><Button icon="pi pi-eye" label="Voir PDF" severity="secondary" /></a>
-                                <Button label="Générer Document 4" icon="pi pi-file-pdf" severity="info" @click="generate('livret')" :disabled="!isDoc4Valid" />
+                                <Button label="Générer Document 4" icon="pi pi-file-pdf" severity="info" 
+                                        @click="generate('livret')" 
+                                        :disabled="!isDoc4Valid || generatingDoc !== null" 
+                                        :loading="generatingDoc === 'livret'" />
                             </div>
                         </div>
                     </AccordionContent>

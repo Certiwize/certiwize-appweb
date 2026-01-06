@@ -92,33 +92,50 @@ export const useProjectStore = defineStore('project', () => {
             });
 
             const result = await response.json();
+            console.log('Réponse n8n:', result);
+
             if (!response.ok) throw new Error(result.error || "Erreur génération");
+
+            // Mapping docType -> clé attendue dans la réponse n8n ET nom de colonne dans la table
+            const columnMap = {
+                'etude': 'identification',
+                'convention': 'convention',
+                'convocation': 'convocation',
+                'livret': 'livret'
+            };
+
+            const columnName = columnMap[docType];
+            const fileName = result[columnName];
+
+            // Vérifier que n8n a renvoyé le fichier
+            if (!fileName) {
+                throw new Error(`Le webhook n8n n'a pas renvoyé de "${columnName}". Vérifiez la configuration n8n.`);
+            }
 
             // 2. Récupérer l'URL publique via Supabase Storage
             const { data: urlData } = supabase.storage
                 .from('project-docs')
-                .getPublicUrl(result.fileName);
+                .getPublicUrl(fileName);
 
-            // 3. Mettre à jour la base de données (colonne documents)
-            const newDocs = {
-                ...currentProject.value.documents,
-                [docType]: urlData.publicUrl
+            // 3. Mettre à jour la base de données (colonne spécifique au type de document)
+            const updatePayload = {
+                [columnName]: urlData.publicUrl
             };
 
             const { error: updateError } = await supabase
                 .from('projects')
-                .update({ documents: newDocs })
+                .update(updatePayload)
                 .eq('id', currentProject.value.id);
 
             if (updateError) throw updateError;
 
             // Mise à jour locale
-            currentProject.value.documents = newDocs;
+            currentProject.value[columnName] = urlData.publicUrl;
 
             return { success: true, url: urlData.publicUrl };
 
         } catch (err) {
-            console.error(err);
+            console.error('Erreur generateDoc:', err);
             return { success: false, error: err.message };
         } finally {
             loading.value = false;

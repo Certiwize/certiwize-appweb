@@ -10,6 +10,13 @@ export const useTrainingStore = defineStore('training', () => {
 
     // Récupérer les formations (filtrées par user_id sauf si admin)
     const fetchFormations = async () => {
+        // Vérifier que l'utilisateur est connecté
+        if (!auth.user?.id) {
+            console.warn('fetchFormations: Utilisateur non connecté, requête ignorée');
+            loading.value = false;
+            return;
+        }
+
         loading.value = true;
         try {
             const checkAdmin = auth.userRole === 'admin';
@@ -22,13 +29,13 @@ export const useTrainingStore = defineStore('training', () => {
 
             // Filtrer par user_id sauf si admin
             if (!checkAdmin) {
-                query = query.eq('user_id', auth.user?.id);
+                query = query.eq('user_id', auth.user.id);
             }
 
             const { data, error: err } = await query;
 
             if (err) throw err;
-            formations.value = data;
+            formations.value = data || [];
         } catch (err) {
             console.error('Erreur chargement formations:', err.message);
         } finally {

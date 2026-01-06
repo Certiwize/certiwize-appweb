@@ -14,6 +14,13 @@ const projects = ref([]);
 const loading = ref(true);
 
 const fetchProjects = async () => {
+  // Vérifier que l'utilisateur est connecté
+  if (!auth.user?.id) {
+    console.warn('fetchProjects: Utilisateur non connecté, requête ignorée');
+    loading.value = false;
+    return;
+  }
+
   loading.value = true;
   try {
     const checkAdmin = auth.userRole === 'admin';
@@ -26,13 +33,13 @@ const fetchProjects = async () => {
 
     // Filtrer par user_id sauf si admin
     if (!checkAdmin) {
-      query = query.eq('user_id', auth.user?.id);
+      query = query.eq('user_id', auth.user.id);
     }
 
     const { data, error } = await query;
     
     if (error) throw error;
-    projects.value = data;
+    projects.value = data || [];
   } catch (e) {
     console.error('Erreur chargement projets:', e);
   } finally {
@@ -128,23 +135,29 @@ const validateProject = async (id) => {
       <Column header="Documents" style="width: 20%">
         <template #body="slotProps">
           <div class="flex gap-2 flex-wrap">
-            <a v-if="slotProps.data.documents?.etude" 
-               :href="slotProps.data.documents.etude" 
+            <a v-if="slotProps.data.identification" 
+               :href="slotProps.data.identification" 
                target="_blank" 
-               title="Étude">
+               title="Identification">
               <Tag value="Etude" severity="info" icon="pi pi-file-pdf"></Tag>
             </a>
-            <a v-if="slotProps.data.documents?.convention" 
-               :href="slotProps.data.documents.convention" 
+            <a v-if="slotProps.data.convention" 
+               :href="slotProps.data.convention" 
                target="_blank" 
                title="Convention">
               <Tag value="Conv." severity="primary" icon="pi pi-file-pdf"></Tag>
             </a>
-            <a v-if="slotProps.data.documents?.convocation" 
-               :href="slotProps.data.documents.convocation" 
+            <a v-if="slotProps.data.convocation" 
+               :href="slotProps.data.convocation" 
                target="_blank" 
                title="Convocation">
               <Tag value="Convoc." severity="success" icon="pi pi-file-pdf"></Tag>
+            </a>
+            <a v-if="slotProps.data.livret" 
+               :href="slotProps.data.livret" 
+               target="_blank" 
+               title="Livret d'accueil">
+              <Tag value="Livret" severity="warning" icon="pi pi-file-pdf"></Tag>
             </a>
           </div>
         </template>

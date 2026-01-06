@@ -23,6 +23,13 @@ const totalProjects = computed(() => projects.value.length);
 
 // Charger les projets avec filtre par rôle
 const fetchProjects = async () => {
+    // Vérifier que l'utilisateur est connecté
+    if (!authStore.user?.id) {
+        console.warn('DashboardHome fetchProjects: Utilisateur non connecté, requête ignorée');
+        projectsLoading.value = false;
+        return;
+    }
+
     projectsLoading.value = true;
     try {
         const checkAdmin = authStore.userRole === 'admin';
@@ -35,12 +42,12 @@ const fetchProjects = async () => {
 
         // Filtrer par user_id sauf si admin
         if (!checkAdmin) {
-            query = query.eq('user_id', authStore.user?.id);
+            query = query.eq('user_id', authStore.user.id);
         }
 
         const { data, error } = await query;
         if (error) throw error;
-        projects.value = data;
+        projects.value = data || [];
     } catch (e) {
         console.error('Erreur chargement projets:', e);
     } finally {
