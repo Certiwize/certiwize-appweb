@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useDataStore } from '../../stores/data';
 import { useRouter, useRoute } from 'vue-router';
 // Supabase import retiré car plus besoin de charger la liste des utilisateurs
@@ -130,6 +130,11 @@ const currencyOptions = [{label: 'Euros (€)', value: 'EUR'}, {label: 'Dollars 
 const submitting = ref(false);
 const errorMsg = ref('');
 
+// Validation du formulaire
+const isFormValid = computed(() => {
+    return form.value.name?.trim() !== '';
+});
+
 // --- Actions ---
 
 
@@ -172,7 +177,7 @@ const onLogoUpload = (event) => {
             </div>
             <div class="flex gap-2">
                 <Button :label="$t('tiers.cancel')" severity="secondary" @click="router.back()" />
-                <Button :label="isEditing ? $t('tiers.save_modifications') : $t('tiers.create')" icon="pi pi-check" :loading="submitting" @click="handleSubmit" />
+                <Button :label="isEditing ? $t('tiers.save_modifications') : $t('tiers.create')" icon="pi pi-check" :loading="submitting" :disabled="!isFormValid" @click="handleSubmit" />
             </div>
         </div>
 

@@ -22,6 +22,18 @@ const pdfUrl = ref(null); // Si rempli, on affiche le PDF
 const submitting = ref(false);
 const isEditMode = computed(() => !!route.params.id);
 
+// Validation du formulaire
+const isFormValid = computed(() => {
+    return form.value.titre?.trim() !== '' &&
+           form.value.public_vise?.trim() !== '' &&
+           form.value.prerequis?.trim() !== '' &&
+           form.value.objc_pedagq?.trim() !== '' &&
+           form.value.duree?.trim() !== '' &&
+           form.value.lieu?.trim() !== '' &&
+           form.value.prgm?.trim() !== '' &&
+           form.value.moyens_pedagq?.trim() !== '';
+});
+
 // Formulaire mappé sur vos balises
 const form = ref({
     titre: '',
@@ -38,7 +50,16 @@ const form = ref({
     mail: '',
     tarif: 0,
     ref_handi: '',
-    prgm: '', // Programme détaillé
+    prgm: `1er Jour :
+I. Clarifier le rôle du formateur
+
+Workshop 1 :
+
+- Objectif :
+
+2ème Jour : ...
+`,
+
     moyens_pedagq: '',
     modalités_eval: ''
 });
@@ -139,64 +160,64 @@ const resetForm = () => {
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2">
-                        <label class="font-semibold block mb-2">Titre de la formation {titre}</label>
+                        <label class="font-semibold block mb-2">Titre de la formation</label>
                         <InputText v-model="form.titre" class="w-full text-lg" placeholder="Ex: Habilitation Électrique B1/B2V" required />
                     </div>
                     <div>
-                        <label class="block mb-2">Date de mise à jour {maj}</label>
+                        <label class="block mb-2">Date de mise à jour</label>
                         <Calendar v-model="form.maj" dateFormat="dd/mm/yy" showIcon class="w-full" />
                     </div>
                      <div>
-                        <label class="block mb-2">Lieu {lieu}</label>
+                        <label class="block mb-2">Lieu</label>
                         <InputText v-model="form.lieu" class="w-full" placeholder="Ex: Paris / Distanciel" />
                     </div>
                 </div>
 
                 <div class="p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                        <label class="block mb-2 text-sm">Durée {duree}</label>
+                        <label class="block mb-2 text-sm">Durée</label>
                         <InputText v-model="form.duree" class="w-full" placeholder="Ex: 14 heures" />
                     </div>
                     <div>
-                        <label class="block mb-2 text-sm">Dates {dates}</label>
+                        <label class="block mb-2 text-sm">Dates</label>
                         <InputText v-model="form.dates" class="w-full" placeholder="Ex: Du 12 au 14 Mars" />
                     </div>
                     <div>
-                        <label class="block mb-2 text-sm">Horaires {horaires}</label>
+                        <label class="block mb-2 text-sm">Horaires</label>
                         <InputText v-model="form.horaires" class="w-full" />
                     </div>
                     <div>
-                        <label class="block mb-2 text-sm">Tarif {tarif}</label>
+                        <label class="block mb-2 text-sm">Tarif</label>
                         <InputNumber v-model="form.tarif" mode="currency" currency="EUR" class="w-full" />
                     </div>
                     <div>
-                        <label class="block mb-2 text-sm">Groupe Max {grp_max}</label>
+                        <label class="block mb-2 text-sm">Groupe Max</label>
                         <InputNumber v-model="form.grp_max" showButtons :min="1" class="w-full" />
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2">
-                        <label class="font-semibold block mb-2">Public visé {public_vise}</label>
+                        <label class="font-semibold block mb-2">Public visé</label>
                         <Textarea v-model="form.public_vise" rows="2" class="w-full" />
                     </div>
                     <div class="md:col-span-2">
-                        <label class="font-semibold block mb-2">Prérequis {prerequis}</label>
+                        <label class="font-semibold block mb-2">Prérequis</label>
                         <Textarea v-model="form.prerequis" rows="2" class="w-full" />
                     </div>
                     <div class="md:col-span-2">
-                        <label class="font-semibold block mb-2">Objectifs Pédagogiques {objc_pedagq}</label>
+                        <label class="font-semibold block mb-2">Objectifs Pédagogiques</label>
                         <Textarea v-model="form.objc_pedagq" rows="4" class="w-full" />
                     </div>
                     <div class="md:col-span-2">
-                        <label class="font-semibold block mb-2">Programme Détaillé {prgm}</label>
+                        <label class="font-semibold block mb-2">Programme Détaillé</label>
                         <Textarea v-model="form.prgm" rows="6" class="w-full" placeholder="Détaillez les modules..." />
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="font-semibold block mb-2">Moyens Pédagogiques {moyens_pedagq}</label>
+                        <label class="font-semibold block mb-2">Moyens Pédagogiques</label>
                         <Textarea v-model="form.moyens_pedagq" rows="3" class="w-full" />
                     </div>
                     <div>
@@ -207,15 +228,15 @@ const resetForm = () => {
 
                 <div class="border-t pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block mb-2">Contact / Numéro {num}</label>
+                        <label class="block mb-2">Contact / Numéro</label>
                         <InputText v-model="form.num" class="w-full" />
                     </div>
                     <div>
-                        <label class="block mb-2">Email Contact {mail}</label>
+                        <label class="block mb-2">Email Contact</label>
                         <InputText v-model="form.mail" class="w-full" />
                     </div>
                     <div class="md:col-span-2">
-                        <label class="font-semibold block mb-2">Référent Handicap {ref_handi}</label>
+                        <label class="font-semibold block mb-2">Référent Handicap</label>
                         <Textarea v-model="form.ref_handi" rows="2" class="w-full" />
                     </div>
                 </div>
@@ -226,8 +247,13 @@ const resetForm = () => {
                         icon="pi pi-file-pdf" 
                         size="large" 
                         :loading="trainingStore.loading" 
+                        :disabled="!isFormValid || trainingStore.loading"
                         @click="handleGenerate" 
                     />
+                    <p v-if="!isFormValid" class="text-sm text-orange-500 mt-2">
+                        <i class="pi pi-exclamation-triangle mr-1"></i>
+                        Veuillez remplir tous les champs obligatoires avant de générer.
+                    </p>
                 </div>
             </form>
         </div>

@@ -8,14 +8,24 @@ export const useTrainingStore = defineStore('training', () => {
     const formations = ref([]);
     const auth = useAuthStore();
 
-    // Récupérer toutes les formations de l'utilisateur
+    // Récupérer les formations (filtrées par user_id sauf si admin)
     const fetchFormations = async () => {
         loading.value = true;
         try {
-            const { data, error: err } = await supabase
+            const checkAdmin = auth.userRole === 'admin';
+            console.log("Récupération formations... (userRole:", auth.userRole, ")");
+
+            let query = supabase
                 .from('formations')
                 .select('*')
                 .order('updated_at', { ascending: false });
+
+            // Filtrer par user_id sauf si admin
+            if (!checkAdmin) {
+                query = query.eq('user_id', auth.user?.id);
+            }
+
+            const { data, error: err } = await query;
 
             if (err) throw err;
             formations.value = data;

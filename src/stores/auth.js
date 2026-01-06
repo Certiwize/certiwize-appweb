@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { supabase } from '../supabase';
 import { useRouter } from 'vue-router';
 
@@ -7,19 +7,56 @@ export const useAuthStore = defineStore('auth', () => {
   const user = ref(null);
   const session = ref(null);
   const initialized = ref(false);
+  const userRole = ref('user'); // 'admin' ou 'user'
   const router = useRouter();
+
+  // Computed pour vérifier si l'utilisateur est admin
+  const isAdmin = computed(() => userRole.value === 'admin');
+
+  // Charger le rôle depuis la table profiles
+  const fetchUserRole = async (userId) => {
+    console.log('🔐 Tentative de récupération du rôle pour userId:', userId);
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', userId)
+        .single();
+
+      console.log('📊 Résultat profiles:', { data, error });
+
+      if (error) {
+        console.warn('⚠️ Profil non trouvé, rôle par défaut: user. Erreur:', error.message);
+        userRole.value = 'user';
+      } else {
+        userRole.value = data.role || 'user';
+        console.log('✅ Rôle trouvé:', data.role);
+      }
+      console.log('🎭 Rôle final assigné:', userRole.value);
+    } catch (err) {
+      console.error('❌ Erreur récup. rôle:', err);
+      userRole.value = 'user';
+    }
+  };
 
   const initializeAuth = async () => {
     const { data } = await supabase.auth.getSession();
     if (data.session) {
       session.value = data.session;
       user.value = data.session.user;
+      await fetchUserRole(data.session.user.id);
     }
-    initialized.value = true; // Marquer comme initialisé
+    initialized.value = true;
 
-    supabase.auth.onAuthStateChange((event, _session) => {
+    supabase.auth.onAuthStateChange(async (event, _session) => {
       session.value = _session;
       user.value = _session ? _session.user : null;
+
+      if (_session?.user) {
+        await fetchUserRole(_session.user.id);
+      } else {
+        userRole.value = 'user';
+      }
 
       if (event === 'PASSWORD_RECOVERY') {
         router.push('/update-password');
@@ -89,6 +126,8 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     session,
     initialized,
+    userRole,
+    isAdmin,
     initializeAuth,
     signIn,
     signUp,

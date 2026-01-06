@@ -41,21 +41,30 @@ export const useDataStore = defineStore('data', () => {
 
     const auth = useAuthStore();
 
-    // 1. Récupérer tous les tiers de l'utilisateur
+    // 1. Récupérer les tiers (filtrés par user_id sauf si admin)
     const fetchTiers = async () => {
         loading.value = true;
         error.value = null;
         try {
-            console.log("Tentative de récupération des tiers...");
+            // Attendre un peu si le rôle n'est pas encore chargé
+            const checkAdmin = auth.userRole === 'admin';
+            console.log("Récupération des tiers... (userRole:", auth.userRole, ", isAdmin:", checkAdmin, ")");
 
-            const { data, error: err } = await supabase
+            let query = supabase
                 .from('tiers')
                 .select('*')
                 .order('created_at', { ascending: false });
 
+            // Filtrer par user_id sauf si admin
+            if (!checkAdmin) {
+                query = query.eq('user_id', auth.user?.id);
+            }
+
+            const { data, error: err } = await query;
+
             if (err) throw err;
 
-            console.log("Données reçues de Supabase :", data); // Vérifie si ce tableau est vide
+            console.log("Tiers récupérés:", data?.length);
             tiers.value = data;
 
             // Mise à jour safe des stats

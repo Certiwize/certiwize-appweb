@@ -1,9 +1,10 @@
 <script setup>
-import { onMounted, computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useDataStore } from '../../stores/data';
 import { useTrainingStore } from '../../stores/training';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from '../../stores/auth';
+import { supabase } from '../../supabase';
 import Button from 'primevue/button';
 
 const authStore = useAuthStore();
@@ -12,8 +13,40 @@ const trainingStore = useTrainingStore();
 const { stats, loading } = storeToRefs(dataStore);
 const { formations } = storeToRefs(trainingStore);
 
-// Calculer le nombre total de formations
+// Projets réels
+const projects = ref([]);
+const projectsLoading = ref(true);
+
+// Stats calculées
 const totalFormations = computed(() => formations.value.length);
+const totalProjects = computed(() => projects.value.length);
+
+// Charger les projets avec filtre par rôle
+const fetchProjects = async () => {
+    projectsLoading.value = true;
+    try {
+        const checkAdmin = authStore.userRole === 'admin';
+        console.log("DashboardHome projets... (userRole:", authStore.userRole, ")");
+
+        let query = supabase
+            .from('projects')
+            .select('*')
+            .order('updated_at', { ascending: false });
+
+        // Filtrer par user_id sauf si admin
+        if (!checkAdmin) {
+            query = query.eq('user_id', authStore.user?.id);
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+        projects.value = data;
+    } catch (e) {
+        console.error('Erreur chargement projets:', e);
+    } finally {
+        projectsLoading.value = false;
+    }
+};
 
 onMounted(() => {
     // Charger les tiers pour calculer les stats
@@ -22,6 +55,8 @@ onMounted(() => {
     }
     // Charger les vraies formations
     trainingStore.fetchFormations();
+    // Charger les vrais projets
+    fetchProjects();
 });
 </script>
 
@@ -49,7 +84,8 @@ onMounted(() => {
 
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border-l-4 border-orange-500">
                 <div class="text-gray-500 mb-1 text-sm font-medium">{{ $t('dashboard.active_projects') }}</div>
-                <div class="text-3xl font-bold">{{ stats.activeProjects }}</div> 
+                <div class="text-3xl font-bold" v-if="!projectsLoading">{{ totalProjects }}</div>
+                <div class="text-3xl font-bold animate-pulse" v-else>...</div>
             </div>
         </div>
 
@@ -85,23 +121,25 @@ onMounted(() => {
             <!-- Derniers Projets -->
             <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
                 <h3 class="font-bold text-gray-800 dark:text-gray-100 mb-4 border-b pb-2">{{ $t('dashboard.recent_projects') }}</h3>
-                <ul class="space-y-3">
-                    <li v-for="project in dataStore.projects.slice(0, 3)" :key="project.id" class="flex justify-between items-center text-sm">
+                <ul class="space-y-3" v-if="!projectsLoading">
+                    <li v-for="project in projects.slice(0, 3)" :key="project.id" class="flex justify-between items-center text-sm">
                         <span class="font-medium text-gray-700 dark:text-gray-300">{{ project.name }}</span>
-                        <span class="text-xs text-orange-600 bg-orange-50 dark:bg-orange-900/30 px-2 py-1 rounded">{{ project.status }}</span>
+                        <span class="text-xs text-orange-600 bg-orange-50 dark:bg-orange-900/30 px-2 py-1 rounded">{{ project.status || 'Brouillon' }}</span>
                     </li>
+                    <li v-if="projects.length === 0" class="text-gray-400 text-sm italic">Aucun projet créé</li>
                 </ul>
+                <div v-else class="text-sm text-gray-400">{{ $t('dashboard.loading') }}</div>
             </div>
         </div>
 
         <div class="bg-blue-50 dark:bg-gray-800/50 p-6 rounded-xl border border-blue-100 dark:border-gray-700">
-            <h3 class="font-bold mb-2">{{ $t('dashboard.quick_action_title') }}</h3>
-            <div class="flex gap-4">
-                <router-link to="/dashboard/tiers/create" class="text-primary hover:underline font-medium">
-                    {{ $t('dashboard.add_client') }}
+            <h3 class="font-bold mb-4">Action rapide</h3>
+            <div class="flex flex-wrap gap-3">
+                <router-link to="/dashboard/tiers/create">
+                    <Button label="Nouveau Client" icon="pi pi-user-plus" />
                 </router-link>
-                <router-link to="/dashboard/catalogue" class="text-primary hover:underline font-medium">
-                     {{ $t('dashboard.launch_automation') }}
+                <router-link to="/dashboard/catalogue/create">
+                    <Button label="Nouvelle Formation" icon="pi pi-book" />
                 </router-link>
                 <router-link to="/dashboard/projets/create">
                     <Button label="Nouveau Projet" icon="pi pi-plus" />
