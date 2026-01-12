@@ -165,6 +165,10 @@ const verifyTva = () => {
 const onLogoUpload = (event) => {
     console.log("Fichier logo sélectionné:", event.files[0]);
 };
+
+const goBack = () => {
+    window.location.href = '/dashboard/tiers';
+};
 </script>
 
 <template>
@@ -172,11 +176,11 @@ const onLogoUpload = (event) => {
         
         <div class="bg-white dark:bg-gray-800 p-6 shadow-sm sticky top-0 z-10 mb-6 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
             <div class="flex items-center gap-4">
-                <Button icon="pi pi-arrow-left" text rounded @click="router.back()" :aria-label="$t('tiers.cancel')" />
+                <Button icon="pi pi-arrow-left" text rounded @click="goBack" :aria-label="$t('tiers.cancel')" />
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ isEditing ? $t('tiers.edit_title') : $t('tiers.new_title') }}</h1>
             </div>
             <div class="flex gap-2">
-                <Button :label="$t('tiers.cancel')" severity="secondary" @click="router.back()" />
+                <Button :label="$t('tiers.cancel')" severity="secondary" @click="goBack" />
                 <Button :label="isEditing ? $t('tiers.save_modifications') : $t('tiers.create')" icon="pi pi-check" :loading="submitting" :disabled="!isFormValid" @click="handleSubmit" />
             </div>
         </div>

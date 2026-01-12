@@ -7,31 +7,47 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
+import Dialog from 'primevue/dialog';
+import SlowLoadingDialog from '../../components/dashboard/SlowLoadingDialog.vue';
 
 const router = useRouter();
 const auth = useAuthStore();
 const projects = ref([]);
 const loading = ref(true);
+const showSlowLoading = ref(false);
+
+const reloadPage = () => {
+    window.location.reload();
+};
+
+const hardNavigate = (path) => {
+    window.location.href = path;
+};
 
 const fetchProjects = async () => {
-  // Vérifier que l'utilisateur est connecté
   if (!auth.user?.id) {
-    console.warn('fetchProjects: Utilisateur non connecté, requête ignorée');
     loading.value = false;
     return;
   }
 
   loading.value = true;
+  showSlowLoading.value = false;
+
+  // Timer pour afficher la popup après 5s si toujours en chargement
+  const slowTimer = setTimeout(() => {
+    if (loading.value) {
+      showSlowLoading.value = true;
+    }
+  }, 5000);
+
   try {
     const checkAdmin = auth.userRole === 'admin';
-    console.log("Récupération projets... (userRole:", auth.userRole, ")");
-
+    
     let query = supabase
       .from('projects')
       .select('*, profiles(email)')
       .order('updated_at', { ascending: false });
 
-    // Filtrer par user_id sauf si admin
     if (!checkAdmin) {
       query = query.eq('user_id', auth.user.id);
     }
@@ -43,7 +59,9 @@ const fetchProjects = async () => {
   } catch (e) {
     console.error('Erreur chargement projets:', e);
   } finally {
+    clearTimeout(slowTimer);
     loading.value = false;
+    showSlowLoading.value = false;
   }
 };
 
@@ -106,9 +124,26 @@ const validateProject = async (id) => {
 
 <template>
   <div class="p-8">
+    <!-- Documents de référence -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm mb-8 border-l-4 border-blue-500">
+      <h2 class="text-lg font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+        <i class="pi pi-info-circle"></i> Documents de Référence
+      </h2>
+      <div class="flex flex-wrap gap-4">
+        <a href="/CGV_Formation.pdf" download class="no-underline">
+          <Button label="Conditions Générales de Vente" icon="pi pi-file-pdf" severity="secondary" outlined />
+        </a>
+        <a href="/Reglement_Interieur.pdf" download class="no-underline">
+          <Button label="Règlement Intérieur" icon="pi pi-file-pdf" severity="secondary" outlined />
+        </a>
+      </div>
+    </div>
+
+    <SlowLoadingDialog :visible="showSlowLoading" />
+
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">Gestion des Projets</h1>
-      <Button label="Nouveau Projet" icon="pi pi-plus" @click="router.push('/dashboard/projets/create')" />
+      <Button label="Nouveau Projet" icon="pi pi-plus" @click="hardNavigate('/dashboard/projets/create')" />
     </div>
 
     <DataTable :value="projects" :loading="loading" paginator :rows="10" 

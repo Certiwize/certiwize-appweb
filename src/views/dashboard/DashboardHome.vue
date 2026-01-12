@@ -6,6 +6,7 @@ import { storeToRefs } from 'pinia';
 import { useAuthStore } from '../../stores/auth';
 import { supabase } from '../../supabase';
 import Button from 'primevue/button';
+import SlowLoadingDialog from '../../components/dashboard/SlowLoadingDialog.vue';
 
 const authStore = useAuthStore();
 const dataStore = useDataStore();
@@ -55,20 +56,39 @@ const fetchProjects = async () => {
     }
 };
 
+
+
+const showSlowLoading = ref(false);
+
 onMounted(() => {
-    // Charger les tiers pour calculer les stats
-    if (dataStore.tiers.length === 0) {
-        dataStore.fetchTiers();
-    }
-    // Charger les vraies formations
-    trainingStore.fetchFormations();
-    // Charger les vrais projets
-    fetchProjects();
+    // Timer pour afficher la popup après 3s si toujours en chargement
+    loading.value = true;
+    showSlowLoading.value = false;
+    
+    const slowTimer = setTimeout(() => {
+        if (loading.value || projectsLoading.value) { // Check both
+            showSlowLoading.value = true;
+        }
+    }, 3000);
+
+    // Note: The individual fetches will eventually set their loading states to false
+    // We ideally should have a global loading state or wait for promises, but 
+    // since fetches are async fired in onMounted, we just let the timer run.
+    // A better approach is to wrap them:
+    Promise.all([
+        dataStore.tiers.length === 0 ? dataStore.fetchTiers() : Promise.resolve(),
+        trainingStore.fetchFormations(),
+        fetchProjects()
+    ]).finally(() => {
+        clearTimeout(slowTimer);
+        showSlowLoading.value = false;
+    });
 });
 </script>
 
 <template>
     <div class="space-y-8">
+        <SlowLoadingDialog :visible="showSlowLoading" />
         <div>
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
                 {{ $t('dashboard.hello') }}, {{ authStore.user?.user_metadata?.full_name || 'Utilisateur' }} 👋

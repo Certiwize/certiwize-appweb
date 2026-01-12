@@ -6,11 +6,13 @@ import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
 import Message from 'primevue/message';
 import Textarea from 'primevue/textarea';
+import SlowLoadingDialog from '../../components/dashboard/SlowLoadingDialog.vue'; // Ajout
 
 const auth = useAuthStore();
 const selectedType = ref(null);
 const file = ref(null);
 const loading = ref(false);
+const showSlowLoading = ref(false); // Ajout
 const success = ref(false);
 const error = ref(null);
 const analysisResult = ref('');
@@ -46,6 +48,14 @@ const sendDocument = async () => {
     error.value = null;
     success.value = false;
     analysisResult.value = '';
+    showSlowLoading.value = false;
+
+    // Timer pour popup si traitement long (n8n peut prendre du temps)
+    const slowTimer = setTimeout(() => {
+        if (loading.value) {
+            showSlowLoading.value = true;
+        }
+    }, 3000);
 
     try {
         const formData = new FormData();
@@ -79,13 +89,16 @@ const sendDocument = async () => {
         console.error('Erreur analyze:', err);
         error.value = err.message;
     } finally {
+        clearTimeout(slowTimer);
         loading.value = false;
+        showSlowLoading.value = false;
     }
 };
 </script>
 
 <template>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+        <SlowLoadingDialog :visible="showSlowLoading" />
         <!-- Colonne Gauche : Upload -->
         <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm h-fit">
             <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Analyse de Document</h1>

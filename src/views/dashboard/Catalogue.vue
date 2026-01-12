@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useTrainingStore } from '../../stores/training';
 import { useAuthStore } from '../../stores/auth';
@@ -8,14 +8,35 @@ import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Tag from 'primevue/tag';
+import SlowLoadingDialog from '../../components/dashboard/SlowLoadingDialog.vue';
 
 const router = useRouter();
 const trainingStore = useTrainingStore();
 const authStore = useAuthStore();
 const { formations, loading } = storeToRefs(trainingStore);
 
-onMounted(() => {
-  trainingStore.fetchFormations();
+const showSlowLoading = ref(false);
+
+const hardNavigate = (path) => {
+    window.location.href = path;
+};
+
+onMounted(async () => {
+  loading.value = true;
+  showSlowLoading.value = false;
+
+  const slowTimer = setTimeout(() => {
+    if (loading.value) {
+      showSlowLoading.value = true;
+    }
+  }, 3000);
+
+  try {
+    await trainingStore.fetchFormations();
+  } finally {
+    clearTimeout(slowTimer);
+    showSlowLoading.value = false;
+  }
 });
 
 const confirmDelete = (id) => {
@@ -25,7 +46,7 @@ const confirmDelete = (id) => {
 };
 
 const editFormation = (id) => {
-  router.push(`/dashboard/catalogue/edit/${id}`);
+  hardNavigate(`/dashboard/catalogue/edit/${id}`);
 };
 
 const viewPdf = (pdfUrl) => {
@@ -42,9 +63,11 @@ const formatDate = (date) => {
 
 <template>
   <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+    <SlowLoadingDialog :visible="showSlowLoading" />
+    
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
       <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Catalogue de Formation</h1>
-      <Button label="Nouvelle Formation" icon="pi pi-plus" @click="router.push('/dashboard/catalogue/create')" />
+      <Button label="Nouvelle Formation" icon="pi pi-plus" @click="hardNavigate('/dashboard/catalogue/create')" />
     </div>
 
     <DataTable :value="formations" :loading="loading" paginator :rows="10" tableStyle="min-width: 50rem"

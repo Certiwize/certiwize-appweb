@@ -10,6 +10,7 @@ import InputText from 'primevue/inputtext';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '../../stores/auth';
+import SlowLoadingDialog from '../../components/dashboard/SlowLoadingDialog.vue';
 
 const router = useRouter();
 const dataStore = useDataStore();
@@ -18,9 +19,30 @@ const { tiers, loading } = storeToRefs(dataStore); // Réactivité directe
 const filters = ref({});
 const { t } = useI18n();
 
+const showSlowLoading = ref(false);
+
+const hardNavigate = (path) => {
+    window.location.href = path;
+};
+
 // Chargement initial des données
-onMounted(() => {
-    dataStore.fetchTiers();
+onMounted(async () => {
+    loading.value = true;
+    showSlowLoading.value = false;
+
+    // Timer pour afficher la popup après 3s si toujours en chargement
+    const slowTimer = setTimeout(() => {
+        if (loading.value) {
+            showSlowLoading.value = true;
+        }
+    }, 3000);
+
+    try {
+        await dataStore.fetchTiers();
+    } finally {
+        clearTimeout(slowTimer);
+        showSlowLoading.value = false;
+    }
 });
 
 const getSeverity = (state) => {
@@ -39,7 +61,7 @@ const confirmDelete = (id) => {
 };
 
 const editTier = (id) => {
-    router.push(`/dashboard/tiers/edit/${id}`);
+    hardNavigate(`/dashboard/tiers/edit/${id}`);
 };
 </script>
 

@@ -127,6 +127,10 @@ const resetForm = () => {
         pdfUrl.value = null;
     }
 };
+
+const goBack = () => {
+    window.location.href = '/dashboard/catalogue';
+};
 </script>
 
 <template>
@@ -136,7 +140,7 @@ const resetForm = () => {
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
                 {{ isEditMode ? 'Modifier la Formation' : 'Créer une Formation' }}
             </h1>
-            <Button label="Retour Catalogue" text @click="router.push('/dashboard/catalogue')" />
+            <Button label="Retour Catalogue" text @click="goBack" />
         </div>
 
         <div v-if="pdfUrl" class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg h-[80vh] flex flex-col">

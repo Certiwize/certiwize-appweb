@@ -218,6 +218,10 @@ const submitForValidation = async () => {
         await projectStore.updateStatus('En attente');
     }
 };
+
+const goBack = () => {
+    window.location.href = '/dashboard/projets';
+};
 </script>
 
 <template>
@@ -231,7 +235,7 @@ const submitForValidation = async () => {
                 </h1>
             </div>
             <div class="flex gap-2">
-                <Button label="Retour" severity="secondary" text @click="router.push('/dashboard/projets')" />
+                <Button label="Retour" severity="secondary" text @click="goBack" />
                 <Button v-if="status === 'Brouillon'" label="Sauvegarder" icon="pi pi-save" @click="save" />
             </div>
         </div>
