@@ -69,7 +69,7 @@ const editTier = (id) => {
     <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
         <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('tiers.list_title') }}</h1>
-            <Button :label="$t('tiers.new_client_btn')" icon="pi pi-plus" @click="router.push('/dashboard/tiers/create')" />
+            <Button :label="$t('tiers.new_client_btn')" icon="pi pi-plus" @click="hardNavigate('/dashboard/tiers/create')" />
         </div>
 
         <DataTable :value="tiers" :loading="loading" paginator :rows="10" tableStyle="min-width: 50rem"

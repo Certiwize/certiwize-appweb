@@ -51,11 +51,14 @@ const sendDocument = async () => {
     showSlowLoading.value = false;
 
     // Timer pour popup si traitement long (n8n peut prendre du temps)
+    // Désactivé pour l'analyse de doc (webhook)
+    /*
     const slowTimer = setTimeout(() => {
         if (loading.value) {
             showSlowLoading.value = true;
         }
     }, 3000);
+    */
 
     try {
         const formData = new FormData();
@@ -89,7 +92,7 @@ const sendDocument = async () => {
         console.error('Erreur analyze:', err);
         error.value = err.message;
     } finally {
-        clearTimeout(slowTimer);
+        // clearTimeout(slowTimer);
         loading.value = false;
         showSlowLoading.value = false;
     }
@@ -113,8 +116,8 @@ const sendDocument = async () => {
 
                 <!-- Upload Fichier (Drag & Drop) -->
                 <div class="flex flex-col gap-2">
-                    <label class="font-medium text-gray-700 dark:text-gray-300">Document (PDF, JPG, PNG)</label>
-                    <FileUpload name="docs[]" url="/api/upload" @select="onFileSelect" :maxFileSize="10000000" accept=".pdf,.jpg,.jpeg,.png"
+                    <label class="font-medium text-gray-700 dark:text-gray-300">Document (PDF, DOCX, JPG, PNG)</label>
+                    <FileUpload name="docs[]" url="/api/upload" @select="onFileSelect" :maxFileSize="10000000" accept=".pdf,.docx,.jpg,.jpeg,.png"
                         :auto="false" :customUpload="true" @uploader="() => {}"
                         chooseLabel="Choisir ou Glisser" cancelLabel="Annuler" 
                         class="w-full" :disabled="loading">

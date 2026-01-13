@@ -139,6 +139,19 @@ const validateProject = async (id) => {
       </div>
     </div>
 
+    <!-- Enquêtes de satisfaction -->
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm mb-8 border-l-4 border-green-500">
+      <h2 class="text-lg font-bold mb-2 text-gray-900 dark:text-white flex items-center gap-2">
+        <i class="pi pi-check-circle"></i> Enquêtes de Satisfaction
+      </h2>
+      <p class="text-gray-600 dark:text-gray-400 mb-4">
+        Enquêtes de satisfaction à envoyer aux stagiaires/apprenants.
+      </p>
+      <a href="/Enquetes_Satisfaction.zip" download class="no-underline">
+        <Button label="Télécharger les enquêtes (.zip)" icon="pi pi-download" severity="success" outlined />
+      </a>
+    </div>
+
     <SlowLoadingDialog :visible="showSlowLoading" />
 
     <div class="flex justify-between items-center mb-6">

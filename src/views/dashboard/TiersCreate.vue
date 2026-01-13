@@ -40,6 +40,7 @@ const form = ref({
     code_fournisseur: '',
     state: 'Ouvert',
     barcode: '',
+    is_trainer: false, // Ajout champ Formateur
     
     // 3. Coordonnées
     address: '',
@@ -166,6 +167,9 @@ const onLogoUpload = (event) => {
     console.log("Fichier logo sélectionné:", event.files[0]);
 };
 
+// ... existing code ...
+
+
 const goBack = () => {
     window.location.href = '/dashboard/tiers';
 };
@@ -208,6 +212,11 @@ const goBack = () => {
                                 <Checkbox v-model="form.tier_type" :inputId="type" :value="type" />
                                 <label :for="type" class="ml-2 cursor-pointer select-none">{{ type }}</label>
                             </div>
+                            <!-- Case Formateur séparée -->
+                            <div class="flex items-center ml-4 pl-4 border-l border-gray-300 dark:border-gray-600">
+                                <Checkbox v-model="form.is_trainer" :binary="true" inputId="is_trainer" />
+                                <label for="is_trainer" class="ml-2 cursor-pointer select-none font-bold text-gray-700 dark:text-gray-300">Formateur</label>
+                            </div>
                         </div>
                     </div>
 
@@ -241,7 +250,7 @@ const goBack = () => {
                     
                     <div class="flex flex-col gap-2">
                         <label class="text-sm font-medium">{{ $t('tiers.contact.zip') }}</label>
-                        <InputText v-model="form.zip_code" />
+                        <InputText v-model="form.zip_code" maxlength="5" />
                     </div>
                     <div class="flex flex-col gap-2">
                         <label class="text-sm font-medium">{{ $t('tiers.contact.city') }}</label>
@@ -291,9 +300,9 @@ const goBack = () => {
                     <AccordionHeader>{{ $t('tiers.legal.title') }}</AccordionHeader>
                     <AccordionContent>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
-                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.siren') }}</label><InputText v-model="form.siren" /></div>
-                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.siret') }}</label><InputText v-model="form.siret" /></div>
-                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.naf') }}</label><InputText v-model="form.naf_ape" /></div>
+                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.siren') }} (9 max)</label><InputText v-model="form.siren" maxlength="9" /></div>
+                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.siret') }} (14 max)</label><InputText v-model="form.siret" maxlength="14" /></div>
+                            <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.naf') }}</label><InputText v-model="form.naf_ape" maxlength="5" /></div>
                             <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.rcs') }}</label><InputText v-model="form.rcs_rm" /></div>
                             <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.eori') }}</label><InputText v-model="form.eori_number" /></div>
                             <div class="flex flex-col gap-2"><label class="text-sm font-medium">{{ $t('tiers.legal.rna') }}</label><InputText v-model="form.rna_number" /></div>

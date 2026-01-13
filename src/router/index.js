@@ -92,6 +92,11 @@ const routes = [
     path: '/dashboard/catalogue/edit/:id',
     component: () => import('../views/dashboard/TrainingCreate.vue'),
     meta: { requiresAuth: true }
+  },
+  { 
+    path: '/dashboard/company', 
+    component: () => import('../views/dashboard/SettingsCompany.vue'),
+    meta: { requiresAuth: true }
   }
 ];
 

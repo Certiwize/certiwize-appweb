@@ -118,6 +118,14 @@ const toggleProfileMenu = (event) => {
             >
               {{ t('nav.dashboard') }}
             </router-link>
+
+            <router-link 
+              to="/dashboard/company" 
+              class="flex items-center gap-2 text-gray-700 dark:text-white hover:text-primary transition font-medium mr-2"
+            >
+              <i class="pi pi-building"></i>
+              <span>Ma Société</span>
+            </router-link>
             
             <!-- Bouton Profil avec menu déroulant -->
             <button 
@@ -128,6 +136,7 @@ const toggleProfileMenu = (event) => {
             </button>
             <Menu ref="profileMenu" :model="profileMenuItems" popup />
           </div>
+
 
           <div class="flex items-center border-l pl-4 ml-4 space-x-2 border-gray-300 dark:border-gray-600">
             <button 
