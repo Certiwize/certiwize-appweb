@@ -1,16 +1,18 @@
 <script setup>
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 const route = useRoute();
+const { t } = useI18n();
 
 const navigation = [
-  { name: 'Accueil', href: '/dashboard', icon: 'pi-home' },
-  { name: 'Tiers', href: '/dashboard/tiers', icon: 'pi-users' },
-  { name: 'Catalogue', href: '/dashboard/catalogue', icon: 'pi-book' },
-  { name: 'Projets', href: '/dashboard/projets', icon: 'pi-briefcase' },
-  { name: 'Analyse documentaire', href: '/dashboard/analyse-doc', icon: 'pi-search' },
-  { name: 'Manuel Qualiopi', href: '/dashboard/manuel-qualiopi', icon: 'pi-book' },
+  { name: 'dashboard', href: '/dashboard', icon: 'pi-home' },
+  { name: 'tiers', href: '/dashboard/tiers', icon: 'pi-users' },
+  { name: 'catalogue', href: '/dashboard/catalogue', icon: 'pi-book' },
+  { name: 'projects', href: '/dashboard/projets', icon: 'pi-briefcase' },
+  { name: 'analysis', href: '/dashboard/analyse-doc', icon: 'pi-search' },
+  { name: 'manual', href: '/dashboard/manuel-qualiopi', icon: 'pi-book' },
 ];
 
 const isCurrent = (path) => {
@@ -40,7 +42,7 @@ const isCurrent = (path) => {
         ]"
       >
         <i class="pi" :class="[item.icon, isCurrent(item.href) ? 'text-white' : 'text-slate-400 group-hover:text-white']"></i>
-        <span class="font-medium">{{ item.name }}</span>
+        <span class="font-medium">{{ t(`nav.${item.name}`) }}</span>
       </a>
     </nav>
     

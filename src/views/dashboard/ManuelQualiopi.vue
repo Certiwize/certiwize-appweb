@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { supabase } from '../../supabase';
 import Button from 'primevue/button';
 import TabView from 'primevue/tabview';
@@ -8,6 +9,7 @@ import Card from 'primevue/card';
 import Tag from 'primevue/tag';
 import InputText from 'primevue/inputtext';
 
+const { t } = useI18n();
 const resources = ref([]);
 const loading = ref(true);
 const searchQuery = ref('');
@@ -85,29 +87,29 @@ onMounted(() => {
         <div v-if="error" class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
             <div class="flex items-center gap-2 text-red-800 dark:text-red-200">
                 <i class="pi pi-exclamation-triangle"></i>
-                <span class="font-semibold">Erreur de chargement:</span>
+                <span class="font-semibold">{{ t('manual.error_loading') }}</span>
                 <span>{{ error }}</span>
             </div>
         </div>
 
         <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Manuel Qualité & Outils</h1>
-                <p class="text-gray-500">Documents classés par indicateurs Qualiopi.</p>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{{ t('manual.title') }}</h1>
+                <p class="text-gray-500">{{ t('manual.subtitle') }}</p>
             </div>
             <span class="p-input-icon-left w-full md:w-64">
                 <i class="pi pi-search" />
-                <InputText v-model="searchQuery" placeholder="Rechercher (ex: c4i17)" class="w-full" />
+                <InputText v-model="searchQuery" :placeholder="t('manual.search_placeholder')" class="w-full" />
             </span>
         </div>
 
         <TabView class="w-full">
             
-            <TabPanel header="Manuel Qualité">
-                <div v-if="loading" class="text-center py-10">Chargement des documents...</div>
+            <TabPanel :header="t('manual.tabs.quality_manual')">
+                <div v-if="loading" class="text-center py-10">{{ t('manual.loading') }}</div>
                 
                 <div v-else-if="manuels.length === 0" class="text-center py-10 text-gray-500">
-                    Aucun document trouvé.
+                    {{ t('manual.empty') }}
                 </div>
 
                 <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -133,18 +135,18 @@ onMounted(() => {
                         
                         <template #content>
                             <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 min-h-[2.5rem]">
-                                {{ doc.description || "Document de conformité Qualiopi." }}
+                                {{ doc.description || t('manual.default_desc') }}
                             </p>
                         </template>
                     </Card>
                 </div>
             </TabPanel>
 
-            <TabPanel header="Boîte à Outils (Excel)">
+            <TabPanel :header="t('manual.tabs.tools')">
                 <div class="bg-blue-50 dark:bg-gray-800 p-6 rounded-xl border border-blue-100 dark:border-gray-700">
                     <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
                         <i class="pi pi-download text-primary"></i>
-                        Fichiers Excel à télécharger
+                        {{ t('manual.tools_title') }}
                     </h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -158,7 +160,7 @@ onMounted(() => {
                                         <Tag :value="tool.code.toUpperCase()" severity="success" class="text-xs" v-if="tool.code" />
                                         <h4 class="font-semibold text-gray-900 dark:text-white">{{ tool.title }}</h4>
                                     </div>
-                                    <p class="text-xs text-gray-500">{{ tool.description || 'Format Excel (.xlsx)' }}</p>
+                                    <p class="text-xs text-gray-500">{{ tool.description || t('manual.excel_format') }}</p>
                                 </div>
                             </div>
                             <Button icon="pi pi-download" text rounded severity="secondary" @click="openFile(tool.file_url)" />

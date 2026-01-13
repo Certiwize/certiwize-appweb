@@ -5,7 +5,59 @@
     "faq": "FAQ",
     "contact": "Contact",
     "login": "Connexion",
-    "dashboard": "Espace Client"
+    "dashboard": "Tableau de bord",
+    "tiers": "Clients / Fournisseurs",
+    "catalogue": "Catalogue formation",
+    "projects": "Gestion projets",
+    "analysis": "Analyse documentaire",
+    "manual": "Manuel Qualiopi RNQ",
+    "my_company": "Ma Société"
+  },
+  "manual": {
+    "title": "Manuel Qualité & Outils",
+    "subtitle": "Documents classés par indicateurs Qualiopi.",
+    "search_placeholder": "Rechercher (ex: c4i17)",
+    "tabs": {
+      "quality_manual": "Manuel Qualité",
+      "tools": "Boîte à Outils (Excel)"
+    },
+    "loading": "Chargement des documents...",
+    "empty": "Aucun document trouvé.",
+    "default_desc": "Document de conformité Qualiopi.",
+    "tools_title": "Fichiers Excel à télécharger",
+    "excel_format": "Format Excel (.xlsx)",
+    "error_loading": "Erreur de chargement:"
+  },
+  "analysis": {
+    "title": "Analyse de Document",
+    "doc_type": "Type de document",
+    "select_type": "Sélectionnez un type",
+    "upload_label": "Document (PDF, DOCX, JPG, PNG)",
+    "choose_drop": "Choisir ou Glisser",
+    "cancel": "Annuler",
+    "drop_text": "Glissez-déposez votre fichier ici",
+    "analyze_btn": "Lancer l'analyse",
+    "success": "Analyse terminée avec succès !",
+    "result_title": "Résultat de l'analyse",
+    "analyzing": "Analyse du document en cours...",
+    "copy": "Copier",
+    "placeholder_result": "Le résultat de l'IA s'affichera ici",
+    "types": {
+      "activity_declaration": "Déclaration d'activité",
+      "qualiopi_certificate": "Certificat Qualiopi",
+      "bpf": "Bilan Pédagogique et Financier",
+      "kbis": "KBIS",
+      "training_program": "Programme de formation",
+      "attendance_sheet": "Feuille d'émargement",
+      "training_certificate": "Attestation de formation",
+      "completion_certificate": "Certificat de réalisation",
+      "training_contract": "Contrat de formation",
+      "training_convention": "Convention de formation",
+      "trainer_cv": "CV Formateur",
+      "skills_proof": "Justificatif de compétences",
+      "invoice": "Facture",
+      "internal_rules": "Règlement Intérieur"
+    }
   },
   "home": {
     "hero_title": "Automatisez votre gestion Qualiopi",
@@ -124,7 +176,69 @@
     "feature_15_benefit_1": "Sync temps réel",
     "feature_15_benefit_2": "Comptabilité automatique",
     "feature_15_benefit_3": "Rapprochements faciles",
-    "feature_15_benefit_4": "Vision financière claire"
+    "feature_15_benefit_4": "Vision financière claire",
+    "modules": {
+      "dashboard": {
+        "title": "Tableau de bord & KPI",
+        "description": "Visualisez en un coup d'œil l'activité de votre organisme de formation. Suivez les indicateurs clés (CA, nombre de stagiaires, taux de satisfaction) pour piloter votre activité.",
+        "benefits": [
+          "Vues synthétiques et graphiques",
+          "Suivi des entrées/sorties",
+          "Indicateurs Qualiopi",
+          "Alertes et notifications"
+        ]
+      },
+      "crm": {
+        "title": "Gestion des tiers (CRM)",
+        "description": "Centralisez la gestion de vos Clients, Formateurs et Fournisseurs. Une base de données unique pour retrouver facilement toutes les coordonnées et documents associés.",
+        "benefits": [
+          "Fiches détaillées (Clients, Formateurs...)",
+          "Gestion des contacts",
+          "Assignation de référents",
+          "Historique des échanges"
+        ]
+      },
+      "catalogue": {
+        "title": "Catalogue de formations",
+        "description": "Gérez votre offre de formation avec précision. Créez des fiches programmes complètes, définissez les objectifs, prérequis et modalités d'évaluation.",
+        "benefits": [
+          "Fiches programmes conformes",
+          "Gestion des versions",
+          "Tarification et modalités",
+          "Programme détaillé par module"
+        ]
+      },
+      "workflow": {
+        "title": "Gestion de projets (Workflow)",
+        "description": "Un workflow complet pour gérer le cycle de vie de vos sessions de formation, de la demande initiale jusqu'à la clôture du dossier et l'envoi des documents.",
+        "benefits": [
+          "Workflow guidé (Identification -> Clôture)",
+          "Génération automatique de documents",
+          "Conventions et Convocations",
+          "Suivi des émargements"
+        ]
+      },
+      "ia": {
+        "title": "Analyse IA de documents",
+        "description": "Gagnez du temps grâce à l'intelligence artificielle. Analysez automatiquement vos documents (CV, Certificats, Programmes) pour en extraire les données essentielles.",
+        "benefits": [
+          "Reconnaissance automatique (OCR)",
+          "Extractions de données clés",
+          "Support PDF, DOCX, Images",
+          "Intégration fluide au dossier"
+        ]
+      },
+      "config": {
+        "title": "Configuration & conformité",
+        "description": "Administrez votre organisme sereinement. Configurez vos informations légales, logos, documents de référence (CGV, Règlement intérieur) et suivis Qualité.",
+        "benefits": [
+          "Informations légales et logos",
+          "Gestion des taxes et TVA",
+          "Documents de référence (CGV...)",
+          "Suivi des référents (Handicap...)"
+        ]
+      }
+    }
   },
   "contact": {
     "title": "Contactez-nous",
@@ -138,10 +252,10 @@
     "success": "Message envoyé avec succès !"
   },
   "faq": {
-    "title": "Questions Fréquentes",
+    "title": "Questions fréquentes",
     "subtitle": "Tout ce que vous devez savoir sur Certiwize.",
     "category_general": "Général",
-    "category_technical": "Technique & Sécurité",
+    "category_technical": "Technique & sécurité",
     "q1": "Qu'est-ce que Certiwize ?",
     "a1": "Certiwize est une solution SaaS conçue pour automatiser les tâches administratives des organismes de formation certifiés Qualiopi.",
     "q2": "Est-ce compatible avec mon CRM ?",
@@ -152,7 +266,7 @@
     "a4": "Non, Certiwize est 100% accessible via votre navigateur web."
   },
   "login": {
-    "title": "Connexion Espace Client",
+    "title": "Connexion espace client",
     "subtitle": "Accédez à votre outil d'automatisation",
     "email": "Email",
     "password": "Mot de passe",
@@ -217,23 +331,23 @@
     "delete_coming": "Fonctionnalité de suppression de compte à venir"
   },
   "dashboard": {
-    "title": "Tableau de bord Automation",
-    "welcome": "Bienvenue dans votre espace client",
-    "actions": "Actions Rapides",
+    "title": "Tableau de bord automation",
+    "welcome": "Bienvenue sur votre espace",
+    "actions": "Actions rapides",
     "click_to_execute": "Cliquer pour exécuter",
-    "simulation_prefix": "Simulation : Workflow",
+    "simulation_prefix": "Simulation workflow",
     "confirm_trigger": "Voulez-vous lancer l'automatisation : \"{title}\" ?",
     "success": "Succès : Le workflow \"{title}\" a été déclenché.",
     "error": "Erreur : {error}",
     "communication_error": "Erreur de communication avec le serveur.",
-    "category_documents": "Génération de Documents",
-    "category_questionnaires": "Questionnaires & Feedback",
-    "category_signature": "Signature & Synchronisation",
-    "category_archiving": "Organisation & Archivage",
-    "category_billing": "Facturation & Comptabilité",
+    "category_documents": "Génération de documents",
+    "category_questionnaires": "Questionnaires & feedback",
+    "category_signature": "Signature & synchronisation",
+    "category_archiving": "Organisation & archivage",
+    "category_billing": "Facturation & comptabilité",
     "feature_1": "Convention de formation",
     "feature_2": "Signature électronique",
-    "feature_3": "Dossier Drive Client",
+    "feature_3": "Dossier Drive client",
     "feature_4": "Convocation de formation",
     "feature_5": "Positionnement initial",
     "feature_6": "Envoi des convocations",
@@ -248,17 +362,24 @@
     "feature_15": "Synchronisation comptable",
     "hello": "Bonjour",
     "status_today": "Voici ce qui se passe aujourd'hui.",
-    "total_clients": "Clients Totaux",
-    "active_formations": "Formations Actives",
+    "total_clients": "Total clients",
+    "active_formations": "Formations actives",
     "active_projects": "Projets en cours",
-    "recent_clients": "Derniers Clients",
-    "recent_formations": "Dernières Formations",
-    "recent_projects": "Derniers Projets",
+    "recent_clients": "Derniers clients",
+    "recent_formations": "Dernières formations",
+    "recent_projects": "Derniers projets",
     "no_clients": "Aucun client encore.",
     "loading": "Chargement...",
     "quick_action_title": "Besoin d'une action rapide ?",
     "add_client": "+ Ajouter un client",
-    "launch_automation": "→ Lancer une automatisation"
+    "launch_automation": "→ Lancer une automatisation",
+    "no_formations": "Aucune formation créée",
+    "no_projects": "Aucun projet créé",
+    "quick_actions": "Action rapide",
+    "btn_new_client": "Nouveau Client",
+    "btn_new_formation": "Nouvelle Formation",
+    "btn_new_project": "Nouveau Projet",
+    "status_draft": "Brouillon"
   },
   "chat": {
     "title": "Assistant Certiwize",
@@ -280,16 +401,16 @@
     "logout": "Se déconnecter"
   },
   "tiers": {
-    "title": "Création d'un Tiers",
-    "new_title": "Nouveau Tiers",
-    "edit_title": "Modifier le Tiers",
+    "title": "Création d'un tiers",
+    "new_title": "Nouveau tiers",
+    "edit_title": "Modifier le tiers",
     "subtitle": "Nouveau prospect, client ou fournisseur",
     "cancel": "Annuler",
     "create": "Créer le tiers",
     "save": "Enregistrer",
     "save_modifications": "Enregistrer les modifications",
-    "list_title": "Liste des Clients",
-    "new_client_btn": "Nouveau Client",
+    "list_title": "Liste des tiers",
+    "new_client_btn": "Nouveau client",
     "empty_list": "Aucun client trouvé.",
     "loading_data": "Chargement des données...",
     "delete_confirm": "Voulez-vous vraiment supprimer ce client ?",
@@ -301,7 +422,7 @@
       "actions": "Actions"
     },
     "general": {
-      "title": "Informations Générales",
+      "title": "Informations générales",
       "name": "Nom du tiers",
       "name_placeholder": "Nom de la société",
       "alt_name": "Nom alternatif",
@@ -310,8 +431,8 @@
       "prospect": "Prospect",
       "client": "Client",
       "supplier": "Fournisseur",
-      "client_code": "Code Client",
-      "supplier_code": "Code Fournisseur",
+      "client_code": "Code client",
+      "supplier_code": "Code fournisseur",
       "status": "État",
       "status_open": "Ouvert",
       "status_closed": "Fermé",
@@ -320,20 +441,20 @@
     "contact": {
       "title": "Coordonnées",
       "address": "Adresse",
-      "zip": "Code Postal",
+      "zip": "Code postal",
       "city": "Ville",
       "country": "Pays",
       "department": "Département / Canton",
       "phone": "Téléphone",
       "mobile": "Mobile",
       "email": "Email",
-      "website": "Site Web",
+      "website": "Site web",
       "refuse_mass_email": "Refuser e-mails de masse",
       "show_socials": "Afficher réseaux sociaux",
       "hide_socials": "Masquer réseaux sociaux"
     },
     "legal": {
-      "title": "Informations Légales",
+      "title": "Informations légales",
       "siren": "SIREN",
       "siret": "SIRET",
       "naf": "NAF-APE",
@@ -346,7 +467,7 @@
       "capital": "Capital"
     },
     "financial": {
-      "title": "Paramètres Commerciaux & Financiers",
+      "title": "Paramètres commerciaux & financiers",
       "currency": "Devise",
       "payment_terms": "Conditions de règlement",
       "select": "Sélectionner...",
@@ -354,8 +475,8 @@
       "receipt": "Réception",
       "default_lang": "Langue par défaut",
       "payment_mode": "Mode de règlement",
-      "tags_client": "Tags Clients",
-      "tags_supplier": "Tags Fournisseurs"
+      "tags_client": "Tags clients",
+      "tags_supplier": "Tags fournisseurs"
     },
     "attachments": {
       "title": "Rattachements",
@@ -365,6 +486,281 @@
       "assign_reps": "Assigner commerciaux",
       "add_rep_placeholder": "Nom du commercial...",
       "add": "Ajouter"
+    }
+  },
+  "catalogue": {
+    "title": "Catalogue de formation",
+    "new_training": "Nouvelle formation",
+    "empty": "Aucune formation créée",
+    "loading": "Chargement des formations...",
+    "delete_confirm": "Êtes-vous sûr de vouloir supprimer cette formation ?",
+    "columns": {
+      "title": "Titre",
+      "created_by": "Créé par",
+      "updated_at": "Dernière modification",
+      "duration": "Durée",
+      "actions": "Actions"
+    },
+    "tooltips": {
+      "edit": "Éditer",
+      "view_pdf": "Voir PDF",
+      "delete": "Supprimer"
+    }
+  },
+  "training": {
+    "edit_title": "Modifier la formation",
+    "new_title": "Créer une formation",
+    "back": "Retour catalogue",
+    "save_generate": "Enregistrer & générer le PDF",
+    "success_doc": "Document généré avec succès !",
+    "edit_data": "Modifier les données",
+    "download": "Télécharger / Ouvrir",
+    "validation_warning": "Veuillez remplir tous les champs obligatoires avant de générer.",
+    "error_load": "Impossible de charger cette formation",
+    "error_save": "Erreur de sauvegarde: ",
+    "error_gen": "Erreur lors de la génération du PDF : ",
+    "confirm_reset": "Voulez-vous modifier le formulaire ? Le PDF devra être régénéré.",
+    "fields": {
+      "title": "Titre de la formation",
+      "updated_at": "Date de mise à jour",
+      "location": "Lieu",
+      "duration": "Durée",
+      "dates": "Dates",
+      "schedule": "Horaires",
+      "price": "Tarif",
+      "max_group": "Groupe max",
+      "target_audience": "Public visé",
+      "prerequisites": "Prérequis",
+      "objectives": "Objectifs pédagogiques",
+      "program": "Programme détaillé",
+      "methods": "Moyens pédagogiques",
+      "evaluation": "Modalités d'évaluation",
+      "contact_num": "Contact / Numéro",
+      "contact_email": "Email contact",
+      "handicap_referent": "Référent handicap"
+    },
+    "placeholders": {
+      "title": "Ex: Habilitation Électrique B1/B2V",
+      "location": "Ex: Paris / Distanciel",
+      "duration": "Ex: 14 heures",
+      "dates": "Ex: Du 12 au 14 Mars",
+      "program": "Détaillez les modules..."
+    }
+  },
+  "project_list": {
+    "title": "Gestion des projets",
+    "new_project": "Nouveau projet",
+    "reference_docs": {
+      "title": "Documents de référence",
+      "cgv": "Conditions générales de vente",
+      "rules": "Règlement intérieur"
+    },
+    "surveys": {
+      "title": "Enquêtes de satisfaction",
+      "description": "Enquêtes de satisfaction à envoyer aux stagiaires/apprenants.",
+      "download": "Télécharger les enquêtes (.zip)"
+    },
+    "columns": {
+      "name": "Nom du projet",
+      "created_by": "Créé par",
+      "status": "Statut",
+      "updated_at": "Dernière MAJ",
+      "documents": "Documents",
+      "actions": "Actions"
+    },
+    "confirm_delete": "Supprimer ce projet ?",
+    "confirm_validate": "Valider ce projet ? L'utilisateur pourra accéder à la Phase 2 (Convocations et Livret).",
+    "success_validate": "Projet validé avec succès !",
+    "empty": "Aucun projet créé",
+    "loading": "Chargement...",
+    "doc_tags": {
+      "study": "Etude",
+      "conv": "Conv.",
+      "convoc": "Convoc.",
+      "booklet": "Livret"
+    },
+    "status_labels": {
+      "validated": "Validé",
+      "pending": "En attente",
+      "finished": "Terminé",
+      "draft": "Brouillon"
+    }
+  },
+  "project": {
+    "title": "Projet :",
+    "new": "Nouveau",
+    "buttons": {
+      "back": "Retour",
+      "save": "Sauvegarder",
+      "view_pdf": "Voir PDF",
+      "generate_doc": "Générer document",
+      "submit_validation": "Soumettre l'étude pour validation"
+    },
+    "warnings": {
+      "generate_phase1": "Générez les 2 documents de la Phase 1 avant de soumettre.",
+      "waiting_validation": "En attente de validation par Certiwize.",
+      "phase1_locked": "Phase 1 verrouillée — En attente de validation. Les informations ne peuvent plus être modifiées.",
+      "phase1_locked_confirm": "Confirmer l'étude de faisabilité ? Vous ne pourrez plus la modifier tant qu'elle n'est pas traitée."
+    },
+    "phases": {
+      "phase1": "Phase 1 : Étude de faisabilité & convention",
+      "phase2": "Phase 2 : Session & convocations"
+    },
+    "sections": {
+      "id": "1. Identification du projet",
+      "convention": "2. Convention de formation professionnelle",
+      "convocation": "3. Convocation à la formation",
+      "booklet": "4. Livret d'accueil"
+    },
+    "status": {
+      "generated": "✅ Document généré",
+      "not_generated": "Document non généré"
+    },
+    "fields": {
+      "general_info": "Informations générales",
+      "date": "Date",
+      "client": "Client",
+      "service": "Service concerné",
+      "contact": "Contact",
+      "scoping": "Cadrage du projet",
+      "context": "Contexte",
+      "objectives": "Objectifs",
+      "audience": "Public concerné",
+      "execution": "Modalités d'exécution",
+      "calendar": "Calendrier",
+      "duration": "Durée",
+      "location": "Lieu",
+      "cost": "Coût estimé",
+      "resources": "Ressources & moyens",
+      "skills": "Compétences requises",
+      "materials": "Moyens matériels",
+      "other": "Autres informations",
+      "parties": "Identification des parties",
+      "undersigned": "Soussignés",
+      "siret": "SIRET",
+      "training": "Formation",
+      "training_title": "Intitulé de la formation",
+      "schedule": "Horaires",
+      "participant": "Participant",
+      "job_title": "Fonction des stagiaires",
+      "price": "Prix",
+      "price_ht": "Coût HT",
+      "price_ttc": "Coût TTC",
+      "pedagogy": "Moyens pédagogiques",
+      "expert_name": "Nom de l'expert",
+      "expertise": "Expertise / Qualification",
+      "content": "Contenu de la formation",
+      "signatures": "Signatures / Date",
+      "today_date": "Date du jour",
+      "participant_name": "Nom du participant",
+      "transport": "Transport",
+      "equipment": "Équipement requis",
+      "handicap_ref": "Référent handicap",
+      "who_are_we": "Qui sommes-nous ?",
+      "welcome_trainees": "Accueil des stagiaires",
+      "accommodation": "Hébergement",
+      "catering": "Restauration",
+      "internal_org": "Organisation interne",
+      "handicap_welcome": "Accueil handicap"
+    },
+    "placeholders": {
+      "service": "Ex: DRH, Technique...",
+      "contact": "Nom du responsable",
+      "context": "Décrivez le contexte de la demande...",
+      "objectives": "Quels sont les objectifs attendus ?",
+      "audience": "Ex: 10 Techniciens de maintenance",
+      "calendar": "Dates prévisionnelles",
+      "duration": "Ex: 3 jours / 21 heures",
+      "location": "Sur site ou à distance ?",
+      "skills": "Compétences requises ou à acquérir",
+      "materials": "Salle, projecteur, accès VPN...",
+      "other": "Informations complémentaires",
+      "undersigned": "Raison sociale de l'entreprise cliente",
+      "dates": "Ex: Du 15 au 17 janvier 2026",
+      "schedule": "Ex: 9h00 - 17h00",
+      "location_addr": "Adresse ou 'Distanciel'",
+      "job": "Ex: Techniciens, Managers...",
+      "expert_name": "Nom du formateur",
+      "expertise": "Qualifications et expérience du formateur",
+      "content": "Programme détaillé de la formation...",
+      "transport": "Informations transport / accès",
+      "equipment": "Matériel à apporter, tenue, EPI...",
+      "handicap": "Contact du référent handicap",
+      "org_desc": "Présentation de l'organisme",
+      "welcome_mod": "Modalités d'accueil",
+      "address_full": "Adresse complète",
+      "accommodation": "Infos hébergement (si applicable)",
+      "catering": "Infos restauration",
+      "pedagogy": "Matériel, supports, outils...",
+      "rules": "Règlement intérieur, consignes...",
+      "accessibility": "Accessibilité, aménagements..."
+    }
+  },
+  "company": {
+    "title": "Configuration société",
+    "save": "Enregistrer",
+    "saved_success": "Configuration enregistrée avec succès.",
+    "tabs": {
+      "identity": "Identité & coordonnées",
+      "legal": "Juridique & fiscal",
+      "taxes": "Gestion taxes",
+      "socials": "Réseaux sociaux",
+      "hours": "Heures d'ouverture",
+      "accountant": "Expert comptable"
+    },
+    "fields": {
+      "name": "Raison sociale",
+      "currency": "Devise",
+      "address": "Adresse",
+      "zip": "Code postal",
+      "city": "Ville",
+      "country": "Pays",
+      "department": "Département",
+      "phone": "Téléphone",
+      "mobile": "Portable",
+      "email": "Email",
+      "website": "Site web",
+      "logo": "Logo principal",
+      "dev_mode": "En cours de dev",
+      "soon": "Bientôt disponible",
+      "internal_note": "Note interne"
+    },
+    "legal": {
+      "manager": "Gestionnaire(s)",
+      "dpo": "Délégué DPO",
+      "handicap_ref": "Référent handicap",
+      "capital": "Capital social (€)",
+      "entity_type": "Entité légale",
+      "fiscal_start": "Début exercice",
+      "vat_number": "Numéro de TVA",
+      "object": "Objet social",
+      "siren": "SIREN (9 chiffres)",
+      "siret": "SIRET (14 chiffres)",
+      "naf": "NAF / APE",
+      "rcs": "RCS / RM",
+      "eori": "Numéro EORI",
+      "rna": "Numéro RNA"
+    },
+    "taxes": {
+      "vat_subject": "Assujetti TVA",
+      "yes": "Oui",
+      "no": "Non",
+      "tax_2": "Gestion 2ème type de taxe",
+      "tax_3": "Gestion 3ème type de taxe",
+      "fiscal_stamp": "Timbre fiscal"
+    },
+    "socials": {
+      "other": "Autres"
+    },
+    "accountant": {
+      "name": "Cabinet / Nom",
+      "code": "Code comptable",
+      "address": "Adresse",
+      "zip": "CP",
+      "city": "Ville",
+      "email": "Email",
+      "phone": "Téléphone",
+      "note": "Note"
     }
   }
 }

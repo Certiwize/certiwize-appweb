@@ -9,9 +9,11 @@ import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import Dialog from 'primevue/dialog';
 import SlowLoadingDialog from '../../components/dashboard/SlowLoadingDialog.vue';
+import { useI18n } from 'vue-i18n';
 
 const router = useRouter();
 const auth = useAuthStore();
+const { t } = useI18n();
 const projects = ref([]);
 const loading = ref(true);
 const showSlowLoading = ref(false);
@@ -74,7 +76,7 @@ const editProject = (id) => {
 };
 
 const deleteProject = async (id) => {
-  if (!confirm('Supprimer ce projet ?')) return;
+  if (!confirm(t('project_list.confirm_delete'))) return;
   
   try {
     const { error } = await supabase.from('projects').delete().eq('id', id);
@@ -83,6 +85,14 @@ const deleteProject = async (id) => {
   } catch (e) {
     alert('Erreur suppression: ' + e.message);
   }
+};
+
+const getStatusLabel = (status) => {
+  if (!status) return t('project_list.status_labels.draft');
+  if (status === 'Validé') return t('project_list.status_labels.validated');
+  if (status === 'En attente') return t('project_list.status_labels.pending');
+  if (status === 'Terminé') return t('project_list.status_labels.finished');
+  return status;
 };
 
 const getStatusSeverity = (status) => {
@@ -101,7 +111,7 @@ const formatDate = (date) => {
 
 // Valider un projet (passer de "En attente" à "Validé")
 const validateProject = async (id) => {
-  if (!confirm("Valider ce projet ? L'utilisateur pourra accéder à la Phase 2 (Convocations et Livret).")) return;
+  if (!confirm(t('project_list.confirm_validate'))) return;
   
   try {
     const { error } = await supabase
@@ -115,7 +125,7 @@ const validateProject = async (id) => {
     const project = projects.value.find(p => p.id === id);
     if (project) project.status = 'Validé';
     
-    alert('Projet validé avec succès !');
+    alert(t('project_list.success_validate'));
   } catch (e) {
     alert('Erreur validation: ' + e.message);
   }
@@ -127,14 +137,14 @@ const validateProject = async (id) => {
     <!-- Documents de référence -->
     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm mb-8 border-l-4 border-blue-500">
       <h2 class="text-lg font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
-        <i class="pi pi-info-circle"></i> Documents de référence
+        <i class="pi pi-info-circle"></i> {{ t('project_list.reference_docs.title') }}
       </h2>
       <div class="flex flex-wrap gap-4">
         <a href="/CGV_Formation.pdf" download class="no-underline">
-          <Button label="Conditions générales de vente" icon="pi pi-file-pdf" severity="secondary" outlined />
+          <Button :label="t('project_list.reference_docs.cgv')" icon="pi pi-file-pdf" severity="secondary" outlined />
         </a>
         <a href="/Reglement_Interieur.pdf" download class="no-underline">
-          <Button label="Règlement intérieur" icon="pi pi-file-pdf" severity="secondary" outlined />
+          <Button :label="t('project_list.reference_docs.rules')" icon="pi pi-file-pdf" severity="secondary" outlined />
         </a>
       </div>
     </div>
@@ -142,81 +152,81 @@ const validateProject = async (id) => {
     <!-- Enquêtes de satisfaction -->
     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm mb-8 border-l-4 border-green-500">
       <h2 class="text-lg font-bold mb-2 text-gray-900 dark:text-white flex items-center gap-2">
-        <i class="pi pi-check-circle"></i> Enquêtes de satisfaction
+        <i class="pi pi-check-circle"></i> {{ t('project_list.surveys.title') }}
       </h2>
       <p class="text-gray-600 dark:text-gray-400 mb-4">
-        Enquêtes de satisfaction à envoyer aux stagiaires/apprenants.
+        {{ t('project_list.surveys.description') }}
       </p>
       <a href="/Enquetes_Satisfaction.zip" download class="no-underline">
-        <Button label="Télécharger les enquêtes (.zip)" icon="pi pi-download" severity="success" outlined />
+        <Button :label="t('project_list.surveys.download')" icon="pi pi-download" severity="success" outlined />
       </a>
     </div>
 
     <SlowLoadingDialog :visible="showSlowLoading" />
 
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">Gestion des projets</h1>
-      <Button label="Nouveau projet" icon="pi pi-plus" @click="hardNavigate('/dashboard/projets/create')" />
+      <h1 class="text-2xl font-bold">{{ t('project_list.title') }}</h1>
+      <Button :label="t('project_list.new_project')" icon="pi pi-plus" @click="hardNavigate('/dashboard/projets/create')" />
     </div>
 
     <DataTable :value="projects" :loading="loading" paginator :rows="10" 
                tableStyle="min-width: 50rem" dataKey="id">
       
-      <template #empty>Aucun projet créé</template>
-      <template #loading>Chargement...</template>
+      <template #empty>{{ t('project_list.empty') }}</template>
+      <template #loading>{{ t('project_list.loading') }}</template>
 
-      <Column field="name" header="Nom du projet" sortable style="width: 30%"></Column>
-      <Column v-if="auth.isAdmin" header="Créé par" style="width: 20%">
+      <Column field="name" :header="t('project_list.columns.name')" sortable style="width: 30%"></Column>
+      <Column v-if="auth.isAdmin" :header="t('project_list.columns.created_by')" style="width: 20%">
         <template #body="slotProps">
           <span class="text-sm text-gray-500">{{ slotProps.data.profiles?.email || 'N/A' }}</span>
         </template>
       </Column>
       
-      <Column field="status" header="Statut" sortable style="width: 15%">
+      <Column field="status" :header="t('project_list.columns.status')" sortable style="width: 15%">
         <template #body="slotProps">
-          <Tag :value="slotProps.data.status || 'Brouillon'" 
+          <Tag :value="getStatusLabel(slotProps.data.status)" 
                :severity="getStatusSeverity(slotProps.data.status)" />
         </template>
       </Column>
 
-      <Column field="updated_at" header="Dernière MAJ" sortable style="width: 20%">
+      <Column field="updated_at" :header="t('project_list.columns.updated_at')" sortable style="width: 20%">
         <template #body="slotProps">
           {{ formatDate(slotProps.data.updated_at) }}
         </template>
       </Column>
 
-      <Column header="Documents" style="width: 20%">
+      <Column :header="t('project_list.columns.documents')" style="width: 20%">
         <template #body="slotProps">
           <div class="flex gap-2 flex-wrap">
             <a v-if="slotProps.data.identification" 
                :href="slotProps.data.identification" 
                target="_blank" 
                title="Identification">
-              <Tag value="Etude" severity="info" icon="pi pi-file-pdf"></Tag>
+              <Tag :value="t('project_list.doc_tags.study')" severity="info" icon="pi pi-file-pdf"></Tag>
             </a>
             <a v-if="slotProps.data.convention" 
                :href="slotProps.data.convention" 
                target="_blank" 
                title="Convention">
-              <Tag value="Conv." severity="primary" icon="pi pi-file-pdf"></Tag>
+              <Tag :value="t('project_list.doc_tags.conv')" severity="primary" icon="pi pi-file-pdf"></Tag>
             </a>
             <a v-if="slotProps.data.convocation" 
                :href="slotProps.data.convocation" 
                target="_blank" 
                title="Convocation">
-              <Tag value="Convoc." severity="success" icon="pi pi-file-pdf"></Tag>
+              <Tag :value="t('project_list.doc_tags.convoc')" severity="success" icon="pi pi-file-pdf"></Tag>
             </a>
             <a v-if="slotProps.data.livret" 
                :href="slotProps.data.livret" 
                target="_blank" 
                title="Livret d'accueil">
-              <Tag value="Livret" severity="warning" icon="pi pi-file-pdf"></Tag>
+              <Tag :value="t('project_list.doc_tags.booklet')" severity="warning" icon="pi pi-file-pdf"></Tag>
             </a>
           </div>
         </template>
       </Column>
 
-      <Column header="Actions" style="width: 20%">
+      <Column :header="t('project_list.columns.actions')" style="width: 20%">
         <template #body="slotProps">
           <div class="flex gap-2">
             <Button v-if="auth.isAdmin && slotProps.data.status === 'En attente'" 

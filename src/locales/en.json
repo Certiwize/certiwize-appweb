@@ -5,7 +5,59 @@
     "faq": "FAQ",
     "contact": "Contact",
     "login": "Login",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "tiers": "Clients / Suppliers",
+    "catalogue": "Training Catalog",
+    "projects": "Project Management",
+    "analysis": "Document Analysis",
+    "manual": "Qualiopi Manual RNQ",
+    "my_company": "My Company"
+  },
+  "manual": {
+    "title": "Quality Manual & Tools",
+    "subtitle": "Documents classified by Qualiopi indicators.",
+    "search_placeholder": "Search (e.g. c4i17)",
+    "tabs": {
+      "quality_manual": "Quality Manual",
+      "tools": "Toolbox (Excel)"
+    },
+    "loading": "Loading documents...",
+    "empty": "No documents found.",
+    "default_desc": "Qualiopi compliance document.",
+    "tools_title": "Excel files to download",
+    "excel_format": "Excel format (.xlsx)",
+    "error_loading": "Loading error:"
+  },
+  "analysis": {
+    "title": "Document Analysis",
+    "doc_type": "Document Type",
+    "select_type": "Select a type",
+    "upload_label": "Document (PDF, DOCX, JPG, PNG)",
+    "choose_drop": "Choose or Drop",
+    "cancel": "Cancel",
+    "drop_text": "Drag and drop your file here",
+    "analyze_btn": "Launch Analysis",
+    "success": "Analysis completed successfully!",
+    "result_title": "Analysis Result",
+    "analyzing": "Analyzing document...",
+    "copy": "Copy",
+    "placeholder_result": "AI result will appear here",
+    "types": {
+      "activity_declaration": "Activity Declaration",
+      "qualiopi_certificate": "Qualiopi Certificate",
+      "bpf": "Pedagogical and Financial Balance Sheet",
+      "kbis": "KBIS",
+      "training_program": "Training Program",
+      "attendance_sheet": "Attendance Sheet",
+      "training_certificate": "Training Attestation",
+      "completion_certificate": "Completion Certificate",
+      "training_contract": "Training Contract",
+      "training_convention": "Training Agreement",
+      "trainer_cv": "Trainer CV",
+      "skills_proof": "Skills Proof",
+      "invoice": "Invoice",
+      "internal_rules": "Internal Rules"
+    }
   },
   "home": {
     "hero_title": "Automate your Qualiopi management",
@@ -123,8 +175,70 @@
     "feature_15_desc": "Bidirectional synchronization with Pennylane for automated accounting. Your invoices, payments and accounting entries are synchronized in real-time.",
     "feature_15_benefit_1": "Real-time sync",
     "feature_15_benefit_2": "Automatic accounting",
-    "feature_15_benefit_3": "Easy reconciliations",
-    "feature_15_benefit_4": "Clear financial vision"
+    "feature_15_benefit_3": "Easy reconciliation",
+    "feature_15_benefit_4": "Clear financial vision",
+    "modules": {
+      "dashboard": {
+        "title": "Dashboard & KPIs",
+        "description": "Visualize your training organization's activity at a glance. Monitor key indicators (turnover, number of trainees, satisfaction rate) to steer your business.",
+        "benefits": [
+          "Synthetic and graphical views",
+          "Entry/exit tracking",
+          "Qualiopi indicators",
+          "Alerts and notifications"
+        ]
+      },
+      "crm": {
+        "title": "Stakeholder Management (CRM)",
+        "description": "Centralize the management of your Clients, Trainers, and Suppliers. A unique database to easily find all contact details and associated documents.",
+        "benefits": [
+          "Detailed sheets (Clients, Trainers...)",
+          "Contact management",
+          "Representative assignment",
+          "Exchange history"
+        ]
+      },
+      "catalogue": {
+        "title": "Training Catalogue",
+        "description": "Manage your training offer with precision. Create complete program sheets, define objectives, prerequisites, and evaluation methods.",
+        "benefits": [
+          "Compliant program sheets",
+          "Version management",
+          "Pricing and modalities",
+          "Detailed program per module"
+        ]
+      },
+      "workflow": {
+        "title": "Project Management (Workflow)",
+        "description": "A complete workflow to manage the lifecycle of your training sessions, from the initial request to the closure of the file and sending of documents.",
+        "benefits": [
+          "Guided workflow (Identification -> Closure)",
+          "Automatic document generation",
+          "Agreements and Summons",
+          "Attendance tracking"
+        ]
+      },
+      "ia": {
+        "title": "AI Document Analysis",
+        "description": "Save time with artificial intelligence. Automatically analyze your documents (CVs, Certificates, Programs) to extract essential data.",
+        "benefits": [
+          "Automatic Recognition (OCR)",
+          "Key data extraction",
+          "PDF, DOCX, Image support",
+          "Fluid integration into the file"
+        ]
+      },
+      "config": {
+        "title": "Configuration & Compliance",
+        "description": "Administer your organization serenely. Configure your legal information, logos, reference documents (T&Cs, Internal Rules), and Quality tracking.",
+        "benefits": [
+          "Legal information and logos",
+          "Tax and VAT management",
+          "Reference documents (T&Cs...)",
+          "Representative tracking (Disability...)"
+        ]
+      }
+    }
   },
   "contact": {
     "title": "Contact Us",
@@ -258,7 +372,14 @@
     "loading": "Loading...",
     "quick_action_title": "Need a quick action?",
     "add_client": "+ Add a client",
-    "launch_automation": "→ Launch automation"
+    "launch_automation": "→ Launch automation",
+    "no_formations": "No training created",
+    "no_projects": "No project created",
+    "quick_actions": "Quick Action",
+    "btn_new_client": "New Client",
+    "btn_new_formation": "New Training",
+    "btn_new_project": "New Project",
+    "status_draft": "Draft"
   },
   "chat": {
     "title": "Certiwize Assistant",
@@ -365,6 +486,281 @@
       "assign_reps": "Assign Sales Reps",
       "add_rep_placeholder": "Sales rep name...",
       "add": "Add"
+    }
+  },
+  "catalogue": {
+    "title": "Training Catalog",
+    "new_training": "New Training",
+    "empty": "No training created",
+    "loading": "Loading trainings...",
+    "delete_confirm": "Are you sure you want to delete this training?",
+    "columns": {
+      "title": "Title",
+      "created_by": "Created by",
+      "updated_at": "Last modified",
+      "duration": "Duration",
+      "actions": "Actions"
+    },
+    "tooltips": {
+      "edit": "Edit",
+      "view_pdf": "View PDF",
+      "delete": "Delete"
+    }
+  },
+  "training": {
+    "edit_title": "Edit Training",
+    "new_title": "Create Training",
+    "back": "Back to catalog",
+    "save_generate": "Save & Generate PDF",
+    "success_doc": "Document successfully generated!",
+    "edit_data": "Edit Data",
+    "download": "Download / Open",
+    "validation_warning": "Please fill in all required fields before generating.",
+    "error_load": "Unable to load this training",
+    "error_save": "Save error: ",
+    "error_gen": "Error generating PDF: ",
+    "confirm_reset": "Do you want to edit the form? The PDF will need to be regenerated.",
+    "fields": {
+      "title": "Training Title",
+      "updated_at": "Update Date",
+      "location": "Location",
+      "duration": "Duration",
+      "dates": "Dates",
+      "schedule": "Schedule",
+      "price": "Price",
+      "max_group": "Max Group",
+      "target_audience": "Target Audience",
+      "prerequisites": "Prerequisites",
+      "objectives": "Pedagogical Objectives",
+      "program": "Detailed Program",
+      "methods": "Pedagogical Methods",
+      "evaluation": "Evaluation Methods",
+      "contact_num": "Contact / Number",
+      "contact_email": "Contact Email",
+      "handicap_referent": "Disability Referent"
+    },
+    "placeholders": {
+      "title": "Ex: Electrical Habilitation",
+      "location": "Ex: Paris / Remote",
+      "duration": "Ex: 14 hours",
+      "dates": "Ex: March 12-14",
+      "program": "Detail modules..."
+    }
+  },
+  "project_list": {
+    "title": "Project Management",
+    "new_project": "New Project",
+    "reference_docs": {
+      "title": "Reference Documents",
+      "cgv": "Terms of Sales",
+      "rules": "Internal Rules"
+    },
+    "surveys": {
+      "title": "Satisfaction Surveys",
+      "description": "Satisfaction surveys to send to trainees.",
+      "download": "Download surveys (.zip)"
+    },
+    "columns": {
+      "name": "Project Name",
+      "created_by": "Created by",
+      "status": "Status",
+      "updated_at": "Last Update",
+      "documents": "Documents",
+      "actions": "Actions"
+    },
+    "confirm_delete": "Delete this project?",
+    "confirm_validate": "Validate this project? User will access Phase 2.",
+    "success_validate": "Project successfully validated!",
+    "empty": "No project created",
+    "loading": "Loading...",
+    "doc_tags": {
+      "study": "Study",
+      "conv": "Agrmt.",
+      "convoc": "Summons",
+      "booklet": "Booklet"
+    },
+    "status_labels": {
+      "validated": "Validated",
+      "pending": "Pending",
+      "finished": "Finished",
+      "draft": "Draft"
+    }
+  },
+  "project": {
+    "title": "Project:",
+    "new": "New",
+    "buttons": {
+      "back": "Back",
+      "save": "Save",
+      "view_pdf": "View PDF",
+      "generate_doc": "Generate Document",
+      "submit_validation": "Submit for validation"
+    },
+    "warnings": {
+      "generate_phase1": "Generate both Phase 1 documents before submitting.",
+      "waiting_validation": "Waiting for validation by Certiwize.",
+      "phase1_locked": "Phase 1 locked — Waiting for validation. Information cannot be modified.",
+      "phase1_locked_confirm": "Confirm feasibility study? You will not be able to modify it until processed."
+    },
+    "phases": {
+      "phase1": "Phase 1: Feasibility Study & Agreement",
+      "phase2": "Phase 2: Session & Summons"
+    },
+    "sections": {
+      "id": "1. Project Identification",
+      "convention": "2. Professional Training Agreement",
+      "convocation": "3. Training Summons",
+      "booklet": "4. Welcome Booklet"
+    },
+    "status": {
+      "generated": "✅ Document generated",
+      "not_generated": "Document not generated"
+    },
+    "fields": {
+      "general_info": "General Information",
+      "date": "Date",
+      "client": "Client",
+      "service": "Department",
+      "contact": "Contact",
+      "scoping": "Project Scoping",
+      "context": "Context",
+      "objectives": "Objectives",
+      "audience": "Target Audience",
+      "execution": "Execution Details",
+      "calendar": "Calendar",
+      "duration": "Duration",
+      "location": "Location",
+      "cost": "Estimated Cost",
+      "resources": "Resources & Means",
+      "skills": "Required Skills",
+      "materials": "Material Means",
+      "other": "Other Information",
+      "parties": "Parties Identification",
+      "undersigned": "Undersigned",
+      "siret": "SIRET",
+      "training": "Training",
+      "training_title": "Training Title",
+      "schedule": "Schedule",
+      "participant": "Participant",
+      "job_title": "Job Title",
+      "price": "Price",
+      "price_ht": "Price Excl. Tax",
+      "price_ttc": "Price Incl. Tax",
+      "pedagogy": "Pedagogical Means",
+      "expert_name": "Expert Name",
+      "expertise": "Expertise / Qualification",
+      "content": "Training Content",
+      "signatures": "Signatures / Date",
+      "today_date": "Date",
+      "participant_name": "Participant Name",
+      "transport": "Transport",
+      "equipment": "Required Equipment",
+      "handicap_ref": "Disability Referent",
+      "who_are_we": "Who are we?",
+      "welcome_trainees": "Trainee Welcome",
+      "accommodation": "Accommodation",
+      "catering": "Catering",
+      "internal_org": "Internal Organization",
+      "handicap_welcome": "Disability Welcome"
+    },
+    "placeholders": {
+      "service": "Ex: HR, Tech...",
+      "contact": "Manager Name",
+      "context": "Describe context...",
+      "objectives": "Expected objectives?",
+      "audience": "Ex: 10 Maintenance Technicians",
+      "calendar": "Provisional dates",
+      "duration": "Ex: 3 days / 21 hours",
+      "location": "On-site or Remote?",
+      "skills": "Required skills",
+      "materials": "Room, projector, VPN...",
+      "other": "Additional info",
+      "undersigned": "Client Company Name",
+      "dates": "Ex: Jan 15-17, 2026",
+      "schedule": "Ex: 9am - 5pm",
+      "location_addr": "Address or 'Remote'",
+      "job": "Ex: Technicians, Managers...",
+      "expert_name": "Trainer Name",
+      "expertise": "Qualifications",
+      "content": "Detailed program...",
+      "transport": "Transport info",
+      "equipment": "Equipment needed...",
+      "handicap": "Referent contact",
+      "org_desc": "Organization presentation",
+      "welcome_mod": "Welcome details",
+      "address_full": "Full address",
+      "accommodation": "Accommodation info",
+      "catering": "Catering info",
+      "pedagogy": "Materials, tools...",
+      "rules": "Internal rules...",
+      "accessibility": "Accessibility..."
+    }
+  },
+  "company": {
+    "title": "Company Settings",
+    "save": "Save",
+    "saved_success": "Settings saved successfully.",
+    "tabs": {
+      "identity": "Identity & Contact",
+      "legal": "Legal & Fiscal",
+      "taxes": "Taxes Management",
+      "socials": "Social Networks",
+      "hours": "Opening Hours",
+      "accountant": "Accountant"
+    },
+    "fields": {
+      "name": "Company Name",
+      "currency": "Currency",
+      "address": "Address",
+      "zip": "Zip Code",
+      "city": "City",
+      "country": "Country",
+      "department": "State",
+      "phone": "Phone",
+      "mobile": "Mobile",
+      "email": "Email",
+      "website": "Website",
+      "logo": "Main Logo",
+      "dev_mode": "In development",
+      "soon": "Coming soon",
+      "internal_note": "Internal Note"
+    },
+    "legal": {
+      "manager": "Manager(s)",
+      "dpo": "DPO Delegate",
+      "handicap_ref": "Disability Referent",
+      "capital": "Social Capital (€)",
+      "entity_type": "Legal Entity",
+      "fiscal_start": "Fiscal Year Start",
+      "vat_number": "VAT Number",
+      "object": "Social Object",
+      "siren": "SIREN",
+      "siret": "SIRET",
+      "naf": "NAF / APE",
+      "rcs": "RCS / RM",
+      "eori": "EORI Number",
+      "rna": "RNA Number"
+    },
+    "taxes": {
+      "vat_subject": "VAT Subject",
+      "yes": "Yes",
+      "no": "No",
+      "tax_2": "Manage 2nd tax type",
+      "tax_3": "Manage 3rd tax type",
+      "fiscal_stamp": "Fiscal Stamp"
+    },
+    "socials": {
+      "other": "Others"
+    },
+    "accountant": {
+      "name": "Firm / Name",
+      "code": "Accounting Code",
+      "address": "Address",
+      "zip": "Zip",
+      "city": "City",
+      "email": "Email",
+      "phone": "Phone",
+      "note": "Note"
     }
   }
 }

@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useTrainingStore } from '../../stores/training';
 import { supabase } from '../../supabase';
+import { useI18n } from 'vue-i18n';
 
 // Imports PrimeVue
 import InputText from 'primevue/inputtext';
@@ -15,6 +16,7 @@ import Message from 'primevue/message';
 const router = useRouter();
 const route = useRoute();
 const trainingStore = useTrainingStore();
+const { t } = useI18n();
 
 // État
 const trainingId = ref(route.params.id || null); // ID de la formation en base
@@ -86,7 +88,7 @@ onMounted(async () => {
             }
         } catch (err) {
             console.error('Erreur chargement formation:', err);
-            alert('Impossible de charger cette formation');
+            alert(t('training.error_load'));
             router.push('/dashboard/catalogue');
         }
     }
@@ -100,7 +102,7 @@ const handleGenerate = async () => {
     const saveResult = await trainingStore.saveTraining(form.value, trainingId.value);
     
     if (!saveResult.success) {
-        alert("Erreur de sauvegarde: " + saveResult.error);
+        alert(t('training.error_save') + saveResult.error);
         submitting.value = false;
         return;
     }
@@ -116,14 +118,14 @@ const handleGenerate = async () => {
         // 3. Sauvegarder l'URL du PDF dans la base de données
         await trainingStore.saveTraining(form.value, trainingId.value, genResult.pdfUrl);
     } else {
-        alert("Erreur lors de la génération du PDF : " + genResult.error);
+        alert(t('training.error_gen') + genResult.error);
     }
     
     submitting.value = false;
 };
 
 const resetForm = () => {
-    if(confirm("Voulez-vous modifier le formulaire ? Le PDF devra être régénéré.")) {
+    if(confirm(t('training.confirm_reset'))) {
         pdfUrl.value = null;
     }
 };
@@ -138,21 +140,21 @@ const goBack = () => {
         
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-                {{ isEditMode ? 'Modifier la Formation' : 'Créer une Formation' }}
+                {{ isEditMode ? t('training.edit_title') : t('training.new_title') }}
             </h1>
-            <Button label="Retour Catalogue" text @click="goBack" />
+            <Button :label="t('training.back')" text @click="goBack" />
         </div>
 
         <div v-if="pdfUrl" class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg h-[80vh] flex flex-col">
             <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center gap-2 text-green-600">
                     <i class="pi pi-check-circle text-xl"></i>
-                    <span class="font-bold">Document généré avec succès !</span>
+                    <span class="font-bold">{{ t('training.success_doc') }}</span>
                 </div>
                 <div class="flex gap-2">
-                    <Button label="Modifier les données" icon="pi pi-pencil" severity="secondary" @click="resetForm" />
+                    <Button :label="t('training.edit_data')" icon="pi pi-pencil" severity="secondary" @click="resetForm" />
                     <a :href="pdfUrl" target="_blank" rel="noopener">
-                        <Button label="Télécharger / Ouvrir" icon="pi pi-external-link" />
+                        <Button :label="t('training.download')" icon="pi pi-external-link" />
                     </a>
                 </div>
             </div>
@@ -164,90 +166,90 @@ const goBack = () => {
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2">
-                        <label class="font-semibold block mb-2">Titre de la formation</label>
-                        <InputText v-model="form.titre" class="w-full text-lg" placeholder="Ex: Habilitation Électrique B1/B2V" required />
+                        <label class="font-semibold block mb-2">{{ t('training.fields.title') }}</label>
+                        <InputText v-model="form.titre" class="w-full text-lg" :placeholder="t('training.placeholders.title')" required />
                     </div>
                     <div>
-                        <label class="block mb-2">Date de mise à jour</label>
+                        <label class="block mb-2">{{ t('training.fields.updated_at') }}</label>
                         <Calendar v-model="form.maj" dateFormat="dd/mm/yy" showIcon class="w-full" />
                     </div>
                      <div>
-                        <label class="block mb-2">Lieu</label>
-                        <InputText v-model="form.lieu" class="w-full" placeholder="Ex: Paris / Distanciel" />
+                        <label class="block mb-2">{{ t('training.fields.location') }}</label>
+                        <InputText v-model="form.lieu" class="w-full" :placeholder="t('training.placeholders.location')" />
                     </div>
                 </div>
 
                 <div class="p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                        <label class="block mb-2 text-sm">Durée</label>
-                        <InputText v-model="form.duree" class="w-full" placeholder="Ex: 14 heures" />
+                        <label class="block mb-2 text-sm">{{ t('training.fields.duration') }}</label>
+                        <InputText v-model="form.duree" class="w-full" :placeholder="t('training.placeholders.duration')" />
                     </div>
                     <div>
-                        <label class="block mb-2 text-sm">Dates</label>
-                        <InputText v-model="form.dates" class="w-full" placeholder="Ex: Du 12 au 14 Mars" />
+                        <label class="block mb-2 text-sm">{{ t('training.fields.dates') }}</label>
+                        <InputText v-model="form.dates" class="w-full" :placeholder="t('training.placeholders.dates')" />
                     </div>
                     <div>
-                        <label class="block mb-2 text-sm">Horaires</label>
+                        <label class="block mb-2 text-sm">{{ t('training.fields.schedule') }}</label>
                         <InputText v-model="form.horaires" class="w-full" />
                     </div>
                     <div>
-                        <label class="block mb-2 text-sm">Tarif</label>
+                        <label class="block mb-2 text-sm">{{ t('training.fields.price') }}</label>
                         <InputNumber v-model="form.tarif" mode="currency" currency="EUR" class="w-full" />
                     </div>
                     <div>
-                        <label class="block mb-2 text-sm">Groupe Max</label>
+                        <label class="block mb-2 text-sm">{{ t('training.fields.max_group') }}</label>
                         <InputNumber v-model="form.grp_max" showButtons :min="1" class="w-full" />
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="md:col-span-2">
-                        <label class="font-semibold block mb-2">Public visé</label>
+                        <label class="font-semibold block mb-2">{{ t('training.fields.target_audience') }}</label>
                         <Textarea v-model="form.public_vise" rows="2" class="w-full" />
                     </div>
                     <div class="md:col-span-2">
-                        <label class="font-semibold block mb-2">Prérequis</label>
+                        <label class="font-semibold block mb-2">{{ t('training.fields.prerequisites') }}</label>
                         <Textarea v-model="form.prerequis" rows="2" class="w-full" />
                     </div>
                     <div class="md:col-span-2">
-                        <label class="font-semibold block mb-2">Objectifs Pédagogiques</label>
+                        <label class="font-semibold block mb-2">{{ t('training.fields.objectives') }}</label>
                         <Textarea v-model="form.objc_pedagq" rows="4" class="w-full" />
                     </div>
                     <div class="md:col-span-2">
-                        <label class="font-semibold block mb-2">Programme Détaillé</label>
-                        <Textarea v-model="form.prgm" rows="6" class="w-full" placeholder="Détaillez les modules..." />
+                        <label class="font-semibold block mb-2">{{ t('training.fields.program') }}</label>
+                        <Textarea v-model="form.prgm" rows="6" class="w-full" :placeholder="t('training.placeholders.program')" />
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="font-semibold block mb-2">Moyens Pédagogiques</label>
+                        <label class="font-semibold block mb-2">{{ t('training.fields.methods') }}</label>
                         <Textarea v-model="form.moyens_pedagq" rows="3" class="w-full" />
                     </div>
                     <div>
-                        <label class="font-semibold block mb-2">Modalités d'évaluation {modalités_eval}</label>
+                        <label class="font-semibold block mb-2">{{ t('training.fields.evaluation') }}</label>
                         <Textarea v-model="form.modalités_eval" rows="3" class="w-full" />
                     </div>
                 </div>
 
                 <div class="border-t pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block mb-2">Contact / Numéro</label>
+                        <label class="block mb-2">{{ t('training.fields.contact_num') }}</label>
                         <InputText v-model="form.num" class="w-full" />
                     </div>
                     <div>
-                        <label class="block mb-2">Email Contact</label>
+                        <label class="block mb-2">{{ t('training.fields.contact_email') }}</label>
                         <InputText v-model="form.mail" class="w-full" />
                     </div>
                     <div class="md:col-span-2">
-                        <label class="font-semibold block mb-2">Référent Handicap</label>
+                        <label class="font-semibold block mb-2">{{ t('training.fields.handicap_referent') }}</label>
                         <Textarea v-model="form.ref_handi" rows="2" class="w-full" />
                     </div>
                 </div>
 
                 <div class="flex justify-end pt-4">
                     <Button 
-                        label="Enregistrer & Générer le PDF" 
+                        :label="t('training.save_generate')" 
                         icon="pi pi-file-pdf" 
                         size="large" 
                         :loading="trainingStore.loading" 
@@ -256,7 +258,7 @@ const goBack = () => {
                     />
                     <p v-if="!isFormValid" class="text-sm text-orange-500 mt-2">
                         <i class="pi pi-exclamation-triangle mr-1"></i>
-                        Veuillez remplir tous les champs obligatoires avant de générer.
+                        {{ t('training.validation_warning') }}
                     </p>
                 </div>
             </form>

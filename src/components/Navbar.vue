@@ -27,7 +27,9 @@ onUnmounted(() => {
 });
 
 const toggleLanguage = () => {
-  locale.value = locale.value === 'fr' ? 'en' : 'fr';
+  const newLocale = locale.value === 'fr' ? 'en' : 'fr';
+  locale.value = newLocale;
+  localStorage.setItem('user-locale', newLocale);
 };
 
 const logout = async () => {
@@ -124,7 +126,7 @@ const toggleProfileMenu = (event) => {
               class="flex items-center gap-2 text-gray-700 dark:text-white hover:text-primary transition font-medium mr-2"
             >
               <i class="pi pi-building"></i>
-              <span>Ma Société</span>
+              <span>{{ t('nav.my_company') }}</span>
             </router-link>
             
             <!-- Bouton Profil avec menu déroulant -->

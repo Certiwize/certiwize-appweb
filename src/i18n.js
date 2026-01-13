@@ -4,7 +4,7 @@ import en from './locales/en.json';
 
 const i18n = createI18n({
   legacy: false, // Pour Vue 3 Composition API
-  locale: 'fr',
+  locale: localStorage.getItem('user-locale') || 'fr',
   fallbackLocale: 'en',
   messages: { fr, en }
 });

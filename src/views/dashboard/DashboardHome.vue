@@ -140,7 +140,7 @@ onMounted(() => {
                             {{ new Date(formation.updated_at).toLocaleDateString('fr-FR') }}
                         </span>
                     </li>
-                    <li v-if="formations.length === 0" class="text-gray-400 text-sm italic">Aucune formation créée</li>
+                    <li v-if="formations.length === 0" class="text-gray-400 text-sm italic">{{ $t('dashboard.no_formations') }}</li>
                 </ul>
                 <div v-else class="text-sm text-gray-400">{{ $t('dashboard.loading') }}</div>
             </div>
@@ -151,25 +151,25 @@ onMounted(() => {
                 <ul class="space-y-3" v-if="!projectsLoading">
                     <li v-for="project in projects.slice(0, 3)" :key="project.id" class="flex justify-between items-center text-sm">
                         <span class="font-medium text-gray-700 dark:text-gray-300">{{ project.name }}</span>
-                        <span class="text-xs text-orange-600 bg-orange-50 dark:bg-orange-900/30 px-2 py-1 rounded">{{ project.status || 'Brouillon' }}</span>
+                        <span class="text-xs text-orange-600 bg-orange-50 dark:bg-orange-900/30 px-2 py-1 rounded">{{ project.status || $t('dashboard.status_draft') }}</span>
                     </li>
-                    <li v-if="projects.length === 0" class="text-gray-400 text-sm italic">Aucun projet créé</li>
+                    <li v-if="projects.length === 0" class="text-gray-400 text-sm italic">{{ $t('dashboard.no_projects') }}</li>
                 </ul>
                 <div v-else class="text-sm text-gray-400">{{ $t('dashboard.loading') }}</div>
             </div>
         </div>
 
         <div class="bg-blue-50 dark:bg-gray-800/50 p-6 rounded-xl border border-blue-100 dark:border-gray-700">
-            <h3 class="font-bold mb-4">Action rapide</h3>
+            <h3 class="font-bold mb-4">{{ $t('dashboard.quick_actions') }}</h3>
             <div class="flex flex-wrap gap-3">
                 <router-link to="/dashboard/tiers/create">
-                    <Button label="Nouveau Client" icon="pi pi-user-plus" />
+                    <Button :label="$t('dashboard.btn_new_client')" icon="pi pi-user-plus" />
                 </router-link>
                 <router-link to="/dashboard/catalogue/create">
-                    <Button label="Nouvelle Formation" icon="pi pi-book" />
+                    <Button :label="$t('dashboard.btn_new_formation')" icon="pi pi-book" />
                 </router-link>
                 <router-link to="/dashboard/projets/create">
-                    <Button label="Nouveau Projet" icon="pi pi-plus" />
+                    <Button :label="$t('dashboard.btn_new_project')" icon="pi pi-plus" />
                 </router-link>
             </div>
         </div>

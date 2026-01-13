@@ -8,73 +8,73 @@ const features = computed(() => [
   {
     id: 1,
     icon: 'pi-chart-bar',
-    title: "Tableau de Bord & KPI",
-    description: "Visualisez en un coup d'œil l'activité de votre organisme de formation. Suivez les indicateurs clés (CA, nombre de stagiaires, taux de satisfaction) pour piloter votre activité.",
+    title: t('features.modules.dashboard.title'),
+    description: t('features.modules.dashboard.description'),
     benefits: [
-      "Vues synthétiques et graphiques",
-      "Suivi des entrées/sorties",
-      "Indicateurs Qualiopi",
-      "Alertes et notifications"
+      t('features.modules.dashboard.benefits[0]'),
+      t('features.modules.dashboard.benefits[1]'),
+      t('features.modules.dashboard.benefits[2]'),
+      t('features.modules.dashboard.benefits[3]')
     ]
   },
   {
     id: 2,
     icon: 'pi-users',
-    title: "Gestion des Tiers (CRM)",
-    description: "Centralisez la gestion de vos Clients, Formateurs et Fournisseurs. Une base de données unique pour retrouver facilement toutes les coordonnées et documents associés.",
+    title: t('features.modules.crm.title'),
+    description: t('features.modules.crm.description'),
     benefits: [
-      "Fiches détaillées (Clients, Formateurs...)",
-      "Gestion des contacts",
-      "Assignation de référents",
-      "Historique des échanges"
+      t('features.modules.crm.benefits[0]'),
+      t('features.modules.crm.benefits[1]'),
+      t('features.modules.crm.benefits[2]'),
+      t('features.modules.crm.benefits[3]')
     ]
   },
   {
     id: 3,
     icon: 'pi-book',
-    title: "Catalogue de Formations",
-    description: "Gérez votre offre de formation avec précision. Créez des fiches programmes complètes, définissez les objectifs, prérequis et modalités d'évaluation.",
+    title: t('features.modules.catalogue.title'),
+    description: t('features.modules.catalogue.description'),
     benefits: [
-      "Fiches programmes conformes",
-      "Gestion des versions",
-      "Tarification et modalités",
-      "Programme détaillé par module"
+      t('features.modules.catalogue.benefits[0]'),
+      t('features.modules.catalogue.benefits[1]'),
+      t('features.modules.catalogue.benefits[2]'),
+      t('features.modules.catalogue.benefits[3]')
     ]
   },
   {
     id: 4,
     icon: 'pi-briefcase',
-    title: "Gestion de Projets (Workflow)",
-    description: "Un workflow complet pour gérer le cycle de vie de vos sessions de formation, de la demande initiale jusqu'à la clôture du dossier et l'envoi des documents.",
+    title: t('features.modules.workflow.title'),
+    description: t('features.modules.workflow.description'),
     benefits: [
-      "Workflow guidé (Identification -> Clôture)",
-      "Génération automatique de documents",
-      "Conventions et Convocations",
-      "Suivi des émargements"
+      t('features.modules.workflow.benefits[0]'),
+      t('features.modules.workflow.benefits[1]'),
+      t('features.modules.workflow.benefits[2]'),
+      t('features.modules.workflow.benefits[3]')
     ]
   },
   {
     id: 5,
     icon: 'pi-bolt',
-    title: "Analyse IA de Documents",
-    description: "Gagnez du temps grâce à l'intelligence artificielle. Analysez automatiquement vos documents (CV, Certificats, Programmes) pour en extraire les données essentielles.",
+    title: t('features.modules.ia.title'),
+    description: t('features.modules.ia.description'),
     benefits: [
-      "Reconnaissance automatique (OCR)",
-      "Extractions de données clés",
-      "Support PDF, DOCX, Images",
-      "Intégration fluide au dossier"
+      t('features.modules.ia.benefits[0]'),
+      t('features.modules.ia.benefits[1]'),
+      t('features.modules.ia.benefits[2]'),
+      t('features.modules.ia.benefits[3]')
     ]
   },
   {
     id: 6,
     icon: 'pi-building',
-    title: "Configuration & Conformité",
-    description: "Administrez votre organisme sereinement. Configurez vos informations légales, logos, documents de référence (CGV, Règlement intérieur) et suivis Qualité.",
+    title: t('features.modules.config.title'),
+    description: t('features.modules.config.description'),
     benefits: [
-      "Informations légales et logos",
-      "Gestion des taxes et TVA",
-      "Documents de référence (CGV...)",
-      "Suivi des référents (Handicap...)"
+      t('features.modules.config.benefits[0]'),
+      t('features.modules.config.benefits[1]'),
+      t('features.modules.config.benefits[2]'),
+      t('features.modules.config.benefits[3]')
     ]
   }
 ]);

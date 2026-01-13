@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '../../stores/auth';
 import FileUpload from 'primevue/fileupload';
 import Dropdown from 'primevue/dropdown';
@@ -8,6 +9,7 @@ import Message from 'primevue/message';
 import Textarea from 'primevue/textarea';
 import SlowLoadingDialog from '../../components/dashboard/SlowLoadingDialog.vue'; // Ajout
 
+const { t } = useI18n();
 const auth = useAuthStore();
 const selectedType = ref(null);
 const file = ref(null);
@@ -17,22 +19,22 @@ const success = ref(false);
 const error = ref(null);
 const analysisResult = ref('');
 
-const docTypes = [
-    { name: 'Déclaration d\'activité', code: 'DECLARATION_ACTIVITE' },
-    { name: 'Certificat Qualiopi', code: 'CERTIFICAT_QUALIOPI' },
-    { name: 'Bilan Pédagogique et Financier', code: 'BPF_BILAN_PEDAGOGIQUE_FINANCIER' },
-    { name: 'KBIS', code: 'KBIS' },
-    { name: 'Programme de formation', code: 'PROGRAMME_FORMATION' },
-    { name: 'Feuille d\'émargement', code: 'FEUILLE_EMARGEMENT' },
-    { name: 'Attestation de formation', code: 'ATTESTATION_FORMATION' },
-    { name: 'Certificat de réalisation', code: 'CERTIFICAT_REALISATION' },
-    { name: 'Contrat de formation', code: 'CONTRAT_FORMATION' },
-    { name: 'Convention de formation', code: 'CONVENTION_FORMATION' },
-    { name: 'CV Formateur', code: 'CV_FORMATEUR' },
-    { name: 'Justificatif de compétences', code: 'JUSTIFICATIF_COMPETENCES' },
-    { name: 'Facture', code: 'FACTURE_FORMATION' },
-    { name: 'Règlement Intérieur', code: 'REGLEMENT_INTERIEUR' }
-];
+const docTypes = computed(() => [
+    { name: t('analysis.types.activity_declaration'), code: 'DECLARATION_ACTIVITE' },
+    { name: t('analysis.types.qualiopi_certificate'), code: 'CERTIFICAT_QUALIOPI' },
+    { name: t('analysis.types.bpf'), code: 'BPF_BILAN_PEDAGOGIQUE_FINANCIER' },
+    { name: t('analysis.types.kbis'), code: 'KBIS' },
+    { name: t('analysis.types.training_program'), code: 'PROGRAMME_FORMATION' },
+    { name: t('analysis.types.attendance_sheet'), code: 'FEUILLE_EMARGEMENT' },
+    { name: t('analysis.types.training_certificate'), code: 'ATTESTATION_FORMATION' },
+    { name: t('analysis.types.completion_certificate'), code: 'CERTIFICAT_REALISATION' },
+    { name: t('analysis.types.training_contract'), code: 'CONTRAT_FORMATION' },
+    { name: t('analysis.types.training_convention'), code: 'CONVENTION_FORMATION' },
+    { name: t('analysis.types.trainer_cv'), code: 'CV_FORMATEUR' },
+    { name: t('analysis.types.skills_proof'), code: 'JUSTIFICATIF_COMPETENCES' },
+    { name: t('analysis.types.invoice'), code: 'FACTURE_FORMATION' },
+    { name: t('analysis.types.internal_rules'), code: 'REGLEMENT_INTERIEUR' }
+]);
 
 const onFileSelect = (event) => {
     file.value = event.files[0];
@@ -104,38 +106,38 @@ const sendDocument = async () => {
         <SlowLoadingDialog :visible="showSlowLoading" />
         <!-- Colonne Gauche : Upload -->
         <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm h-fit">
-            <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Analyse de Document</h1>
+            <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">{{ t('analysis.title') }}</h1>
 
             <div class="flex flex-col gap-6">
                 <!-- Sélection du type -->
                 <div class="flex flex-col gap-2">
-                    <label class="font-medium text-gray-700 dark:text-gray-300">Type de document</label>
-                    <Dropdown v-model="selectedType" :options="docTypes" optionLabel="name" placeholder="Sélectionnez un type" 
+                    <label class="font-medium text-gray-700 dark:text-gray-300">{{ t('analysis.doc_type') }}</label>
+                    <Dropdown v-model="selectedType" :options="docTypes" optionLabel="name" :placeholder="t('analysis.select_type')" 
                         class="w-full" :disabled="loading" filter />
                 </div>
 
                 <!-- Upload Fichier (Drag & Drop) -->
                 <div class="flex flex-col gap-2">
-                    <label class="font-medium text-gray-700 dark:text-gray-300">Document (PDF, DOCX, JPG, PNG)</label>
+                    <label class="font-medium text-gray-700 dark:text-gray-300">{{ t('analysis.upload_label') }}</label>
                     <FileUpload name="docs[]" url="/api/upload" @select="onFileSelect" :maxFileSize="10000000" accept=".pdf,.docx,.jpg,.jpeg,.png"
                         :auto="false" :customUpload="true" @uploader="() => {}"
-                        chooseLabel="Choisir ou Glisser" cancelLabel="Annuler" 
+                        :chooseLabel="t('analysis.choose_drop')" :cancelLabel="t('analysis.cancel')" 
                         class="w-full" :disabled="loading">
                         <template #empty>
                             <div class="flex flex-col items-center justify-center p-8 text-gray-500 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-900/50 dark:border-gray-700">
                                 <i class="pi pi-cloud-upload text-4xl mb-3 text-slate-400"></i>
-                                <p>Glissez-déposez votre fichier ici</p>
+                                <p>{{ t('analysis.drop_text') }}</p>
                             </div>
                         </template>
                     </FileUpload>
                 </div>
 
                 <!-- Bouton Envoyer -->
-                <Button label="Lancer l'analyse" icon="pi pi-bolt" @click="sendDocument" 
+                <Button :label="t('analysis.analyze_btn')" icon="pi pi-bolt" @click="sendDocument" 
                     :loading="loading" :disabled="!file || !selectedType" severity="primary" size="large" />
 
                 <!-- Messages -->
-                <Message v-if="success" severity="success" :closable="false">Analyse terminée avec succès !</Message>
+                <Message v-if="success" severity="success" :closable="false">{{ t('analysis.success') }}</Message>
                 <Message v-if="error" severity="error" :closable="false">{{ error }}</Message>
             </div>
         </div>
@@ -143,18 +145,18 @@ const sendDocument = async () => {
         <!-- Colonne Droite : Résultat -->
         <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm flex flex-col h-full" v-if="analysisResult || loading">
             <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
-                <i class="pi pi-file-edit text-primary"></i> Résultat de l'analyse
+                <i class="pi pi-file-edit text-primary"></i> {{ t('analysis.result_title') }}
             </h2>
             
             <div v-if="loading" class="flex-1 flex flex-col items-center justify-center text-gray-500 min-h-[300px]">
                 <i class="pi pi-spin pi-spinner text-4xl mb-4 text-primary"></i>
-                <p>Analyse du document en cours...</p>
+                <p>{{ t('analysis.analyzing') }}</p>
             </div>
 
             <div v-else class="flex-1 flex flex-col min-h-[300px]">
                 <Textarea v-model="analysisResult" rows="15" class="w-full h-full font-mono text-sm bg-gray-50 dark:bg-gray-900" readonly />
                 <div class="flex justify-end mt-4">
-                    <Button icon="pi pi-copy" label="Copier" severity="secondary" @click="navigator.clipboard.writeText(analysisResult)" />
+                    <Button icon="pi pi-copy" :label="t('analysis.copy')" severity="secondary" @click="navigator.clipboard.writeText(analysisResult)" />
                 </div>
             </div>
         </div>
@@ -162,7 +164,7 @@ const sendDocument = async () => {
         <!-- Placeholder col droite si vide -->
         <div v-else class="card bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl shadow-sm border-2 border-dashed border-gray-200 dark:border-gray-700 flex flex-col items-center justify-center text-gray-400 min-h-[400px]">
             <i class="pi pi-sparkles text-4xl mb-4"></i>
-            <p>Le résultat de l'IA s'affichera ici</p>
+            <p>{{ t('analysis.placeholder_result') }}</p>
         </div>
     </div>
 </template>

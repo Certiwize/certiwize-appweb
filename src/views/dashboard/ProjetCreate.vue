@@ -5,6 +5,7 @@ import { useProjectStore } from '../../stores/project';
 import { useDataStore } from '../../stores/data';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
+import { useI18n } from 'vue-i18n';
 import Textarea from 'primevue/textarea';
 import Dropdown from 'primevue/dropdown';
 import InputNumber from 'primevue/inputnumber';
@@ -20,6 +21,7 @@ const router = useRouter();
 const route = useRoute();
 const projectStore = useProjectStore();
 const dataStore = useDataStore();
+const { t } = useI18n();
 
 const projectId = ref(route.params.id || null);
 const tiersOptions = ref([]);
@@ -204,7 +206,7 @@ const generate = async (docType) => {
         await save(); // Toujours sauvegarder avant
         const res = await projectStore.generateDoc(docType, form.value);
         if(!res.success) {
-            alert("Erreur: " + res.error);
+            alert(t('dashboard.error', { error: res.error }));
         }
         // Pas besoin d'alert succès, le ✅ apparaît automatiquement
     } finally {
@@ -214,7 +216,7 @@ const generate = async (docType) => {
 
 const submitForValidation = async () => {
     await save();
-    if(confirm("Confirmer l'étude de faisabilité ? Vous ne pourrez plus la modifier tant qu'elle n'est pas traitée.")) {
+    if(confirm(t('project.warnings.phase1_locked_confirm') || "Confirmer l'étude de faisabilité ?")) {
         await projectStore.updateStatus('En attente');
     }
 };
@@ -230,19 +232,19 @@ const goBack = () => {
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-                    Projet : {{ form.client || 'Nouveau' }}
+                    {{ t('project.title') }} {{ form.client || t('project.new') }}
                     <Tag :value="status" :severity="status === 'Validé' ? 'success' : (status === 'En attente' ? 'warn' : 'secondary')" />
                 </h1>
             </div>
             <div class="flex gap-2">
-                <Button label="Retour" severity="secondary" text @click="goBack" />
-                <Button v-if="status === 'Brouillon'" label="Sauvegarder" icon="pi pi-save" @click="save" />
+                <Button :label="t('project.buttons.back')" severity="secondary" text @click="goBack" />
+                <Button v-if="status === 'Brouillon'" :label="t('project.buttons.save')" icon="pi pi-save" @click="save" />
             </div>
         </div>
 
         <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm mb-8 border-l-4 border-blue-500">
             <h2 class="text-xl font-bold mb-4 flex justify-between">
-                Phase 1 : Étude de Faisabilité & Convention
+                {{ t('project.phases.phase1') }}
                 <i v-if="isValidated" class="pi pi-check-circle text-green-500"></i>
                 <i v-else-if="isPhase1Locked" class="pi pi-lock text-yellow-500"></i>
             </h2>
@@ -251,14 +253,14 @@ const goBack = () => {
             <div v-if="status === 'En attente'" class="mb-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
                 <p class="text-yellow-700 dark:text-yellow-300 text-sm">
                     <i class="pi pi-lock mr-2"></i>
-                    <strong>Phase 1 verrouillée</strong> — En attente de validation. Les informations ne peuvent plus être modifiées.
+                    <strong>{{ t('project.warnings.phase1_locked') }}</strong>
                 </p>
             </div>
 
             <Accordion :multiple="true" :activeIndex="[0, 1]">
                 
                 <AccordionPanel value="0">
-                    <AccordionHeader>1. Identification du Projet</AccordionHeader>
+                    <AccordionHeader>{{ t('project.sections.id') }}</AccordionHeader>
                     <AccordionContent>
                         <p class="text-sm text-gray-500 mb-4 italic">Document 1 — Toutes les balises seront envoyées à n8n</p>
                         
@@ -266,7 +268,7 @@ const goBack = () => {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <!-- Informations générales -->
                             <div class="md:col-span-2 border-b pb-2 mb-2">
-                                <span class="font-semibold text-primary">Informations générales</span>
+                                <span class="font-semibold text-primary">{{ t('project.fields.general_info') }}</span>
                             </div>
                             <div class="flex flex-col gap-1">
                                 <label class="text-sm font-medium">Date</label>
@@ -287,7 +289,7 @@ const goBack = () => {
                             
                             <!-- Cadrage du projet -->
                             <div class="md:col-span-2 border-b pb-2 mb-2 mt-4">
-                                <span class="font-semibold text-primary">Cadrage du projet</span>
+                                <span class="font-semibold text-primary">{{ t('project.fields.scoping') }}</span>
                             </div>
                             <div class="md:col-span-2 flex flex-col gap-1">
                                 <label class="text-sm font-medium">Contexte</label>
@@ -304,7 +306,7 @@ const goBack = () => {
                             
                             <!-- Modalités d'exécution -->
                             <div class="md:col-span-2 border-b pb-2 mb-2 mt-4">
-                                <span class="font-semibold text-primary">Modalités d'exécution</span>
+                                <span class="font-semibold text-primary">{{ t('project.fields.execution') }}</span>
                             </div>
                             <div class="flex flex-col gap-1">
                                 <label class="text-sm font-medium">Calendrier</label>
@@ -325,7 +327,7 @@ const goBack = () => {
                             
                             <!-- Ressources & Moyens -->
                             <div class="md:col-span-2 border-b pb-2 mb-2 mt-4">
-                                <span class="font-semibold text-primary">Ressources & Moyens</span>
+                                <span class="font-semibold text-primary">{{ t('project.fields.resources') }}</span>
                             </div>
                             <div class="md:col-span-2 flex flex-col gap-1">
                                 <label class="text-sm font-medium">Compétences requises</label>
@@ -343,12 +345,12 @@ const goBack = () => {
                         </fieldset>
                         
                         <div class="mt-6 flex justify-between items-center bg-gray-50 dark:bg-gray-700/30 p-3 rounded">
-                            <span class="text-sm text-gray-500" v-if="docs.etude">✅ Document généré</span>
-                            <span v-else class="text-sm text-gray-400">Document non généré</span>
+                            <span class="text-sm text-gray-500" v-if="docs.etude">{{ t('project.status.generated') }}</span>
+                            <span v-else class="text-sm text-gray-400">{{ t('project.status.not_generated') }}</span>
                             
                             <div class="flex gap-2">
-                                <a v-if="docs.etude" :href="docs.etude" target="_blank"><Button icon="pi pi-eye" label="Voir PDF" severity="secondary" /></a>
-                                <Button label="Générer Document 1" icon="pi pi-file-pdf" 
+                                <a v-if="docs.etude" :href="docs.etude" target="_blank"><Button icon="pi pi-eye" :label="t('project.buttons.view_pdf')" severity="secondary" /></a>
+                                <Button :label="t('project.buttons.generate_doc') + ' 1'" icon="pi pi-file-pdf" 
                                         @click="generate('etude')" 
                                         :disabled="status !== 'Brouillon' || !isDoc1Valid || generatingDoc !== null" 
                                         :loading="generatingDoc === 'etude'" />
@@ -358,7 +360,7 @@ const goBack = () => {
                 </AccordionPanel>
 
                 <AccordionPanel value="1">
-                    <AccordionHeader>2. Convention de Formation Professionnelle</AccordionHeader>
+                    <AccordionHeader>{{ t('project.sections.convention') }}</AccordionHeader>
                     <AccordionContent>
                         <p class="text-sm text-gray-500 mb-4 italic">Document 2 — Convention de formation professionnelle</p>
                         
@@ -366,7 +368,7 @@ const goBack = () => {
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <!-- Identification des parties -->
                             <div class="md:col-span-2 border-b pb-2 mb-2">
-                                <span class="font-semibold text-primary">Identification des parties</span>
+                                <span class="font-semibold text-primary">{{ t('project.fields.parties_id') }}</span>
                             </div>
                             <div class="md:col-span-2 flex flex-col gap-1">
                                 <label class="text-sm font-medium">Soussignés</label>
@@ -379,7 +381,7 @@ const goBack = () => {
                             
                             <!-- Formation -->
                             <div class="md:col-span-2 border-b pb-2 mb-2 mt-4">
-                                <span class="font-semibold text-primary">Formation</span>
+                                <span class="font-semibold text-primary">{{ t('project.fields.training') }}</span>
                             </div>
                             <div class="md:col-span-2 flex flex-col gap-1">
                                 <label class="text-sm font-medium">Intitulé de la formation</label>
@@ -404,7 +406,7 @@ const goBack = () => {
                             
                             <!-- Participant -->
                             <div class="md:col-span-2 border-b pb-2 mb-2 mt-4">
-                                <span class="font-semibold text-primary">Participant</span>
+                                <span class="font-semibold text-primary">{{ t('project.fields.participant') }}</span>
                             </div>
                             <div class="md:col-span-2 flex flex-col gap-1">
                                 <label class="text-sm font-medium">Fonction des stagiaires</label>
@@ -413,7 +415,7 @@ const goBack = () => {
                             
                             <!-- Prix -->
                             <div class="md:col-span-2 border-b pb-2 mb-2 mt-4">
-                                <span class="font-semibold text-primary">Prix</span>
+                                <span class="font-semibold text-primary">{{ t('project.fields.price') }}</span>
                             </div>
                             <div class="flex flex-col gap-1">
                                 <label class="text-sm font-medium">Coût HT</label>
@@ -426,7 +428,7 @@ const goBack = () => {
                             
                             <!-- Moyens pédagogiques -->
                             <div class="md:col-span-2 border-b pb-2 mb-2 mt-4">
-                                <span class="font-semibold text-primary">Moyens pédagogiques</span>
+                                <span class="font-semibold text-primary">{{ t('project.fields.pedagogical_means') }}</span>
                             </div>
                             <div class="flex flex-col gap-1">
                                 <label class="text-sm font-medium">Nom de l'expert</label>
@@ -443,7 +445,7 @@ const goBack = () => {
                             
                             <!-- Signatures / Date -->
                             <div class="md:col-span-2 border-b pb-2 mb-2 mt-4">
-                                <span class="font-semibold text-primary">Signatures / Date</span>
+                                <span class="font-semibold text-primary">{{ t('project.fields.signatures') }}</span>
                             </div>
                             <div class="flex flex-col gap-1">
                                 <label class="text-sm font-medium">Date du jour</label>
@@ -453,12 +455,12 @@ const goBack = () => {
                         </fieldset>
 
                         <div class="mt-6 flex justify-between items-center bg-gray-50 dark:bg-gray-700/30 p-3 rounded">
-                            <span class="text-sm text-gray-500" v-if="docs.convention">✅ Document généré</span>
-                            <span v-else class="text-sm text-gray-400">Document non généré</span>
+                            <span class="text-sm text-gray-500" v-if="docs.convention">{{ t('project.status.generated') }}</span>
+                            <span v-else class="text-sm text-gray-400">{{ t('project.status.not_generated') }}</span>
                             
                             <div class="flex gap-2">
-                                <a v-if="docs.convention" :href="docs.convention" target="_blank"><Button icon="pi pi-eye" label="Voir PDF" severity="secondary" /></a>
-                                <Button label="Générer Document 2" icon="pi pi-file-pdf" 
+                                <a v-if="docs.convention" :href="docs.convention" target="_blank"><Button icon="pi pi-eye" :label="t('project.buttons.view_pdf')" severity="secondary" /></a>
+                                <Button :label="t('project.buttons.generate_doc') + ' 2'" icon="pi pi-file-pdf" 
                                         @click="generate('convention')" 
                                         :disabled="status !== 'Brouillon' || !isDoc2Valid || generatingDoc !== null" 
                                         :loading="generatingDoc === 'convention'" />
@@ -469,72 +471,72 @@ const goBack = () => {
             </Accordion>
 
             <div class="mt-6 flex flex-col items-end gap-2" v-if="status === 'Brouillon'">
-                <Button label="Soumettre l'étude pour validation" icon="pi pi-send" severity="warning" @click="submitForValidation" :disabled="!canSubmitPhase1" />
+                <Button :label="t('project.buttons.submit_validation')" icon="pi pi-send" severity="warning" @click="submitForValidation" :disabled="!canSubmitPhase1" />
                 <p v-if="!bothDocsGenerated" class="text-sm text-orange-500">
                     <i class="pi pi-exclamation-triangle mr-1"></i>
-                    Générez les 2 documents de la Phase 1 avant de soumettre.
+                    {{ t('project.warnings.generate_phase1') }}
                 </p>
             </div>
             <div v-else-if="status === 'En attente'" class="mt-4 text-center p-4 bg-yellow-50 text-yellow-700 rounded">
-                <i class="pi pi-clock mr-2"></i> En attente de validation par Certiwize.
+                <i class="pi pi-clock mr-2"></i> {{ t('project.warnings.waiting_validation') }}
             </div>
         </div>
 
         <div v-if="isValidated" class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border-l-4 border-green-500 animate-fade-in">
             <h2 class="text-xl font-bold mb-4">
-                Phase 2 : Session & Convocations
+                {{ t('project.phases.phase2') }}
                 <i class="pi pi-check-circle text-green-500 ml-2"></i>
             </h2>
             
             <Accordion :multiple="true" :activeIndex="[0, 1]">
                 <!-- Document 3 : Convocation -->
                 <AccordionPanel value="0">
-                    <AccordionHeader>3. Convocation à la Formation</AccordionHeader>
+                    <AccordionHeader>{{ t('project.sections.convocation') }}</AccordionHeader>
                     <AccordionContent>
                         <p class="text-sm text-gray-500 mb-4 italic">Document 3 — Convocation à la formation</p>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="md:col-span-2 flex flex-col gap-1">
-                                <label class="text-sm font-medium">Nom de la formation</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.training_name') }}</label>
                                 <InputText v-model="form.nom_formation" placeholder="Intitulé de la formation" />
                             </div>
                             <div class="md:col-span-2 flex flex-col gap-1">
-                                <label class="text-sm font-medium">Nom du participant</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.participant_name') }}</label>
                                 <InputText v-model="form.nom_participant" placeholder="Nom et prénom du stagiaire" />
                             </div>
                             <div class="flex flex-col gap-1">
-                                <label class="text-sm font-medium">Date</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.date') }}</label>
                                 <InputText v-model="form.date_convoc" placeholder="Ex: Lundi 15 janvier 2026" />
                             </div>
                             <div class="flex flex-col gap-1">
-                                <label class="text-sm font-medium">Lieu</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.location') }}</label>
                                 <InputText v-model="form.lieu_convoc" placeholder="Adresse du lieu de formation" />
                             </div>
                             <div class="flex flex-col gap-1">
-                                <label class="text-sm font-medium">Horaires</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.hours') }}</label>
                                 <InputText v-model="form.horaires_convoc" placeholder="Ex: 9h00 - 17h00" />
                             </div>
                             <div class="flex flex-col gap-1">
-                                <label class="text-sm font-medium">Transport</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.transport') }}</label>
                                 <InputText v-model="form.transport" placeholder="Informations transport / accès" />
                             </div>
                             <div class="md:col-span-2 flex flex-col gap-1">
-                                <label class="text-sm font-medium">Équipement requis</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.equipment') }}</label>
                                 <Textarea v-model="form.equipement" rows="2" placeholder="Matériel à apporter, tenue, EPI..." />
                             </div>
                             <div class="md:col-span-2 flex flex-col gap-1">
-                                <label class="text-sm font-medium">Référent handicap</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.handicap_ref') }}</label>
                                 <Textarea v-model="form.ref_handicap" rows="2" placeholder="Contact du référent handicap" />
                             </div>
                         </div>
 
                         <div class="mt-6 flex justify-between items-center bg-gray-50 dark:bg-gray-700/30 p-3 rounded">
-                            <span class="text-sm text-gray-500" v-if="docs.convocation">✅ Document généré</span>
-                            <span v-else class="text-sm text-gray-400">Document non généré</span>
+                            <span class="text-sm text-gray-500" v-if="docs.convocation">{{ t('project.status.generated') }}</span>
+                            <span v-else class="text-sm text-gray-400">{{ t('project.status.not_generated') }}</span>
                             
                             <div class="flex gap-2">
-                                <a v-if="docs.convocation" :href="docs.convocation" target="_blank"><Button icon="pi pi-eye" label="Voir PDF" severity="secondary" /></a>
-                                <Button label="Générer Document 3" icon="pi pi-file-pdf" 
+                                <a v-if="docs.convocation" :href="docs.convocation" target="_blank"><Button icon="pi pi-eye" :label="t('project.buttons.view_pdf')" severity="secondary" /></a>
+                                <Button :label="t('project.buttons.generate_doc') + ' 3'" icon="pi pi-file-pdf" 
                                         @click="generate('convocation')" 
                                         :disabled="!isDoc3Valid || generatingDoc !== null" 
                                         :loading="generatingDoc === 'convocation'" />
@@ -545,56 +547,56 @@ const goBack = () => {
 
                 <!-- Document 4 : Livret d'Accueil -->
                 <AccordionPanel value="1">
-                    <AccordionHeader>4. Livret d'Accueil</AccordionHeader>
+                    <AccordionHeader>{{ t('project.sections.welcome_booklet') }}</AccordionHeader>
                     <AccordionContent>
                         <p class="text-sm text-gray-500 mb-4 italic">Document 4 — Livret d'accueil des stagiaires</p>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="flex flex-col gap-1">
-                                <label class="text-sm font-medium">Date</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.date') }}</label>
                                 <Calendar v-model="form.date_livret" dateFormat="dd/mm/yy" showIcon />
                             </div>
                             <div class="flex flex-col gap-1">
-                                <label class="text-sm font-medium">Qui sommes-nous ?</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.who_are_we') }}</label>
                                 <InputText v-model="form.qui" placeholder="Présentation de l'organisme" />
                             </div>
                             <div class="md:col-span-2 flex flex-col gap-1">
-                                <label class="text-sm font-medium">Accueil des stagiaires</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.trainee_welcome') }}</label>
                                 <Textarea v-model="form.accueil_stagiere" rows="2" placeholder="Modalités d'accueil" />
                             </div>
                             <div class="md:col-span-2 flex flex-col gap-1">
-                                <label class="text-sm font-medium">Lieu de formation</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.training_location') }}</label>
                                 <InputText v-model="form.lieu_livret" placeholder="Adresse complète" />
                             </div>
                             <div class="flex flex-col gap-1">
-                                <label class="text-sm font-medium">Hébergement</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.accommodation') }}</label>
                                 <InputText v-model="form.hebergement" placeholder="Infos hébergement (si applicable)" />
                             </div>
                             <div class="flex flex-col gap-1">
-                                <label class="text-sm font-medium">Restauration</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.catering') }}</label>
                                 <InputText v-model="form.restauration" placeholder="Infos restauration" />
                             </div>
                             <div class="md:col-span-2 flex flex-col gap-1">
-                                <label class="text-sm font-medium">Moyens pédagogiques</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.pedagogical_means') }}</label>
                                 <Textarea v-model="form.moyens_pedagq" rows="2" placeholder="Matériel, supports, outils..." />
                             </div>
                             <div class="md:col-span-2 flex flex-col gap-1">
-                                <label class="text-sm font-medium">Organisation interne</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.internal_org') }}</label>
                                 <Textarea v-model="form.orga_interne" rows="2" placeholder="Règlement intérieur, consignes..." />
                             </div>
                             <div class="md:col-span-2 flex flex-col gap-1">
-                                <label class="text-sm font-medium">Accueil handicap</label>
+                                <label class="text-sm font-medium">{{ t('project.fields.handicap_access') }}</label>
                                 <Textarea v-model="form.accueil_handicap" rows="2" placeholder="Accessibilité, aménagements..." />
                             </div>
                         </div>
 
                         <div class="mt-6 flex justify-between items-center bg-gray-50 dark:bg-gray-700/30 p-3 rounded">
-                            <span class="text-sm text-gray-500" v-if="docs.livret">✅ Document généré</span>
-                            <span v-else class="text-sm text-gray-400">Document non généré</span>
+                            <span class="text-sm text-gray-500" v-if="docs.livret">{{ t('project.status.generated') }}</span>
+                            <span v-else class="text-sm text-gray-400">{{ t('project.status.not_generated') }}</span>
                             
                             <div class="flex gap-2">
-                                <a v-if="docs.livret" :href="docs.livret" target="_blank"><Button icon="pi pi-eye" label="Voir PDF" severity="secondary" /></a>
-                                <Button label="Générer Document 4" icon="pi pi-file-pdf" severity="info" 
+                                <a v-if="docs.livret" :href="docs.livret" target="_blank"><Button icon="pi pi-eye" :label="t('project.buttons.view_pdf')" severity="secondary" /></a>
+                                <Button :label="t('project.buttons.generate_doc') + ' 4'" icon="pi pi-file-pdf" severity="info" 
                                         @click="generate('livret')" 
                                         :disabled="!isDoc4Valid || generatingDoc !== null" 
                                         :loading="generatingDoc === 'livret'" />
