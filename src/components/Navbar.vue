@@ -112,12 +112,12 @@ const toggleProfileMenu = (event) => {
           </router-link>
 
           <div v-else class="flex items-center gap-2">
-            <router-link 
-              to="/dashboard" 
+            <a 
+              href="/dashboard"
               class="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-md transition"
             >
               {{ t('nav.dashboard') }}
-            </router-link>
+            </a>
 
             <router-link 
               to="/dashboard/company" 

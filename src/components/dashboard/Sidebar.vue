@@ -5,11 +5,11 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 
 const navigation = [
-  { name: 'Acceuil', href: '/dashboard', icon: 'pi-home' },
+  { name: 'Accueil', href: '/dashboard', icon: 'pi-home' },
   { name: 'Tiers', href: '/dashboard/tiers', icon: 'pi-users' },
   { name: 'Catalogue', href: '/dashboard/catalogue', icon: 'pi-book' },
   { name: 'Projets', href: '/dashboard/projets', icon: 'pi-briefcase' },
-  { name: 'Analyse Doc', href: '/dashboard/analyse-doc', icon: 'pi-search' },
+  { name: 'Analyse documentaire', href: '/dashboard/analyse-doc', icon: 'pi-search' },
   { name: 'Manuel Qualiopi', href: '/dashboard/manuel-qualiopi', icon: 'pi-book' },
 ];
 

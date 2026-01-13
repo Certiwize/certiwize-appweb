@@ -111,12 +111,12 @@ const uploadLogo = async (event, type) => {
                 
                 <TabPanel header="Identité & Coordonnées">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
-                        <div class="flex flex-col gap-2"><label>Raison Sociale</label><InputText v-model="form.name" /></div>
+                        <div class="flex flex-col gap-2"><label>Raison sociale</label><InputText v-model="form.name" /></div>
                         <div class="flex flex-col gap-2"><label>Devise</label><Dropdown v-model="form.currency" :options="currencies" /></div>
                         
                         <div class="md:col-span-2 flex flex-col gap-2"><label>Adresse</label><Textarea v-model="form.address" rows="2" /></div>
                         
-                        <div class="flex flex-col gap-2"><label>Code Postal</label><InputText v-model="form.zip_code" maxlength="5" /></div>
+                        <div class="flex flex-col gap-2"><label>Code postal</label><InputText v-model="form.zip_code" maxlength="5" /></div>
                         <div class="flex flex-col gap-2"><label>Ville</label><InputText v-model="form.city" /></div>
                         
                         <div class="flex flex-col gap-2"><label>Pays</label><Dropdown v-model="form.country" :options="countries" optionLabel="label" optionValue="value" /></div>
@@ -125,7 +125,7 @@ const uploadLogo = async (event, type) => {
                         <div class="flex flex-col gap-2"><label>Téléphone</label><InputText v-model="form.phone" /></div>
                         <div class="flex flex-col gap-2"><label>Portable</label><InputText v-model="form.mobile" /></div>
                         <div class="flex flex-col gap-2"><label>Email</label><InputText v-model="form.email" /></div>
-                        <div class="flex flex-col gap-2"><label>Site Web</label><InputText v-model="form.website" placeholder="https://" /></div>
+                        <div class="flex flex-col gap-2"><label>Site web</label><InputText v-model="form.website" placeholder="https://" /></div>
 
                         <div class="border p-4 rounded border-dashed opacity-75">
                             <label class="block mb-2 font-bold flex items-center gap-2">
@@ -144,14 +144,14 @@ const uploadLogo = async (event, type) => {
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
                         <div class="flex flex-col gap-2"><label>Gestionnaire(s)</label><InputText v-model="form.manager_name" /></div>
                         <div class="flex flex-col gap-2"><label>Délégué DPO</label><InputText v-model="form.dpo_name" /></div>
-                        <div class="flex flex-col gap-2"><label>Référent Handicap</label><InputText v-model="form.handicap_referent" placeholder="Nom du référent" /></div>
-                        <div class="flex flex-col gap-2"><label>Capital (€)</label><InputNumber v-model="form.capital" mode="currency" currency="EUR" /></div>
+                        <div class="flex flex-col gap-2"><label>Référent handicap</label><InputText v-model="form.handicap_referent" placeholder="Nom du référent" /></div>
+                        <div class="flex flex-col gap-2"><label>Capital social (€)</label><InputNumber v-model="form.capital" mode="currency" currency="EUR" /></div>
                         
-                        <div class="flex flex-col gap-2"><label>Entité Légale</label><Dropdown v-model="form.legal_entity_type" :options="legalEntities" editable /></div>
-                        <div class="flex flex-col gap-2"><label>Début Exercice</label><Dropdown v-model="form.fiscal_year_start_month" :options="months" /></div>
-                        <div class="flex flex-col gap-2"><label>Numéro TVA</label><InputText v-model="form.vat_number" /></div>
+                        <div class="flex flex-col gap-2"><label>Entité légale</label><Dropdown v-model="form.legal_entity_type" :options="legalEntities" editable /></div>
+                        <div class="flex flex-col gap-2"><label>Début exercice</label><Dropdown v-model="form.fiscal_year_start_month" :options="months" /></div>
+                        <div class="flex flex-col gap-2"><label>Numéro de TVA</label><InputText v-model="form.vat_number" /></div>
 
-                        <div class="md:col-span-3 flex flex-col gap-2"><label>Objet Social</label><Textarea v-model="form.activity_object" rows="2" /></div>
+                        <div class="md:col-span-3 flex flex-col gap-2"><label>Objet social</label><Textarea v-model="form.activity_object" rows="2" /></div>
 
                         <div class="flex flex-col gap-2"><label>SIREN (9 chiffres)</label><InputText v-model="form.siren" maxlength="9" /></div>
                         <div class="flex flex-col gap-2"><label>SIRET (14 chiffres)</label><InputText v-model="form.siret" maxlength="14" /></div>

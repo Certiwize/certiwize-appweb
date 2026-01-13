@@ -38,7 +38,7 @@ const fetchProjects = async () => {
     if (loading.value) {
       showSlowLoading.value = true;
     }
-  }, 5000);
+  }, 10000);
 
   try {
     const checkAdmin = auth.userRole === 'admin';
@@ -127,14 +127,14 @@ const validateProject = async (id) => {
     <!-- Documents de référence -->
     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm mb-8 border-l-4 border-blue-500">
       <h2 class="text-lg font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
-        <i class="pi pi-info-circle"></i> Documents de Référence
+        <i class="pi pi-info-circle"></i> Documents de référence
       </h2>
       <div class="flex flex-wrap gap-4">
         <a href="/CGV_Formation.pdf" download class="no-underline">
-          <Button label="Conditions Générales de Vente" icon="pi pi-file-pdf" severity="secondary" outlined />
+          <Button label="Conditions générales de vente" icon="pi pi-file-pdf" severity="secondary" outlined />
         </a>
         <a href="/Reglement_Interieur.pdf" download class="no-underline">
-          <Button label="Règlement Intérieur" icon="pi pi-file-pdf" severity="secondary" outlined />
+          <Button label="Règlement intérieur" icon="pi pi-file-pdf" severity="secondary" outlined />
         </a>
       </div>
     </div>
@@ -142,7 +142,7 @@ const validateProject = async (id) => {
     <!-- Enquêtes de satisfaction -->
     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm mb-8 border-l-4 border-green-500">
       <h2 class="text-lg font-bold mb-2 text-gray-900 dark:text-white flex items-center gap-2">
-        <i class="pi pi-check-circle"></i> Enquêtes de Satisfaction
+        <i class="pi pi-check-circle"></i> Enquêtes de satisfaction
       </h2>
       <p class="text-gray-600 dark:text-gray-400 mb-4">
         Enquêtes de satisfaction à envoyer aux stagiaires/apprenants.
@@ -155,8 +155,8 @@ const validateProject = async (id) => {
     <SlowLoadingDialog :visible="showSlowLoading" />
 
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold">Gestion des Projets</h1>
-      <Button label="Nouveau Projet" icon="pi pi-plus" @click="hardNavigate('/dashboard/projets/create')" />
+      <h1 class="text-2xl font-bold">Gestion des projets</h1>
+      <Button label="Nouveau projet" icon="pi pi-plus" @click="hardNavigate('/dashboard/projets/create')" />
     </div>
 
     <DataTable :value="projects" :loading="loading" paginator :rows="10" 
@@ -165,7 +165,7 @@ const validateProject = async (id) => {
       <template #empty>Aucun projet créé</template>
       <template #loading>Chargement...</template>
 
-      <Column field="name" header="Nom du Projet" sortable style="width: 30%"></Column>
+      <Column field="name" header="Nom du projet" sortable style="width: 30%"></Column>
       <Column v-if="auth.isAdmin" header="Créé par" style="width: 20%">
         <template #body="slotProps">
           <span class="text-sm text-gray-500">{{ slotProps.data.profiles?.email || 'N/A' }}</span>

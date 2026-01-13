@@ -4,16 +4,9 @@ import { useAuthStore } from '../stores/auth';
 import Sidebar from '../components/dashboard/Sidebar.vue';
 
 const authStore = useAuthStore();
-const refreshKey = ref(0);
-
-// Forcer le rechargement du composant quand l'utilisateur est authentifié
-// Cela corrige le problème de chargement infini si onMounted s'exécute avant l'auth
-watch(() => authStore.user, (newUser) => {
-  if (newUser) {
-    console.log('🔄 Auth prête, rechargement de la vue...');
-    refreshKey.value++;
-  }
-});
+// La logique de rechargement automatique au changement d'utilisateur (refreshKey)
+// a été retirée car elle provoquait des rechargements intempestifs lors du rafraîchissement
+// du token (ex: retour sur l'onglet). L'initialisation dans main.js suffit.
 </script>
 
 <template>
@@ -27,7 +20,7 @@ watch(() => authStore.user, (newUser) => {
     <main class="flex-1 overflow-y-auto">
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
-          <component :is="Component" :key="$route.fullPath + '-' + refreshKey" />
+          <component :is="Component" :key="$route.fullPath" />
         </transition>
       </router-view>
     </main>

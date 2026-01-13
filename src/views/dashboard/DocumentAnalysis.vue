@@ -148,7 +148,7 @@ const sendDocument = async () => {
             
             <div v-if="loading" class="flex-1 flex flex-col items-center justify-center text-gray-500 min-h-[300px]">
                 <i class="pi pi-spin pi-spinner text-4xl mb-4 text-primary"></i>
-                <p>Analyse en cours via n8n...</p>
+                <p>Analyse du document en cours...</p>
             </div>
 
             <div v-else class="flex-1 flex flex-col min-h-[300px]">

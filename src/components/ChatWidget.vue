@@ -133,12 +133,16 @@ const sendMessage = async () => {
       </div>
     </transition>
 
-    <button 
-      @click="toggleChat"
-      class="w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 transform hover:scale-105 active:scale-95"
-      :class="isOpen ? 'bg-gray-600 hover:bg-gray-700 text-white' : 'bg-primary hover:bg-primary-dark text-white'"
-    >
-      <i class="pi text-2xl" :class="isOpen ? 'pi-times' : 'pi-comments'"></i>
-    </button>
+    <div class="relative group">
+        <button 
+        disabled
+        class="w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 bg-gray-400 cursor-not-allowed text-white"
+        >
+        <i class="pi pi-comments text-2xl"></i>
+        </button>
+        <div class="absolute bottom-16 right-0 bg-black/80 text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+            En cours de dev
+        </div>
+    </div>
   </div>
 </template>

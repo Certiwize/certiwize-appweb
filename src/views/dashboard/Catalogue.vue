@@ -29,7 +29,7 @@ onMounted(async () => {
     if (loading.value) {
       showSlowLoading.value = true;
     }
-  }, 3000);
+  }, 10000);
 
   try {
     await trainingStore.fetchFormations();

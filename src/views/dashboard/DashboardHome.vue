@@ -69,7 +69,7 @@ onMounted(() => {
         if (loading.value || projectsLoading.value) { // Check both
             showSlowLoading.value = true;
         }
-    }, 3000);
+    }, 10000);
 
     // Note: The individual fetches will eventually set their loading states to false
     // We ideally should have a global loading state or wait for promises, but 
