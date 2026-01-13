@@ -7,182 +7,74 @@ const { t } = useI18n();
 const features = computed(() => [
   {
     id: 1,
-    icon: 'pi-file',
-    title: t('features.feature_1_title'),
-    description: t('features.feature_1_desc'),
+    icon: 'pi-chart-bar',
+    title: "Tableau de Bord & KPI",
+    description: "Visualisez en un coup d'œil l'activité de votre organisme de formation. Suivez les indicateurs clés (CA, nombre de stagiaires, taux de satisfaction) pour piloter votre activité.",
     benefits: [
-      t('features.feature_1_benefit_1'),
-      t('features.feature_1_benefit_2'),
-      t('features.feature_1_benefit_3'),
-      t('features.feature_1_benefit_4')
+      "Vues synthétiques et graphiques",
+      "Suivi des entrées/sorties",
+      "Indicateurs Qualiopi",
+      "Alertes et notifications"
     ]
   },
   {
     id: 2,
-    icon: 'pi-user-plus',
-    title: t('features.feature_2_title'),
-    description: t('features.feature_2_desc'),
+    icon: 'pi-users',
+    title: "Gestion des Tiers (CRM)",
+    description: "Centralisez la gestion de vos Clients, Formateurs et Fournisseurs. Une base de données unique pour retrouver facilement toutes les coordonnées et documents associés.",
     benefits: [
-      t('features.feature_2_benefit_1'),
-      t('features.feature_2_benefit_2'),
-      t('features.feature_2_benefit_3'),
-      t('features.feature_2_benefit_4')
+      "Fiches détaillées (Clients, Formateurs...)",
+      "Gestion des contacts",
+      "Assignation de référents",
+      "Historique des échanges"
     ]
   },
   {
     id: 3,
-    icon: 'pi-folder-open',
-    title: t('features.feature_3_title'),
-    description: t('features.feature_3_desc'),
+    icon: 'pi-book',
+    title: "Catalogue de Formations",
+    description: "Gérez votre offre de formation avec précision. Créez des fiches programmes complètes, définissez les objectifs, prérequis et modalités d'évaluation.",
     benefits: [
-      t('features.feature_3_benefit_1'),
-      t('features.feature_3_benefit_2'),
-      t('features.feature_3_benefit_3'),
-      t('features.feature_3_benefit_4')
+      "Fiches programmes conformes",
+      "Gestion des versions",
+      "Tarification et modalités",
+      "Programme détaillé par module"
     ]
   },
   {
     id: 4,
-    icon: 'pi-calendar-plus',
-    title: t('features.feature_4_title'),
-    description: t('features.feature_4_desc'),
+    icon: 'pi-briefcase',
+    title: "Gestion de Projets (Workflow)",
+    description: "Un workflow complet pour gérer le cycle de vie de vos sessions de formation, de la demande initiale jusqu'à la clôture du dossier et l'envoi des documents.",
     benefits: [
-      t('features.feature_4_benefit_1'),
-      t('features.feature_4_benefit_2'),
-      t('features.feature_4_benefit_3'),
-      t('features.feature_4_benefit_4')
+      "Workflow guidé (Identification -> Clôture)",
+      "Génération automatique de documents",
+      "Conventions et Convocations",
+      "Suivi des émargements"
     ]
   },
   {
     id: 5,
-    icon: 'pi-question-circle',
-    title: t('features.feature_5_title'),
-    description: t('features.feature_5_desc'),
+    icon: 'pi-bolt',
+    title: "Analyse IA de Documents",
+    description: "Gagnez du temps grâce à l'intelligence artificielle. Analysez automatiquement vos documents (CV, Certificats, Programmes) pour en extraire les données essentielles.",
     benefits: [
-      t('features.feature_5_benefit_1'),
-      t('features.feature_5_benefit_2'),
-      t('features.feature_5_benefit_3'),
-      t('features.feature_5_benefit_4')
+      "Reconnaissance automatique (OCR)",
+      "Extractions de données clés",
+      "Support PDF, DOCX, Images",
+      "Intégration fluide au dossier"
     ]
   },
   {
     id: 6,
-    icon: 'pi-send',
-    title: t('features.feature_6_title'),
-    description: t('features.feature_6_desc'),
+    icon: 'pi-building',
+    title: "Configuration & Conformité",
+    description: "Administrez votre organisme sereinement. Configurez vos informations légales, logos, documents de référence (CGV, Règlement intérieur) et suivis Qualité.",
     benefits: [
-      t('features.feature_6_benefit_1'),
-      t('features.feature_6_benefit_2'),
-      t('features.feature_6_benefit_3'),
-      t('features.feature_6_benefit_4')
-    ]
-  },
-  {
-    id: 7,
-    icon: 'pi-list',
-    title: t('features.feature_7_title'),
-    description: t('features.feature_7_desc'),
-    benefits: [
-      t('features.feature_7_benefit_1'),
-      t('features.feature_7_benefit_2'),
-      t('features.feature_7_benefit_3'),
-      t('features.feature_7_benefit_4')
-    ]
-  },
-  {
-    id: 8,
-    icon: 'pi-star',
-    title: t('features.feature_8_title'),
-    description: t('features.feature_8_desc'),
-    benefits: [
-      t('features.feature_8_benefit_1'),
-      t('features.feature_8_benefit_2'),
-      t('features.feature_8_benefit_3'),
-      t('features.feature_8_benefit_4')
-    ]
-  },
-  {
-    id: 9,
-    icon: 'pi-euro',
-    title: t('features.feature_9_title'),
-    description: t('features.feature_9_desc'),
-    benefits: [
-      t('features.feature_9_benefit_1'),
-      t('features.feature_9_benefit_2'),
-      t('features.feature_9_benefit_3'),
-      t('features.feature_9_benefit_4')
-    ]
-  },
-  {
-    id: 10,
-    icon: 'pi-replay',
-    title: t('features.feature_10_title'),
-    description: t('features.feature_10_desc'),
-    benefits: [
-      t('features.feature_10_benefit_1'),
-      t('features.feature_10_benefit_2'),
-      t('features.feature_10_benefit_3'),
-      t('features.feature_10_benefit_4')
-    ]
-  },
-  {
-    id: 11,
-    icon: 'pi-verified',
-    title: t('features.feature_11_title'),
-    description: t('features.feature_11_desc'),
-    benefits: [
-      t('features.feature_11_benefit_1'),
-      t('features.feature_11_benefit_2'),
-      t('features.feature_11_benefit_3'),
-      t('features.feature_11_benefit_4')
-    ]
-  },
-  {
-    id: 12,
-    icon: 'pi-briefcase',
-    title: t('features.feature_12_title'),
-    description: t('features.feature_12_desc'),
-    benefits: [
-      t('features.feature_12_benefit_1'),
-      t('features.feature_12_benefit_2'),
-      t('features.feature_12_benefit_3'),
-      t('features.feature_12_benefit_4')
-    ]
-  },
-  {
-    id: 13,
-    icon: 'pi-envelope',
-    title: t('features.feature_13_title'),
-    description: t('features.feature_13_desc'),
-    benefits: [
-      t('features.feature_13_benefit_1'),
-      t('features.feature_13_benefit_2'),
-      t('features.feature_13_benefit_3'),
-      t('features.feature_13_benefit_4')
-    ]
-  },
-  {
-    id: 14,
-    icon: 'pi-clock',
-    title: t('features.feature_14_title'),
-    description: t('features.feature_14_desc'),
-    benefits: [
-      t('features.feature_14_benefit_1'),
-      t('features.feature_14_benefit_2'),
-      t('features.feature_14_benefit_3'),
-      t('features.feature_14_benefit_4')
-    ]
-  },
-  {
-    id: 15,
-    icon: 'pi-sync',
-    title: t('features.feature_15_title'),
-    description: t('features.feature_15_desc'),
-    benefits: [
-      t('features.feature_15_benefit_1'),
-      t('features.feature_15_benefit_2'),
-      t('features.feature_15_benefit_3'),
-      t('features.feature_15_benefit_4')
+      "Informations légales et logos",
+      "Gestion des taxes et TVA",
+      "Documents de référence (CGV...)",
+      "Suivi des référents (Handicap...)"
     ]
   }
 ]);

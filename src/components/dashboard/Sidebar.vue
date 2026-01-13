@@ -28,11 +28,11 @@ const isCurrent = (path) => {
     </div>
 
     <nav class="flex-1 p-4 space-y-2">
-      <router-link
+      <a
         v-for="item in navigation"
         :key="item.name"
-        :to="item.href"
-        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group"
+        :href="item.href"
+        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group no-underline"
         :class="[
           isCurrent(item.href)
             ? 'bg-primary text-white shadow-lg shadow-primary/25'
@@ -41,7 +41,7 @@ const isCurrent = (path) => {
       >
         <i class="pi" :class="[item.icon, isCurrent(item.href) ? 'text-white' : 'text-slate-400 group-hover:text-white']"></i>
         <span class="font-medium">{{ item.name }}</span>
-      </router-link>
+      </a>
     </nav>
     
     <div class="p-4 border-t border-slate-800">

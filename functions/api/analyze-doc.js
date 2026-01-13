@@ -44,7 +44,33 @@ export async function onRequestPost({ request, env }) {
             throw new Error(`Erreur n8n: ${n8nResponse.status} ${errorText}`);
         }
 
-        const result = await n8nResponse.json();
+        const rawText = await n8nResponse.text();
+        let result;
+
+        try {
+            result = JSON.parse(rawText);
+        } catch (e) {
+            console.warn("JSON invalide reçu de n8n, tentative de nettoyage...");
+            // Tentative de correction des caractères de contrôle non échappés (newlines, tabs...)
+            // On essaie d'échapper les caractères de contrôle qui cassent le JSON
+            const sanitizedText = rawText.replace(/[\u0000-\u001F]+/g, (match) => {
+                // On préserve \n, \r, \t en les échappant, on supprime les autres
+                switch (match) {
+                    case '\n': return '\\n';
+                    case '\r': return '\\r';
+                    case '\t': return '\\t';
+                    default: return '';
+                }
+            });
+
+            try {
+                result = JSON.parse(sanitizedText);
+            } catch (e2) {
+                console.error("Impossible de parser la réponse n8n en JSON:", rawText);
+                // Fallback: on renvoie le texte brut dans un objet JSON
+                result = { text: rawText, raw_response: true };
+            }
+        }
 
         return new Response(JSON.stringify({ success: true, ...result }), {
             headers: { 'Content-Type': 'application/json' }
