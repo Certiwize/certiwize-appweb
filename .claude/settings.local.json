@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(if [ -f \"wrangler.toml\" ])",
+      "Bash(then cat wrangler.toml)",
+      "Bash(else echo \"No wrangler.toml found\")",
+      "Bash(fi)",
+      "Bash(if [ -f \"_headers\" ])",
+      "Bash(then cat _headers)",
+      "Bash(else echo \"No _headers file\")",
+      "Bash(if [ -f \"public/_headers\" ])",
+      "Bash(then cat public/_headers)",
+      "Bash(else echo \"No _headers in public/\")"
+    ]
+  }
+}

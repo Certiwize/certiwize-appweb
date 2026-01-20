@@ -11,7 +11,8 @@
     "projects": "Project Management",
     "analysis": "Document Analysis",
     "manual": "Qualiopi Manual RNQ",
-    "my_company": "My Company"
+    "my_company": "My Company",
+    "genedoc": "Genedoc"
   },
   "manual": {
     "title": "Quality Manual & Tools",

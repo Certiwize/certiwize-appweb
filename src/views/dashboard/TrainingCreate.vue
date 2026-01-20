@@ -26,14 +26,7 @@ const isEditMode = computed(() => !!route.params.id);
 
 // Validation du formulaire
 const isFormValid = computed(() => {
-    return form.value.titre?.trim() !== '' &&
-           form.value.public_vise?.trim() !== '' &&
-           form.value.prerequis?.trim() !== '' &&
-           form.value.objc_pedagq?.trim() !== '' &&
-           form.value.duree?.trim() !== '' &&
-           form.value.lieu?.trim() !== '' &&
-           form.value.prgm?.trim() !== '' &&
-           form.value.moyens_pedagq?.trim() !== '';
+    return form.value.titre?.trim() !== '';
 });
 
 // Formulaire mappé sur vos balises

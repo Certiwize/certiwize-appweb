@@ -147,22 +147,13 @@ const bothDocsGenerated = computed(() => !!docs.value.etude && !!docs.value.conv
 
 // Validation Document 1 : Identification du Projet
 const isDoc1Valid = computed(() => {
-    return form.value.client?.trim() !== '' &&
-           form.value.contexte?.trim() !== '' &&
-           form.value.objectifs?.trim() !== '' &&
-           form.value.public_concerne?.trim() !== '' &&
-           form.value.duree?.trim() !== '' &&
-           form.value.lieu?.trim() !== '';
+    // Validation relaxée : on vérifie juste que le client est rempli pour le nom du projet
+    return form.value.client?.trim() !== '';
 });
 
 // Validation Document 2 : Convention
 const isDoc2Valid = computed(() => {
-    return form.value.soussignes?.trim() !== '' &&
-           form.value.formation?.trim() !== '' &&
-           form.value.duree_conv?.trim() !== '' &&
-           form.value.dates?.trim() !== '' &&
-           form.value.lieu_conv?.trim() !== '' &&
-           form.value.cout_ht > 0;
+    return true; // Validation relaxée
 });
 
 // Peut soumettre Phase 1 seulement si les 2 docs sont générés
@@ -170,18 +161,12 @@ const canSubmitPhase1 = computed(() => isDoc1Valid.value && isDoc2Valid.value &&
 
 // Validation Document 3 : Convocation
 const isDoc3Valid = computed(() => {
-    return form.value.nom_formation?.trim() !== '' &&
-           form.value.nom_participant?.trim() !== '' &&
-           form.value.date_convoc?.trim() !== '' &&
-           form.value.lieu_convoc?.trim() !== '' &&
-           form.value.horaires_convoc?.trim() !== '';
+    return true; // Validation relaxée
 });
 
 // Validation Document 4 : Livret
 const isDoc4Valid = computed(() => {
-    return form.value.qui?.trim() !== '' &&
-           form.value.lieu_livret?.trim() !== '' &&
-           form.value.moyens_pedagq?.trim() !== '';
+    return true; // Validation relaxée
 });
 
 // --- ACTIONS ---

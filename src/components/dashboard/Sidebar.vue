@@ -13,6 +13,7 @@ const navigation = [
   { name: 'projects', href: '/dashboard/projets', icon: 'pi-briefcase' },
   { name: 'analysis', href: '/dashboard/analyse-doc', icon: 'pi-search' },
   { name: 'manual', href: '/dashboard/manuel-qualiopi', icon: 'pi-book' },
+  { name: 'genedoc', href: 'https://qualiopi-modelisation.genedoc.fr/', icon: 'pi-link' },
 ];
 
 const isCurrent = (path) => {
@@ -34,6 +35,8 @@ const isCurrent = (path) => {
         v-for="item in navigation"
         :key="item.name"
         :href="item.href"
+        :target="item.href.startsWith('http') ? '_blank' : undefined"
+        :rel="item.href.startsWith('http') ? 'noopener noreferrer' : undefined"
         class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group no-underline"
         :class="[
           isCurrent(item.href)

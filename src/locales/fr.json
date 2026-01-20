@@ -11,7 +11,8 @@
     "projects": "Gestion projets",
     "analysis": "Analyse documentaire",
     "manual": "Manuel Qualiopi RNQ",
-    "my_company": "Ma Société"
+    "my_company": "Ma Société",
+    "genedoc": "Genedoc"
   },
   "manual": {
     "title": "Manuel Qualité & Outils",
