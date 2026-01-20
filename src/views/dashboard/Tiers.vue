@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useDataStore } from '../../stores/data'; // Import du nouveau store
 import { storeToRefs } from 'pinia';
 import DataTable from 'primevue/datatable';
@@ -7,6 +7,7 @@ import Column from 'primevue/column';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import InputText from 'primevue/inputtext';
+import Dropdown from 'primevue/dropdown';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '../../stores/auth';
@@ -20,6 +21,25 @@ const filters = ref({});
 const { t } = useI18n();
 
 const showSlowLoading = ref(false);
+const selectedType = ref(null);
+
+const typeOptions = computed(() => [
+    { label: t('tiers.all_types'), value: null },
+    { label: t('tiers.general.client'), value: 'Client' },
+    { label: t('tiers.general.prospect'), value: 'Prospect' },
+    { label: t('tiers.general.supplier'), value: 'Fournisseur' }
+]);
+
+const filteredTiers = computed(() => {
+    if (!selectedType.value) return tiers.value;
+    return tiers.value.filter(tier => {
+        const types = tier.tier_type;
+        if (Array.isArray(types)) {
+            return types.includes(selectedType.value);
+        }
+        return types === selectedType.value;
+    });
+});
 
 const hardNavigate = (path) => {
     window.location.href = path;
@@ -69,10 +89,22 @@ const editTier = (id) => {
     <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
         <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('tiers.list_title') }}</h1>
-            <Button :label="$t('tiers.new_client_btn')" icon="pi pi-plus" @click="hardNavigate('/dashboard/tiers/create')" />
+            
+            <div class="flex items-center gap-3">
+                <Dropdown 
+                    v-model="selectedType" 
+                    :options="typeOptions" 
+                    optionLabel="label" 
+                    optionValue="value" 
+                    :placeholder="t('tiers.filter_placeholder')" 
+                    class="w-48"
+                    showClear
+                />
+                <Button :label="$t('tiers.new_client_btn')" icon="pi pi-plus" @click="hardNavigate('/dashboard/tiers/create')" />
+            </div>
         </div>
 
-        <DataTable :value="tiers" :loading="loading" paginator :rows="10" tableStyle="min-width: 50rem"
+        <DataTable :value="filteredTiers" :loading="loading" paginator :rows="10" tableStyle="min-width: 50rem"
             dataKey="id" :globalFilterFields="['name', 'email', 'siret']">
             
             <template #empty>{{ $t('tiers.empty_list') }}</template>
@@ -81,6 +113,13 @@ const editTier = (id) => {
             <Column field="name" :header="$t('tiers.columns.company')" sortable style="width: 25%"></Column>
             <Column field="city" :header="$t('tiers.columns.city')" sortable style="width: 20%"></Column>
             <Column field="email" :header="$t('tiers.columns.email')" style="width: 25%"></Column>
+            <Column header="Type" style="width: 15%">
+                <template #body="slotProps">
+                    <div class="flex gap-1 flex-wrap">
+                        <Tag v-for="type in slotProps.data.tier_type" :key="type" :value="type" severity="info" class="text-xs" />
+                    </div>
+                </template>
+            </Column>
             <Column v-if="authStore.isAdmin" header="Créé par" style="width: 20%">
                 <template #body="slotProps">
                     <span class="text-sm text-gray-500">{{ slotProps.data.profiles?.email || 'N/A' }}</span>

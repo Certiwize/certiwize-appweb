@@ -6,13 +6,13 @@
     "contact": "Contact",
     "login": "Connexion",
     "dashboard": "Tableau de bord",
-    "tiers": "Clients / Fournisseurs",
+    "tiers": "Tiers",
     "catalogue": "Catalogue formation",
     "projects": "Gestion projets",
     "analysis": "Analyse documentaire",
     "manual": "Manuel Qualiopi RNQ",
     "my_company": "Ma Société",
-    "genedoc": "Genedoc"
+    "genedoc": "Rapport d'audit blanc"
   },
   "manual": {
     "title": "Manuel Qualité & Outils",
@@ -57,7 +57,17 @@
       "trainer_cv": "CV Formateur",
       "skills_proof": "Justificatif de compétences",
       "invoice": "Facture",
-      "internal_rules": "Règlement Intérieur"
+      "internal_rules": "Règlement Intérieur",
+      "needs_analysis": "Analyse du besoin",
+      "pedagogical_scenario": "Scénario pédagogique",
+      "training_material": "Support de formation",
+      "positioning_quiz": "Quiz de positionnement",
+      "validation_quiz": "Quiz de validation",
+      "procedure": "Procédure",
+      "org_chart": "Organigramme",
+      "subcontracting_contract": "Contrat de sous-traitance",
+      "quality_charter": "Charte qualité",
+      "certificate_formation": "Certificat de formation"
     }
   },
   "home": {
@@ -377,7 +387,7 @@
     "no_formations": "Aucune formation créée",
     "no_projects": "Aucun projet créé",
     "quick_actions": "Action rapide",
-    "btn_new_client": "Nouveau Client",
+    "btn_new_client": "Nouveau tiers",
     "btn_new_formation": "Nouvelle Formation",
     "btn_new_project": "Nouveau Projet",
     "status_draft": "Brouillon"
@@ -411,10 +421,12 @@
     "save": "Enregistrer",
     "save_modifications": "Enregistrer les modifications",
     "list_title": "Liste des tiers",
-    "new_client_btn": "Nouveau client",
-    "empty_list": "Aucun client trouvé.",
+    "new_client_btn": "Nouveau tiers",
+    "filter_placeholder": "Filtrer par type",
+    "all_types": "Tous",
+    "empty_list": "Aucun tiers trouvé.",
     "loading_data": "Chargement des données...",
-    "delete_confirm": "Voulez-vous vraiment supprimer ce client ?",
+    "delete_confirm": "Voulez-vous vraiment supprimer ce tiers ?",
     "columns": {
       "company": "Entreprise",
       "city": "Ville",
@@ -437,7 +449,9 @@
       "status": "État",
       "status_open": "Ouvert",
       "status_closed": "Fermé",
-      "barcode": "Code-barres"
+      "barcode": "Code-barres",
+      "trainer": "Intervenant",
+      "opco": "OPCO"
     },
     "contact": {
       "title": "Coordonnées",

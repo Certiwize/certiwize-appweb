@@ -41,6 +41,7 @@ const form = ref({
     state: 'Ouvert',
     barcode: '',
     is_trainer: false, // Ajout champ Formateur
+    is_opco: false,    // Ajout champ OPCO
     
     // 3. Coordonnées
     address: '',
@@ -212,10 +213,15 @@ const goBack = () => {
                                 <Checkbox v-model="form.tier_type" :inputId="type" :value="type" />
                                 <label :for="type" class="ml-2 cursor-pointer select-none">{{ type }}</label>
                             </div>
-                            <!-- Case Formateur séparée -->
-                            <div class="flex items-center ml-4 pl-4 border-l border-gray-300 dark:border-gray-600">
+                            <!-- Case Formateur intégrée -->
+                            <div class="flex items-center">
                                 <Checkbox v-model="form.is_trainer" :binary="true" inputId="is_trainer" />
-                                <label for="is_trainer" class="ml-2 cursor-pointer select-none font-bold text-gray-700 dark:text-gray-300">Formateur</label>
+                                <label for="is_trainer" class="ml-2 cursor-pointer select-none text-gray-700 dark:text-gray-300">{{ $t('tiers.general.trainer') }}</label>
+                            </div>
+                            <!-- Case OPCO -->
+                            <div class="flex items-center">
+                                <Checkbox v-model="form.is_opco" :binary="true" inputId="is_opco" />
+                                <label for="is_opco" class="ml-2 cursor-pointer select-none text-gray-700 dark:text-gray-300">{{ $t('tiers.general.opco') }}</label>
                             </div>
                         </div>
                     </div>

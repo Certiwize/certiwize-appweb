@@ -6,13 +6,13 @@
     "contact": "Contact",
     "login": "Login",
     "dashboard": "Dashboard",
-    "tiers": "Clients / Suppliers",
+    "tiers": "Customers",
     "catalogue": "Training Catalog",
     "projects": "Project Management",
     "analysis": "Document Analysis",
     "manual": "Qualiopi Manual RNQ",
     "my_company": "My Company",
-    "genedoc": "Genedoc"
+    "genedoc": "White Audit Report"
   },
   "manual": {
     "title": "Quality Manual & Tools",
@@ -57,7 +57,17 @@
       "trainer_cv": "Trainer CV",
       "skills_proof": "Skills Proof",
       "invoice": "Invoice",
-      "internal_rules": "Internal Rules"
+      "internal_rules": "Internal Rules",
+      "needs_analysis": "Needs Analysis",
+      "pedagogical_scenario": "Pedagogical Scenario",
+      "training_material": "Training Material",
+      "positioning_quiz": "Positioning Quiz",
+      "validation_quiz": "Validation Quiz",
+      "procedure": "Procedure",
+      "org_chart": "Organization Chart",
+      "subcontracting_contract": "Subcontracting Contract",
+      "quality_charter": "Quality Charter",
+      "certificate_formation": "Training Certificate"
     }
   },
   "home": {
@@ -412,6 +422,8 @@
     "save_modifications": "Save Changes",
     "list_title": "Clients List",
     "new_client_btn": "New Client",
+    "filter_placeholder": "Filter by type",
+    "all_types": "All",
     "empty_list": "No client found.",
     "loading_data": "Loading data...",
     "delete_confirm": "Are you sure you want to delete this client?",
@@ -437,7 +449,9 @@
       "status": "Status",
       "status_open": "Open",
       "status_closed": "Closed",
-      "barcode": "Barcode"
+      "barcode": "Barcode",
+      "trainer": "Trainer",
+      "opco": "OPCO"
     },
     "contact": {
       "title": "Contact Details",

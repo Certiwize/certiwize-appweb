@@ -20,20 +20,30 @@ const error = ref(null);
 const analysisResult = ref('');
 
 const docTypes = computed(() => [
-    { name: t('analysis.types.activity_declaration'), code: 'DECLARATION_ACTIVITE' },
-    { name: t('analysis.types.qualiopi_certificate'), code: 'CERTIFICAT_QUALIOPI' },
-    { name: t('analysis.types.bpf'), code: 'BPF_BILAN_PEDAGOGIQUE_FINANCIER' },
-    { name: t('analysis.types.kbis'), code: 'KBIS' },
+    //{ name: t('analysis.types.activity_declaration'), code: 'DECLARATION_ACTIVITE' },
+    //{ name: t('analysis.types.qualiopi_certificate'), code: 'CERTIFICAT_QUALIOPI' },
+    //{ name: t('analysis.types.bpf'), code: 'BPF_BILAN_PEDAGOGIQUE_FINANCIER' },
+    //{ name: t('analysis.types.kbis'), code: 'KBIS' },
     { name: t('analysis.types.training_program'), code: 'PROGRAMME_FORMATION' },
-    { name: t('analysis.types.attendance_sheet'), code: 'FEUILLE_EMARGEMENT' },
-    { name: t('analysis.types.training_certificate'), code: 'ATTESTATION_FORMATION' },
-    { name: t('analysis.types.completion_certificate'), code: 'CERTIFICAT_REALISATION' },
-    { name: t('analysis.types.training_contract'), code: 'CONTRAT_FORMATION' },
+    //{ name: t('analysis.types.attendance_sheet'), code: 'FEUILLE_EMARGEMENT' },
+    //{ name: t('analysis.types.training_certificate'), code: 'ATTESTATION_FORMATION' },
+    //{ name: t('analysis.types.completion_certificate'), code: 'CERTIFICAT_REALISATION' },
+    //{ name: t('analysis.types.training_contract'), code: 'CONTRAT_FORMATION' },
     { name: t('analysis.types.training_convention'), code: 'CONVENTION_FORMATION' },
     { name: t('analysis.types.trainer_cv'), code: 'CV_FORMATEUR' },
     { name: t('analysis.types.skills_proof'), code: 'JUSTIFICATIF_COMPETENCES' },
-    { name: t('analysis.types.invoice'), code: 'FACTURE_FORMATION' },
-    { name: t('analysis.types.internal_rules'), code: 'REGLEMENT_INTERIEUR' }
+    //{ name: t('analysis.types.invoice'), code: 'FACTURE_FORMATION' },
+    { name: t('analysis.types.internal_rules'), code: 'REGLEMENT_INTERIEUR' },
+    { name: t('analysis.types.needs_analysis'), code: 'ANALYSE_DU_BESOIN' },
+    { name: t('analysis.types.pedagogical_scenario'), code: 'SCENARIO_PEDAGOGIQUE' },
+    { name: t('analysis.types.training_material'), code: 'SUPPORT_FORMATION' },
+    { name: t('analysis.types.positioning_quiz'), code: 'QUIZ_POSITIONNEMENT' },
+    { name: t('analysis.types.validation_quiz'), code: 'QUIZ_VALIDATION' },
+    { name: t('analysis.types.procedure'), code: 'PROCEDURE' },
+    { name: t('analysis.types.org_chart'), code: 'ORGANIGRAMME' },
+    { name: t('analysis.types.subcontracting_contract'), code: 'CONTRAT_SOUSTRAITANCE' },
+    { name: t('analysis.types.quality_charter'), code: 'CHARTE_QUALITE' },
+    { name: t('analysis.types.certificate_formation'), code: 'CERTIFICAT_FORMATION' },
 ]);
 
 const onFileSelect = (event) => {
