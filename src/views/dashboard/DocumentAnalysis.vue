@@ -44,6 +44,7 @@ const docTypes = computed(() => [
     { name: t('analysis.types.subcontracting_contract'), code: 'CONTRAT_SOUSTRAITANCE' },
     { name: t('analysis.types.quality_charter'), code: 'CHARTE_QUALITE' },
     { name: t('analysis.types.certificate_formation'), code: 'CERTIFICAT_FORMATION' },
+    { name: t('analysis.types.satisfaction_survey'), code: 'QUESTIONNAIRE_SATISFACTION' },
 ]);
 
 const onFileSelect = (event) => {

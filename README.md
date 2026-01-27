@@ -15,4 +15,5 @@ src/
 ├── App.vue          # Point d'entrée
 └── main.js          # Initialisation
 
+npm run dev
 npx wrangler pages dev --proxy 5173

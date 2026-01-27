@@ -25,13 +25,13 @@ export const useCompanyStore = defineStore('company', () => {
       } else {
         // Initialisation locale vide si pas encore en base
         company.value = {
-            user_id: auth.user.id,
-            taxes_config: { vat_subject: true, tax_2: false, tax_3: false, fiscal_stamp: false },
-            socials: {},
-            opening_hours: {
-                lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: ''
-            },
-            accountant_info: {}
+          user_id: auth.user.id,
+          taxes_config: { vat_subject: true, tax_2: false, tax_3: false, fiscal_stamp: false },
+          socials: {},
+          opening_hours: {
+            lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: ''
+          },
+          accountant_info: {}
         };
       }
     } catch (err) {
@@ -43,13 +43,20 @@ export const useCompanyStore = defineStore('company', () => {
 
   const saveCompany = async (formValues) => {
     loading.value = true;
+    console.log('💾 Start saving company...', formValues);
     try {
       // Préparation des données JSONB (fusionner pour ne pas perdre l'existant si partiel)
       const payload = {
         ...formValues,
-        user_id: auth.user.id,
+        user_id: auth.user?.id, // Use optional chaining to avoid crash
         updated_at: new Date()
       };
+
+      if (!payload.user_id) {
+        throw new Error("User ID is missing. Are you logged in?");
+      }
+
+      console.log('📦 Payload:', payload);
 
       const { data, error } = await supabase
         .from('companies')
@@ -57,12 +64,17 @@ export const useCompanyStore = defineStore('company', () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Supabase Error:', error);
+        throw error;
+      }
+
+      console.log('✅ Saved successfully:', data);
       company.value = data;
       return { success: true };
     } catch (err) {
-      console.error('Erreur sauvegarde:', err);
-      return { success: false, error: err.message };
+      console.error('❌ Save Exception:', err);
+      return { success: false, error: err.message || 'Unknown error' };
     } finally {
       loading.value = false;
     }

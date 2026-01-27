@@ -27,7 +27,22 @@
     "default_desc": "Document de conformité Qualiopi.",
     "tools_title": "Fichiers Excel à télécharger",
     "excel_format": "Format Excel (.xlsx)",
-    "error_loading": "Erreur de chargement:"
+    "error_loading": "Erreur de chargement:",
+    "add_doc": "Ajouter Doc",
+    "add_dialog_title": "Ajouter un document",
+    "doc_title": "Titre du document",
+    "doc_title_placeholder": "Ex: Procédure d'accueil",
+    "doc_code": "Code Indicateur",
+    "doc_code_helper": "Ex: C2I8, C3I11...",
+    "doc_type": "Type",
+    "doc_description": "Description (Optionnel)",
+    "doc_file": "Fichier (PDF ou Excel)",
+    "select_file": "Sélectionner le fichier",
+    "file_ready": "Fichier prêt :",
+    "success_add": "Document ajouté avec succès !",
+    "error_fields": "Titre, Code et Fichier sont obligatoires.",
+    "add_btn": "Ajouter",
+    "cancel_btn": "Annuler"
   },
   "analysis": {
     "title": "Analyse de Document",
@@ -44,6 +59,7 @@
     "copy": "Copier",
     "placeholder_result": "Le résultat de l'IA s'affichera ici",
     "types": {
+      "satisfaction_survey": "Questionnaire de satisfaction",
       "activity_declaration": "Déclaration d'activité",
       "qualiopi_certificate": "Certificat Qualiopi",
       "bpf": "Bilan Pédagogique et Financier",
@@ -630,6 +646,17 @@
     "status": {
       "generated": "✅ Document généré",
       "not_generated": "Document non généré"
+    },
+    "timeline": {
+      "title": "Progression du projet",
+      "draft": "Brouillon",
+      "study_doc": "Étude",
+      "convention_doc": "Convention",
+      "submitted": "Soumis",
+      "validated": "Validé",
+      "convocation_doc": "Convocation",
+      "booklet_doc": "Livret",
+      "finished": "Terminé"
     },
     "fields": {
       "general_info": "Informations générales",

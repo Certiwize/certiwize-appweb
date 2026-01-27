@@ -27,7 +27,22 @@
     "default_desc": "Qualiopi compliance document.",
     "tools_title": "Excel files to download",
     "excel_format": "Excel format (.xlsx)",
-    "error_loading": "Loading error:"
+    "error_loading": "Loading error:",
+    "add_doc": "Add Doc",
+    "add_dialog_title": "Add Document",
+    "doc_title": "Document Title",
+    "doc_title_placeholder": "Ex: Welcome Procedure",
+    "doc_code": "Indicator Code",
+    "doc_code_helper": "Ex: C2I8, C3I11...",
+    "doc_type": "Type",
+    "doc_description": "Description (Optional)",
+    "doc_file": "File (PDF or Excel)",
+    "select_file": "Select File",
+    "file_ready": "File ready:",
+    "success_add": "Document successfully added!",
+    "error_fields": "Title, Code and File are required.",
+    "add_btn": "Add",
+    "cancel_btn": "Cancel"
   },
   "analysis": {
     "title": "Document Analysis",
@@ -44,6 +59,7 @@
     "copy": "Copy",
     "placeholder_result": "AI result will appear here",
     "types": {
+      "satisfaction_survey": "Satisfaction Survey",
       "activity_declaration": "Activity Declaration",
       "qualiopi_certificate": "Qualiopi Certificate",
       "bpf": "Pedagogical and Financial Balance Sheet",
@@ -630,6 +646,17 @@
     "status": {
       "generated": "✅ Document generated",
       "not_generated": "Document not generated"
+    },
+    "timeline": {
+      "title": "Project Progress",
+      "draft": "Draft",
+      "study_doc": "Study",
+      "convention_doc": "Agreement",
+      "submitted": "Submitted",
+      "validated": "Validated",
+      "convocation_doc": "Summons",
+      "booklet_doc": "Booklet",
+      "finished": "Finished"
     },
     "fields": {
       "general_info": "General Information",

@@ -209,6 +209,70 @@ const submitForValidation = async () => {
 const goBack = () => {
     window.location.href = '/dashboard/projets';
 };
+
+// --- Timeline Progress ---
+const timelineSteps = computed(() => {
+    const steps = [
+        {
+            id: 1,
+            label: t('project.timeline.draft'),
+            icon: 'pi-file-edit',
+            completed: !!projectId.value,
+            current: status.value === 'Brouillon' && !docs.value.etude
+        },
+        {
+            id: 2,
+            label: t('project.timeline.study_doc'),
+            icon: 'pi-file-pdf',
+            completed: !!docs.value.etude,
+            current: status.value === 'Brouillon' && !docs.value.etude && !!projectId.value
+        },
+        {
+            id: 3,
+            label: t('project.timeline.convention_doc'),
+            icon: 'pi-file-pdf',
+            completed: !!docs.value.convention,
+            current: status.value === 'Brouillon' && !!docs.value.etude && !docs.value.convention
+        },
+        {
+            id: 4,
+            label: t('project.timeline.submitted'),
+            icon: 'pi-send',
+            completed: status.value !== 'Brouillon',
+            current: status.value === 'Brouillon' && bothDocsGenerated.value
+        },
+        {
+            id: 5,
+            label: t('project.timeline.validated'),
+            icon: 'pi-check-circle',
+            completed: isValidated.value,
+            current: status.value === 'En attente'
+        },
+        {
+            id: 6,
+            label: t('project.timeline.convocation_doc'),
+            icon: 'pi-file-pdf',
+            completed: !!docs.value.convocation,
+            current: isValidated.value && !docs.value.convocation
+        },
+        {
+            id: 7,
+            label: t('project.timeline.booklet_doc'),
+            icon: 'pi-file-pdf',
+            completed: !!docs.value.livret,
+            current: isValidated.value && !!docs.value.convocation && !docs.value.livret
+        },
+        {
+            id: 8,
+            label: t('project.timeline.finished'),
+            icon: 'pi-flag-fill',
+            completed: status.value === 'Terminé',
+            current: isValidated.value && !!docs.value.convocation && !!docs.value.livret
+        }
+    ];
+
+    return steps;
+});
 </script>
 
 <template>
@@ -224,6 +288,86 @@ const goBack = () => {
             <div class="flex gap-2">
                 <Button :label="t('project.buttons.back')" severity="secondary" text @click="goBack" />
                 <Button v-if="status === 'Brouillon'" :label="t('project.buttons.save')" icon="pi pi-save" @click="save" />
+            </div>
+        </div>
+
+        <!-- Frise chronologique de progression -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm mb-8">
+            <h2 class="text-lg font-semibold mb-6 text-gray-900 dark:text-white flex items-center gap-2">
+                <i class="pi pi-chart-line"></i>
+                {{ t('project.timeline.title') }}
+            </h2>
+
+            <!-- Timeline horizontale pour desktop -->
+            <div class="hidden md:block">
+                <div class="relative">
+                    <!-- Ligne de fond -->
+                    <div class="absolute top-6 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-700"></div>
+
+                    <!-- Ligne de progression -->
+                    <div class="absolute top-6 left-0 h-1 bg-blue-500 transition-all duration-500"
+                         :style="{ width: `${(timelineSteps.filter(s => s.completed).length / timelineSteps.length) * 100}%` }"></div>
+
+                    <!-- Étapes -->
+                    <div class="relative flex justify-between">
+                        <div v-for="step in timelineSteps" :key="step.id" class="flex flex-col items-center" style="flex: 1">
+                            <!-- Point -->
+                            <div class="relative z-10 w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-all duration-300"
+                                 :class="{
+                                     'bg-blue-500 text-white shadow-lg scale-110': step.current,
+                                     'bg-green-500 text-white': step.completed && !step.current,
+                                     'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400': !step.completed && !step.current
+                                 }">
+                                <i :class="`pi ${step.icon} text-xl`"></i>
+                            </div>
+
+                            <!-- Label -->
+                            <span class="text-xs text-center max-w-[100px] leading-tight"
+                                  :class="{
+                                      'font-semibold text-blue-600 dark:text-blue-400': step.current,
+                                      'text-green-600 dark:text-green-400': step.completed && !step.current,
+                                      'text-gray-500 dark:text-gray-400': !step.completed && !step.current
+                                  }">
+                                {{ step.label }}
+                            </span>
+
+                            <!-- Badge completed -->
+                            <i v-if="step.completed && !step.current" class="pi pi-check text-green-500 text-sm mt-1"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline verticale pour mobile -->
+            <div class="md:hidden space-y-4">
+                <div v-for="(step, index) in timelineSteps" :key="step.id" class="flex items-start gap-3">
+                    <!-- Point et ligne -->
+                    <div class="flex flex-col items-center">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
+                             :class="{
+                                 'bg-blue-500 text-white shadow-lg': step.current,
+                                 'bg-green-500 text-white': step.completed && !step.current,
+                                 'bg-gray-300 dark:bg-gray-600 text-gray-500': !step.completed && !step.current
+                             }">
+                            <i :class="`pi ${step.icon}`"></i>
+                        </div>
+                        <div v-if="index < timelineSteps.length - 1"
+                             class="w-0.5 h-12 mt-1"
+                             :class="step.completed ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'"></div>
+                    </div>
+
+                    <!-- Label -->
+                    <div class="flex-1 pt-2">
+                        <p class="font-medium"
+                           :class="{
+                               'text-blue-600 dark:text-blue-400': step.current,
+                               'text-green-600 dark:text-green-400': step.completed && !step.current,
+                               'text-gray-500 dark:text-gray-400': !step.completed && !step.current
+                           }">
+                            {{ step.label }}
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
 

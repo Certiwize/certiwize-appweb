@@ -37,7 +37,7 @@ const isCurrent = (path) => {
         :href="item.href"
         :target="item.href.startsWith('http') ? '_blank' : undefined"
         :rel="item.href.startsWith('http') ? 'noopener noreferrer' : undefined"
-        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group no-underline"
+        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group no-underline cursor-pointer"
         :class="[
           isCurrent(item.href)
             ? 'bg-primary text-white shadow-lg shadow-primary/25'
