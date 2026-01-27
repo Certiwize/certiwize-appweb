@@ -102,7 +102,6 @@ const sendDocument = async () => {
         // file.value = null; 
         // selectedType.value = null; 
     } catch (err) {
-        console.error('Erreur analyze:', err);
         error.value = err.message;
     } finally {
         // clearTimeout(slowTimer);

@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { supabase } from '../../supabase';
 import { useAuthStore } from '../../stores/auth';
 import { useI18n } from 'vue-i18n';
@@ -11,9 +12,14 @@ import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
 import Dropdown from 'primevue/dropdown';
 import Message from 'primevue/message';
+import { useConfirm } from 'primevue/useconfirm';
+import { useToast } from 'primevue/usetoast';
 
 const { t } = useI18n();
 const authStore = useAuthStore();
+const router = useRouter();
+const confirmDialog = useConfirm();
+const toast = useToast();
 
 const learners = ref([]);
 const loading = ref(true);
@@ -48,26 +54,33 @@ const fetchLearners = async () => {
     if (error) throw error;
     learners.value = data || [];
   } catch (err) {
-    console.error('Error fetching learners:', err);
+    toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur chargement apprenants', life: 3000 });
   } finally {
     loading.value = false;
   }
 };
 
-const hardNavigate = (path) => {
-  window.location.href = path;
+const navigate = (path) => {
+  router.push(path);
 };
 
-const confirmDelete = async (id) => {
-  if (confirm(t('learner.delete_confirm'))) {
-    try {
-      const { error } = await supabase.from('learners').delete().eq('id', id);
-      if (error) throw error;
-      await fetchLearners();
-    } catch (err) {
-      console.error('Delete error:', err);
+const confirmDelete = (id) => {
+  confirmDialog.require({
+    message: t('learner.delete_confirm'),
+    header: 'Confirmation',
+    icon: 'pi pi-exclamation-triangle',
+    acceptClass: 'p-button-danger',
+    accept: async () => {
+      try {
+        const { error } = await supabase.from('learners').delete().eq('id', id);
+        if (error) throw error;
+        await fetchLearners();
+        toast.add({ severity: 'success', summary: 'Succès', detail: 'Apprenant supprimé', life: 3000 });
+      } catch (err) {
+        toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur suppression', life: 3000 });
+      }
     }
-  }
+  });
 };
 
 const openSendDialog = (learner) => {
@@ -163,7 +176,6 @@ const sendDocument = async (docType) => {
       }
     }
   } catch (err) {
-    console.error('Send document error:', err);
     sendError.value = t('learner.send_error') + ': ' + err.message;
   } finally {
     sendingDoc.value = false;
@@ -190,7 +202,7 @@ onMounted(fetchLearners);
         <p class="text-gray-500 text-sm">{{ t('learner.list_subtitle') }}</p>
       </div>
       
-      <Button :label="t('learner.new_learner_btn')" icon="pi pi-plus" @click="hardNavigate('/dashboard/learners/create')" />
+      <Button :label="t('learner.new_learner_btn')" icon="pi pi-plus" @click="navigate('/dashboard/learners/create')" />
     </div>
 
     <DataTable 
@@ -230,7 +242,7 @@ onMounted(fetchLearners);
         <template #body="slotProps">
           <div class="flex gap-1">
             <Button icon="pi pi-send" text rounded severity="success" v-tooltip="t('learner.send_docs')" @click="openSendDialog(slotProps.data)" />
-            <Button icon="pi pi-pencil" text rounded severity="info" @click="hardNavigate(`/dashboard/learners/edit/${slotProps.data.id}`)" />
+            <Button icon="pi pi-pencil" text rounded severity="info" @click="navigate(`/dashboard/learners/edit/${slotProps.data.id}`)" />
             <Button icon="pi pi-trash" text rounded severity="danger" @click="confirmDelete(slotProps.data.id)" />
           </div>
         </template>

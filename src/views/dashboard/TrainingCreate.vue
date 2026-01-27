@@ -12,8 +12,10 @@ import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
 import Calendar from 'primevue/calendar';
 import Message from 'primevue/message';
+import { useConfirm } from 'primevue/useconfirm';
 
 const router = useRouter();
+const confirm = useConfirm();
 const route = useRoute();
 const trainingStore = useTrainingStore();
 const { t } = useI18n();
@@ -80,8 +82,6 @@ onMounted(async () => {
                 }
             }
         } catch (err) {
-            console.error('Erreur chargement formation:', err);
-            alert(t('training.error_load'));
             router.push('/dashboard/catalogue');
         }
     }
@@ -118,13 +118,18 @@ const handleGenerate = async () => {
 };
 
 const resetForm = () => {
-    if(confirm(t('training.confirm_reset'))) {
-        pdfUrl.value = null;
-    }
+    confirm.require({
+        message: t('training.confirm_reset'),
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+            pdfUrl.value = null;
+        }
+    });
 };
 
 const goBack = () => {
-    window.location.href = '/dashboard/catalogue';
+    router.push('/dashboard/catalogue');
 };
 </script>
 

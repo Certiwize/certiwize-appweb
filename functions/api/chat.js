@@ -1,7 +1,16 @@
 export async function onRequestPost(context) {
   const { request, env } = context;
 
-  // 1. Récupération du message
+  // 1. Vérification de l'authentification
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader) {
+    return new Response(JSON.stringify({ error: 'Non autorisé : Token manquant' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  // 2. Récupération du message
   let body;
   try {
     body = await request.json();

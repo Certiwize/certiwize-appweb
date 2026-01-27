@@ -7,24 +7,19 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
-import Dialog from 'primevue/dialog';
 import SlowLoadingDialog from '../../components/dashboard/SlowLoadingDialog.vue';
+import { useConfirm } from 'primevue/useconfirm';
+import { useToast } from 'primevue/usetoast';
 import { useI18n } from 'vue-i18n';
 
 const router = useRouter();
 const auth = useAuthStore();
 const { t } = useI18n();
+const confirm = useConfirm();
+const toast = useToast();
 const projects = ref([]);
 const loading = ref(true);
 const showSlowLoading = ref(false);
-
-const reloadPage = () => {
-    window.location.reload();
-};
-
-const hardNavigate = (path) => {
-    window.location.href = path;
-};
 
 const fetchProjects = async () => {
   if (!auth.user?.id) {
@@ -35,7 +30,6 @@ const fetchProjects = async () => {
   loading.value = true;
   showSlowLoading.value = false;
 
-  // Timer pour afficher la popup après 5s si toujours en chargement
   const slowTimer = setTimeout(() => {
     if (loading.value) {
       showSlowLoading.value = true;
@@ -44,7 +38,7 @@ const fetchProjects = async () => {
 
   try {
     const checkAdmin = auth.userRole === 'admin';
-    
+
     let query = supabase
       .from('projects')
       .select('*, profiles(email)')
@@ -55,11 +49,11 @@ const fetchProjects = async () => {
     }
 
     const { data, error } = await query;
-    
+
     if (error) throw error;
     projects.value = data || [];
   } catch (e) {
-    console.error('Erreur chargement projets:', e);
+    toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur chargement projets', life: 3000 });
   } finally {
     clearTimeout(slowTimer);
     loading.value = false;
@@ -75,16 +69,23 @@ const editProject = (id) => {
   router.push(`/dashboard/projets/edit/${id}`);
 };
 
-const deleteProject = async (id) => {
-  if (!confirm(t('project_list.confirm_delete'))) return;
-  
-  try {
-    const { error } = await supabase.from('projects').delete().eq('id', id);
-    if (error) throw error;
-    projects.value = projects.value.filter(p => p.id !== id);
-  } catch (e) {
-    alert('Erreur suppression: ' + e.message);
-  }
+const deleteProject = (id) => {
+  confirm.require({
+    message: t('project_list.confirm_delete'),
+    header: t('project_list.columns.actions'),
+    icon: 'pi pi-exclamation-triangle',
+    acceptClass: 'p-button-danger',
+    accept: async () => {
+      try {
+        const { error } = await supabase.from('projects').delete().eq('id', id);
+        if (error) throw error;
+        projects.value = projects.value.filter(p => p.id !== id);
+        toast.add({ severity: 'success', summary: 'Succès', detail: 'Projet supprimé', life: 3000 });
+      } catch (e) {
+        toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur suppression: ' + e.message, life: 3000 });
+      }
+    }
+  });
 };
 
 const getStatusLabel = (status) => {
@@ -110,25 +111,30 @@ const formatDate = (date) => {
 };
 
 // Valider un projet (passer de "En attente" à "Validé")
-const validateProject = async (id) => {
-  if (!confirm(t('project_list.confirm_validate'))) return;
-  
-  try {
-    const { error } = await supabase
-      .from('projects')
-      .update({ status: 'Validé' })
-      .eq('id', id);
-    
-    if (error) throw error;
-    
-    // Mettre à jour localement
-    const project = projects.value.find(p => p.id === id);
-    if (project) project.status = 'Validé';
-    
-    alert(t('project_list.success_validate'));
-  } catch (e) {
-    alert('Erreur validation: ' + e.message);
-  }
+const validateProject = (id) => {
+  confirm.require({
+    message: t('project_list.confirm_validate'),
+    header: 'Validation',
+    icon: 'pi pi-check-circle',
+    acceptClass: 'p-button-success',
+    accept: async () => {
+      try {
+        const { error } = await supabase
+          .from('projects')
+          .update({ status: 'Validé' })
+          .eq('id', id);
+
+        if (error) throw error;
+
+        const project = projects.value.find(p => p.id === id);
+        if (project) project.status = 'Validé';
+
+        toast.add({ severity: 'success', summary: 'Succès', detail: t('project_list.success_validate'), life: 3000 });
+      } catch (e) {
+        toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur validation: ' + e.message, life: 3000 });
+      }
+    }
+  });
 };
 </script>
 
@@ -166,7 +172,7 @@ const validateProject = async (id) => {
 
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">{{ t('project_list.title') }}</h1>
-      <Button :label="t('project_list.new_project')" icon="pi pi-plus" @click="hardNavigate('/dashboard/projets/create')" />
+      <Button :label="t('project_list.new_project')" icon="pi pi-plus" @click="router.push('/dashboard/projets/create')" />
     </div>
 
     <DataTable :value="projects" :loading="loading" paginator :rows="10" 

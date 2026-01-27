@@ -51,7 +51,7 @@ const fetchOptions = async () => {
     projects.value = projectsRes.data || [];
     tiers.value = tiersRes.data || [];
   } catch (err) {
-    console.error('Error fetching options:', err);
+    // Options fetch failed - dropdowns will be empty
   }
 };
 
@@ -79,7 +79,6 @@ const loadLearner = async () => {
       tier_id: data.tier_id
     };
   } catch (err) {
-    console.error('Error loading learner:', err);
     error.value = err.message;
   } finally {
     loading.value = false;
@@ -121,18 +120,17 @@ const saveLearner = async () => {
 
     success.value = true;
     setTimeout(() => {
-      window.location.href = '/dashboard/learners';
+      router.push('/dashboard/learners');
     }, 1000);
   } catch (err) {
-    console.error('Save error:', err);
     error.value = err.message;
   } finally {
     saving.value = false;
   }
 };
 
-const hardNavigate = (path) => {
-  window.location.href = path;
+const navigate = (path) => {
+  router.push(path);
 };
 
 onMounted(async () => {
@@ -150,7 +148,7 @@ onMounted(async () => {
         </h1>
         <p class="text-gray-500 text-sm">{{ t('learner.form_subtitle') }}</p>
       </div>
-      <Button icon="pi pi-arrow-left" text @click="hardNavigate('/dashboard/learners')" />
+      <Button icon="pi pi-arrow-left" text @click="navigate('/dashboard/learners')" />
     </div>
 
     <Message v-if="error" severity="error" :closable="false" class="mb-4">{{ error }}</Message>
@@ -220,7 +218,7 @@ onMounted(async () => {
 
       <!-- Actions -->
       <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-        <Button :label="t('common.cancel')" severity="secondary" outlined @click="hardNavigate('/dashboard/learners')" />
+        <Button :label="t('common.cancel')" severity="secondary" outlined @click="navigate('/dashboard/learners')" />
         <Button :label="t('common.save')" icon="pi pi-check" :loading="saving" @click="saveLearner" />
       </div>
     </div>

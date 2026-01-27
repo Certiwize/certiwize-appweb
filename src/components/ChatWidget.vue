@@ -1,10 +1,12 @@
 <script setup>
 import { ref, nextTick, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useAuthStore } from '../stores/auth';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 
 const { t } = useI18n();
+const auth = useAuthStore();
 
 const isOpen = ref(false);
 const inputMessage = ref('');
@@ -39,10 +41,13 @@ const sendMessage = async () => {
   scrollToBottom();
 
   try {
-    // 2. Appel à notre API Cloudflare
+    // 2. Appel à notre API Cloudflare (avec authentification)
     const response = await fetch('/api/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${auth.session?.access_token || ''}`
+      },
       body: JSON.stringify({ message: userText })
     });
 
@@ -55,7 +60,6 @@ const sendMessage = async () => {
     messages.value.push({ id: Date.now() + 1, text: botResponse, isUser: false });
 
   } catch (error) {
-    console.error(error);
     messages.value.push({ id: Date.now() + 1, text: t('chat.error'), isUser: false, isError: true });
   } finally {
     loading.value = false;

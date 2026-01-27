@@ -25,7 +25,6 @@ const handleLogin = async () => {
     await auth.signIn(email.value, password.value);
     router.push('/dashboard');
   } catch (error) {
-    console.error(error);
     errorMsg.value = t('login.error');
   } finally {
     loading.value = false;

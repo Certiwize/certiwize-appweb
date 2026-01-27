@@ -15,7 +15,6 @@ export const useAuthStore = defineStore('auth', () => {
 
   // Charger le rôle depuis la table profiles
   const fetchUserRole = async (userId) => {
-    console.log('🔐 Tentative de récupération du rôle pour userId:', userId);
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -23,18 +22,12 @@ export const useAuthStore = defineStore('auth', () => {
         .eq('id', userId)
         .single();
 
-      console.log('📊 Résultat profiles:', { data, error });
-
       if (error) {
-        console.warn('⚠️ Profil non trouvé, rôle par défaut: user. Erreur:', error.message);
         userRole.value = 'user';
       } else {
         userRole.value = data.role || 'user';
-        console.log('✅ Rôle trouvé:', data.role);
       }
-      console.log('🎭 Rôle final assigné:', userRole.value);
     } catch (err) {
-      console.error('❌ Erreur récup. rôle:', err);
       userRole.value = 'user';
     }
   };

@@ -16,8 +16,10 @@ import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
 import Message from 'primevue/message';
 import Tag from 'primevue/tag';
+import { useConfirm } from 'primevue/useconfirm';
 
 const router = useRouter();
+const confirm = useConfirm();
 const route = useRoute();
 const projectStore = useProjectStore();
 const dataStore = useDataStore();
@@ -201,13 +203,18 @@ const generate = async (docType) => {
 
 const submitForValidation = async () => {
     await save();
-    if(confirm(t('project.warnings.phase1_locked_confirm') || "Confirmer l'étude de faisabilité ?")) {
-        await projectStore.updateStatus('En attente');
-    }
+    confirm.require({
+        message: t('project.warnings.phase1_locked_confirm') || "Confirmer l'étude de faisabilité ?",
+        header: 'Confirmation',
+        icon: 'pi pi-exclamation-triangle',
+        accept: async () => {
+            await projectStore.updateStatus('En attente');
+        }
+    });
 };
 
 const goBack = () => {
-    window.location.href = '/dashboard/projets';
+    router.push('/dashboard/projets');
 };
 
 // --- Timeline Progress ---

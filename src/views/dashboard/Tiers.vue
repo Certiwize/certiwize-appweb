@@ -41,8 +41,8 @@ const filteredTiers = computed(() => {
     });
 });
 
-const hardNavigate = (path) => {
-    window.location.href = path;
+const navigate = (path) => {
+    router.push(path);
 };
 
 // Chargement initial des données
@@ -81,7 +81,7 @@ const confirmDelete = (id) => {
 };
 
 const editTier = (id) => {
-    hardNavigate(`/dashboard/tiers/edit/${id}`);
+    navigate(`/dashboard/tiers/edit/${id}`);
 };
 </script>
 
@@ -100,7 +100,7 @@ const editTier = (id) => {
                     class="w-48"
                     showClear
                 />
-                <Button :label="$t('tiers.new_client_btn')" icon="pi pi-plus" @click="hardNavigate('/dashboard/tiers/create')" />
+                <Button :label="$t('tiers.new_client_btn')" icon="pi pi-plus" @click="navigate('/dashboard/tiers/create')" />
             </div>
         </div>
 

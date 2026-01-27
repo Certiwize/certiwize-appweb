@@ -124,10 +124,9 @@ const generateDocument = async () => {
       };
     }
   } catch (error) {
-    console.error(error);
-    msg.value = { 
-      type: 'error', 
-      content: 'Erreur de communication avec le serveur' 
+    msg.value = {
+      type: 'error',
+      content: 'Erreur de communication avec le serveur'
     };
   } finally {
     loading.value = false;

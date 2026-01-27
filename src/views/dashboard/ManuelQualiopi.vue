@@ -60,7 +60,6 @@ const fetchResources = async () => {
 
         resources.value = data;
     } catch (e) {
-        console.error("❌ Erreur chargement:", e.message);
         error.value = e.message;
     } finally {
         loading.value = false;
@@ -125,7 +124,6 @@ const submitDocument = async () => {
         alert(t('manual.success_add'));
 
     } catch (err) {
-        console.error(err);
         uploadError.value = "Erreur : " + err.message;
     } finally {
         uploadLoading.value = false;
@@ -196,7 +194,6 @@ const deleteDocument = (doc, event) => {
                         .remove([filePath]);
 
                     if (storageError) {
-                        console.warn('⚠️ Erreur suppression storage:', storageError);
                         // On continue quand même pour supprimer de la DB
                     }
                 }
@@ -213,8 +210,7 @@ const deleteDocument = (doc, event) => {
                 await fetchResources();
 
             } catch (err) {
-                console.error('❌ Erreur suppression:', err);
-                alert('Erreur lors de la suppression : ' + err.message);
+                // Erreur silencieuse - la liste n'est pas mise à jour
             }
         }
     });

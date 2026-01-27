@@ -43,9 +43,7 @@ export const useDataStore = defineStore('data', () => {
 
     // 1. Récupérer les tiers (filtrés par user_id sauf si admin)
     const fetchTiers = async () => {
-        // Vérifier que l'utilisateur est connecté
         if (!auth.user?.id) {
-            console.warn('fetchTiers: Utilisateur non connecté, requête ignorée');
             loading.value = false;
             return;
         }
@@ -54,14 +52,12 @@ export const useDataStore = defineStore('data', () => {
         error.value = null;
         try {
             const checkAdmin = auth.userRole === 'admin';
-            console.log("Récupération des tiers... (userRole:", auth.userRole, ", isAdmin:", checkAdmin, ")");
 
             let query = supabase
                 .from('tiers')
                 .select('*, profiles(email)')
                 .order('created_at', { ascending: false });
 
-            // Filtrer par user_id sauf si admin
             if (!checkAdmin) {
                 query = query.eq('user_id', auth.user.id);
             }
@@ -70,14 +66,11 @@ export const useDataStore = defineStore('data', () => {
 
             if (err) throw err;
 
-            console.log("Tiers récupérés:", data?.length);
             tiers.value = data || [];
 
-            // Mise à jour safe des stats
             if (stats.value) stats.value.totalTiers = tiers.value.length;
 
         } catch (err) {
-            console.error('Erreur chargement tiers:', err.message);
             error.value = err.message;
         } finally {
             loading.value = false;
@@ -108,7 +101,6 @@ export const useDataStore = defineStore('data', () => {
             stats.value.totalTiers++;
             return { success: true };
         } catch (err) {
-            console.error('Erreur création tiers:', err.message);
             return { success: false, error: err.message };
         } finally {
             loading.value = false;
@@ -128,8 +120,7 @@ export const useDataStore = defineStore('data', () => {
             tiers.value = tiers.value.filter(t => t.id !== id);
             stats.value.totalTiers--;
         } catch (err) {
-            console.error('Erreur suppression:', err.message);
-            alert("Impossible de supprimer ce tiers.");
+            throw new Error("Impossible de supprimer ce tiers.");
         }
     };
 
@@ -150,7 +141,6 @@ export const useDataStore = defineStore('data', () => {
             if (err) throw err;
             return data;
         } catch (err) {
-            console.error('Erreur récupération tiers:', err.message);
             return null;
         }
     };
@@ -175,7 +165,6 @@ export const useDataStore = defineStore('data', () => {
             }
             return { success: true };
         } catch (err) {
-            console.error("Erreur update:", err.message);
             return { success: false, error: err.message };
         } finally {
             loading.value = false;

@@ -10,9 +10,7 @@ export const useTrainingStore = defineStore('training', () => {
 
     // Récupérer les formations (filtrées par user_id sauf si admin)
     const fetchFormations = async () => {
-        // Vérifier que l'utilisateur est connecté
         if (!auth.user?.id) {
-            console.warn('fetchFormations: Utilisateur non connecté, requête ignorée');
             loading.value = false;
             return;
         }
@@ -20,14 +18,12 @@ export const useTrainingStore = defineStore('training', () => {
         loading.value = true;
         try {
             const checkAdmin = auth.userRole === 'admin';
-            console.log("Récupération formations... (userRole:", auth.userRole, ")");
 
             let query = supabase
                 .from('formations')
                 .select('*, profiles(email)')
                 .order('updated_at', { ascending: false });
 
-            // Filtrer par user_id sauf si admin
             if (!checkAdmin) {
                 query = query.eq('user_id', auth.user.id);
             }
@@ -37,7 +33,7 @@ export const useTrainingStore = defineStore('training', () => {
             if (err) throw err;
             formations.value = data || [];
         } catch (err) {
-            console.error('Erreur chargement formations:', err.message);
+            // Erreur silencieuse
         } finally {
             loading.value = false;
         }
@@ -75,7 +71,6 @@ export const useTrainingStore = defineStore('training', () => {
 
             return { success: true, data: result.data };
         } catch (err) {
-            console.error('Erreur sauvegarde:', err);
             return { success: false, error: err.message };
         } finally {
             loading.value = false;
@@ -94,8 +89,7 @@ export const useTrainingStore = defineStore('training', () => {
 
             formations.value = formations.value.filter(f => f.id !== id);
         } catch (err) {
-            console.error('Erreur suppression:', err.message);
-            alert("Impossible de supprimer cette formation.");
+            throw new Error("Impossible de supprimer cette formation.");
         }
     };
 

@@ -19,8 +19,8 @@ const { formations, loading } = storeToRefs(trainingStore);
 
 const showSlowLoading = ref(false);
 
-const hardNavigate = (path) => {
-    window.location.href = path;
+const navigate = (path) => {
+    router.push(path);
 };
 
 onMounted(async () => {
@@ -48,7 +48,7 @@ const confirmDelete = (id) => {
 };
 
 const editFormation = (id) => {
-  hardNavigate(`/dashboard/catalogue/edit/${id}`);
+  navigate(`/dashboard/catalogue/edit/${id}`);
 };
 
 const viewPdf = (pdfUrl) => {
@@ -69,7 +69,7 @@ const formatDate = (date) => {
     
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
       <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('catalogue.title') }}</h1>
-      <Button :label="t('catalogue.new_training')" icon="pi pi-plus" @click="hardNavigate('/dashboard/catalogue/create')" />
+      <Button :label="t('catalogue.new_training')" icon="pi pi-plus" @click="navigate('/dashboard/catalogue/create')" />
     </div>
 
     <DataTable :value="formations" :loading="loading" paginator :rows="10" tableStyle="min-width: 50rem"

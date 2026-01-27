@@ -45,7 +45,6 @@ export const useProjectStore = defineStore('project', () => {
 
             return { success: true, id: currentProject.value.id };
         } catch (err) {
-            console.error('Erreur sauvegarde projet:', err);
             return { success: false, error: err.message };
         } finally {
             loading.value = false;
@@ -65,7 +64,7 @@ export const useProjectStore = defineStore('project', () => {
             if (error) throw error;
             currentProject.value = data;
         } catch (err) {
-            console.error(err);
+            // Erreur silencieuse
         } finally {
             loading.value = false;
         }
@@ -92,7 +91,6 @@ export const useProjectStore = defineStore('project', () => {
             });
 
             const result = await response.json();
-            console.log('Réponse n8n:', result);
 
             if (!response.ok) throw new Error(result.error || "Erreur génération");
 
@@ -135,7 +133,6 @@ export const useProjectStore = defineStore('project', () => {
             return { success: true, url: urlData.publicUrl };
 
         } catch (err) {
-            console.error('Erreur generateDoc:', err);
             return { success: false, error: err.message };
         } finally {
             loading.value = false;
@@ -148,7 +145,7 @@ export const useProjectStore = defineStore('project', () => {
             await supabase.from('projects').update({ status: newStatus }).eq('id', currentProject.value.id);
             currentProject.value.status = newStatus;
         } catch (e) {
-            console.error(e);
+            // Erreur silencieuse
         }
     };
 

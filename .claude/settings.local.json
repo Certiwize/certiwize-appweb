@@ -13,7 +13,11 @@
       "Bash(else echo \"No _headers in public/\")",
       "mcp__supabase__get_advisors",
       "mcp__supabase__apply_migration",
-      "mcp__supabase__execute_sql"
+      "mcp__supabase__execute_sql",
+      "mcp__supabase__list_tables",
+      "Bash(xargs:*)",
+      "Bash(tree:*)",
+      "mcp__supabase__list_migrations"
     ]
   }
 }

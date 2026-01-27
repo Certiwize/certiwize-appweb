@@ -88,29 +88,20 @@ const isEditing = ref(false);
 const tierId = ref(null);
 
 onMounted(async () => {
-    // Vérification sir mode édition
     if (route.params.id) {
         isEditing.value = true;
-        tierId.value = route.params.id; 
-        
-        console.log("Mode édition détecté, ID:", tierId.value);
-        
-        // Charger les données
+        tierId.value = route.params.id;
+
         const tier = await dataStore.getTierById(tierId.value);
         if (tier) {
-            console.log("Tiers trouvé:", tier);
-            
-            // On fusionne les données existantes avec le formulaire
-            form.value = { 
-                ...form.value, 
+            form.value = {
+                ...form.value,
                 ...tier,
-                // Restauration des valeurs par défaut pour les tableaux si null en base
                 tier_type: tier.tier_type || [],
                 tags_client: tier.tags_client || [],
                 tags_supplier: tier.tags_supplier || []
             };
         } else {
-            console.error("Tiers retourné null pour l'ID", tierId.value);
             errorMsg.value = "Impossible de charger les données du tiers (ID non trouvé).";
         }
     }
@@ -161,18 +152,15 @@ const handleSubmit = async () => {
 };
 
 const verifyTva = () => {
-    alert("Simulation : Numéro de TVA vérifié (VIES API).");
+    // TODO: Implémenter la vérification VIES API
 };
 
-const onLogoUpload = (event) => {
-    console.log("Fichier logo sélectionné:", event.files[0]);
+const onLogoUpload = (_event) => {
+    // Fichier logo sélectionné - traitement à implémenter
 };
-
-// ... existing code ...
-
 
 const goBack = () => {
-    window.location.href = '/dashboard/tiers';
+    router.push('/dashboard/tiers');
 };
 </script>
 

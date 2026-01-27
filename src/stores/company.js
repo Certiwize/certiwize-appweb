@@ -35,7 +35,7 @@ export const useCompanyStore = defineStore('company', () => {
         };
       }
     } catch (err) {
-      console.error('Erreur chargement société:', err);
+      // Erreur silencieuse - les données par défaut seront utilisées
     } finally {
       loading.value = false;
     }
@@ -43,12 +43,10 @@ export const useCompanyStore = defineStore('company', () => {
 
   const saveCompany = async (formValues) => {
     loading.value = true;
-    console.log('💾 Start saving company...', formValues);
     try {
-      // Préparation des données JSONB (fusionner pour ne pas perdre l'existant si partiel)
       const payload = {
         ...formValues,
-        user_id: auth.user?.id, // Use optional chaining to avoid crash
+        user_id: auth.user?.id,
         updated_at: new Date()
       };
 
@@ -56,24 +54,17 @@ export const useCompanyStore = defineStore('company', () => {
         throw new Error("User ID is missing. Are you logged in?");
       }
 
-      console.log('📦 Payload:', payload);
-
       const { data, error } = await supabase
         .from('companies')
         .upsert(payload, { onConflict: 'user_id' })
         .select()
         .single();
 
-      if (error) {
-        console.error('❌ Supabase Error:', error);
-        throw error;
-      }
+      if (error) throw error;
 
-      console.log('✅ Saved successfully:', data);
       company.value = data;
       return { success: true };
     } catch (err) {
-      console.error('❌ Save Exception:', err);
       return { success: false, error: err.message || 'Unknown error' };
     } finally {
       loading.value = false;
