@@ -65,6 +65,21 @@ const routes = [
         path: 'manuel-qualiopi',
         component: () => import('../views/dashboard/ManuelQualiopi.vue'),
         meta: { requiresAuth: true }
+      },
+      {
+        path: 'learners',
+        name: 'dashboard-learners',
+        component: () => import('../views/dashboard/LearnerList.vue')
+      },
+      {
+        path: 'learners/create',
+        name: 'dashboard-learners-create',
+        component: () => import('../views/dashboard/LearnerCreate.vue')
+      },
+      {
+        path: 'learners/edit/:id',
+        name: 'dashboard-learners-edit',
+        component: () => import('../views/dashboard/LearnerCreate.vue')
       }
     ]
   },
@@ -93,8 +108,8 @@ const routes = [
     component: () => import('../views/dashboard/TrainingCreate.vue'),
     meta: { requiresAuth: true }
   },
-  { 
-    path: '/dashboard/company', 
+  {
+    path: '/dashboard/company',
     component: () => import('../views/dashboard/SettingsCompany.vue'),
     meta: { requiresAuth: true }
   }
