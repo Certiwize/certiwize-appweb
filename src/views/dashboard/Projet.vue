@@ -155,18 +155,7 @@ const validateProject = (id) => {
       </div>
     </div>
 
-    <!-- Enquêtes de satisfaction -->
-    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm mb-8 border-l-4 border-green-500">
-      <h2 class="text-lg font-bold mb-2 text-gray-900 dark:text-white flex items-center gap-2">
-        <i class="pi pi-check-circle"></i> {{ t('project_list.surveys.title') }}
-      </h2>
-      <p class="text-gray-600 dark:text-gray-400 mb-4">
-        {{ t('project_list.surveys.description') }}
-      </p>
-      <a href="/Enquetes_Satisfaction.zip" download class="no-underline">
-        <Button :label="t('project_list.surveys.download')" icon="pi pi-download" severity="success" outlined />
-      </a>
-    </div>
+
 
     <SlowLoadingDialog :visible="showSlowLoading" />
 

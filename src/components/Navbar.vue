@@ -72,6 +72,7 @@ const toggleProfileMenu = (event) => {
         </div>
 
         <div class="flex items-center space-x-4">
+        <!-- HIDDEN: Accueil, Fonctionnalités, FAQ (keeping code for later decision)
           <router-link 
             to="/" 
             class="text-gray-600 dark:text-gray-300 hover:text-primary transition"
@@ -89,21 +90,13 @@ const toggleProfileMenu = (event) => {
           </router-link>
           
           <router-link 
-            v-if="!authStore.user" 
-            to="/contact" 
-            class="text-gray-600 dark:text-gray-300 hover:text-primary transition"
-            :class="!isScrolled ? 'text-gray-700 dark:text-white' : ''"
-          >
-            {{ t('nav.contact') }}
-          </router-link>
-
-          <router-link 
             to="/faq" 
             class="text-gray-600 dark:text-gray-300 hover:text-primary transition"
             :class="!isScrolled ? 'text-gray-700 dark:text-white' : ''"
           >
             {{ t('nav.faq') }}
           </router-link>
+          -->
           
           <router-link 
             v-if="!authStore.user" 

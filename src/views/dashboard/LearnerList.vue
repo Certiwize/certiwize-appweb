@@ -182,6 +182,89 @@ const sendDocument = async (docType) => {
   }
 };
 
+// Send all available documents at once
+const sendAllDocuments = async () => {
+  if (!selectedLearner.value) return;
+  
+  sendingDoc.value = true;
+  sendError.value = '';
+  sendSuccess.value = '';
+
+  try {
+    // Get all ready document types
+    const readyDocs = documentTypes.filter(doc => isDocReady(doc.value)).map(doc => doc.value);
+    
+    if (readyDocs.length === 0) {
+      sendError.value = t('learner.no_docs_available');
+      return;
+    }
+
+    // Create records for all documents
+    const { data: docRecords, error: insertError } = await supabase
+      .from('learner_documents')
+      .insert(
+        readyDocs.map(docType => ({
+          learner_id: selectedLearner.value.id,
+          doc_type: docType,
+          webhook_status: 'pending'
+        }))
+      )
+      .select();
+
+    if (insertError) throw insertError;
+
+    // Call n8n webhook with all documents
+    const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL || '';
+    
+    if (!webhookUrl) {
+      sendSuccess.value = t('learner.webhook_pending');
+    } else {
+      const payload = {
+        learner: {
+          id: selectedLearner.value.id,
+          first_name: selectedLearner.value.first_name,
+          last_name: selectedLearner.value.last_name,
+          email: selectedLearner.value.email,
+          phone: selectedLearner.value.phone
+        },
+        doc_types: readyDocs,
+        send_all: true,
+        project: selectedLearner.value.projects,
+        tier: selectedLearner.value.tiers,
+        document_ids: docRecords.map(r => r.id)
+      };
+
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const webhookResponse = await response.json().catch(() => ({}));
+      
+      // Update all records
+      await supabase
+        .from('learner_documents')
+        .update({
+          sent_at: new Date().toISOString(),
+          webhook_status: response.ok ? 'sent' : 'error',
+          webhook_response: webhookResponse
+        })
+        .in('id', docRecords.map(r => r.id));
+
+      if (response.ok) {
+        sendSuccess.value = t('learner.send_all_success', { count: readyDocs.length });
+      } else {
+        throw new Error('Webhook returned an error');
+      }
+    }
+  } catch (err) {
+    sendError.value = t('learner.send_error') + ': ' + err.message;
+  } finally {
+    sendingDoc.value = false;
+  }
+};
+
 const getStatusSeverity = (status) => {
   switch (status) {
     case 'Inscrit': return 'info';
@@ -288,6 +371,18 @@ onMounted(fetchLearners);
               </span>
             </template>
           </Button>
+        </div>
+
+        <!-- Send All Button -->
+        <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+          <Button 
+            :label="t('learner.send_all_btn')"
+            icon="pi pi-send"
+            severity="success"
+            class="w-full"
+            :loading="sendingDoc"
+            @click="sendAllDocuments"
+          />
         </div>
 
         <p class="text-xs text-gray-500 text-center mt-2">

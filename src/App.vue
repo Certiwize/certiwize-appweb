@@ -1,7 +1,7 @@
 <script setup>
 import Navbar from './components/Navbar.vue';
-import Footer from './components/Footer.vue';
 import ChatWidget from './components/ChatWidget.vue';
+import Toast from 'primevue/toast';
 </script>
 
 <template>
@@ -12,7 +12,7 @@ import ChatWidget from './components/ChatWidget.vue';
       <router-view />
     </main>
     
-    <Footer />
+    <Toast />
     
     <ChatWidget />
   </div>
