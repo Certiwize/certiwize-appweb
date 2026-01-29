@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useProjectStore } from '../../stores/project';
 import { useDataStore } from '../../stores/data';
+import { useTrainingStore } from '../../stores/training';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import { useI18n } from 'vue-i18n';
@@ -23,10 +24,13 @@ const confirm = useConfirm();
 const route = useRoute();
 const projectStore = useProjectStore();
 const dataStore = useDataStore();
+const trainingStore = useTrainingStore();
 const { t } = useI18n();
 
 const projectId = ref(route.params.id || null);
 const tiersOptions = ref([]);
+const formationsOptions = ref([]);
+const selectedFormation = ref(null);
 
 // --- DATA ---
 // Les champs correspondent exactement aux balises des templates n8n
@@ -94,10 +98,57 @@ const form = ref({
 
 // État de chargement pour les boutons de génération
 const generatingDoc = ref(null); // 'etude', 'convention', 'convocation', 'livret' ou null
+
+// Pré-remplir les champs à partir d'une formation du catalogue
+const prefillFromFormation = (formationId) => {
+    if (!formationId) return;
+
+    const formation = trainingStore.formations.find(f => f.id === formationId);
+    if (!formation || !formation.content) return;
+
+    const c = formation.content;
+
+    // Document 1 : Identification du Projet
+    if (c.objc_pedagq) form.value.objectifs = c.objc_pedagq;
+    if (c.public_vise) form.value.public_concerne = c.public_vise;
+    if (c.duree) form.value.duree = c.duree;
+    if (c.lieu) form.value.lieu = c.lieu;
+    if (c.tarif) form.value.cout = c.tarif;
+
+    // Document 2 : Convention de Formation
+    if (c.titre) form.value.formation = c.titre;
+    if (c.duree) form.value.duree_conv = c.duree;
+    if (c.dates) form.value.dates = c.dates;
+    if (c.horaires) form.value.horaires = c.horaires;
+    if (c.lieu) form.value.lieu_conv = c.lieu;
+    if (c.tarif) {
+        form.value.cout_ht = c.tarif;
+        // Calculer TTC avec TVA 20% (ajustable selon vos besoins)
+        form.value.cout_ttc = c.tarif * 1.20;
+    }
+    if (c.prgm) form.value.contenu_forma = c.prgm; // Programme détaillé → Contenu de la formation
+    if (c.moyens_pedagq) form.value.moyens_pedagq = c.moyens_pedagq;
+
+    // Document 3 : Convocation
+    if (c.titre) form.value.nom_formation = c.titre;
+    if (c.horaires) form.value.horaires_convoc = c.horaires;
+    if (c.lieu) form.value.lieu_convoc = c.lieu;
+    if (c.ref_handi) form.value.ref_handicap = c.ref_handi;
+
+    // Document 4 : Livret d'Accueil
+    if (c.lieu) form.value.lieu_livret = c.lieu;
+};
+
 onMounted(async () => {
-    // Charger clients
+    // Charger clients et formations
     if (dataStore.tiers.length === 0) await dataStore.fetchTiers();
     tiersOptions.value = dataStore.tiers.map(t => ({ label: t.name, value: t.name }));
+
+    if (trainingStore.formations.length === 0) await trainingStore.fetchFormations();
+    formationsOptions.value = trainingStore.formations.map(f => ({
+        label: f.title,
+        value: f.id
+    }));
 
     // Charger projet OU réinitialiser pour nouveau projet
     if (projectId.value) {
@@ -122,6 +173,11 @@ onMounted(async () => {
             if (savedData.date) form.value.date = safeParseDate(savedData.date) || new Date();
             if (savedData.date_now) form.value.date_now = safeParseDate(savedData.date_now) || new Date();
             if (savedData.date_livret) form.value.date_livret = safeParseDate(savedData.date_livret) || new Date();
+
+            // Charger la formation sélectionnée si présente
+            if (projectStore.currentProject.formation_id) {
+                selectedFormation.value = projectStore.currentProject.formation_id;
+            }
         }
     } else {
         // Nouveau projet: réinitialiser le state
@@ -177,7 +233,8 @@ const save = async () => {
     const res = await projectStore.saveProject({
         id: projectId.value,
         name: `Projet ${form.value.client}`,
-        form_data: form.value
+        form_data: form.value,
+        formation_id: selectedFormation.value || null
     });
     if(res.success && !projectId.value) {
         projectId.value = res.id;
@@ -391,6 +448,42 @@ const timelineSteps = computed(() => {
                     <i class="pi pi-lock mr-2"></i>
                     <strong>{{ t('project.warnings.phase1_locked') }}</strong>
                 </p>
+            </div>
+
+            <!-- Sélection d'une formation du catalogue -->
+            <div v-if="!isPhase1Locked" class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
+                <div class="flex items-start gap-3 mb-3">
+                    <i class="pi pi-lightbulb text-blue-600 dark:text-blue-400 text-xl mt-1"></i>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                            💡 Pré-remplir à partir du catalogue
+                        </h3>
+                        <p class="text-sm text-blue-700 dark:text-blue-300 mb-3">
+                            Sélectionnez une formation de votre catalogue pour pré-remplir automatiquement les informations du projet.
+                        </p>
+                        <div class="flex flex-col md:flex-row gap-3 items-end">
+                            <div class="flex-1">
+                                <Dropdown
+                                    v-model="selectedFormation"
+                                    :options="formationsOptions"
+                                    optionLabel="label"
+                                    optionValue="value"
+                                    placeholder="Choisir une formation..."
+                                    :showClear="true"
+                                    @change="prefillFromFormation(selectedFormation)"
+                                    class="w-full"
+                                />
+                            </div>
+                            <Button
+                                v-if="selectedFormation"
+                                icon="pi pi-sync"
+                                label="Réappliquer"
+                                severity="secondary"
+                                @click="prefillFromFormation(selectedFormation)"
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <Accordion :multiple="true" :activeIndex="[0, 1]">

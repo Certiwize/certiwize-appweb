@@ -19,6 +19,7 @@ export const useProjectStore = defineStore('project', () => {
                 name: projectData.name || 'Nouveau Projet',
                 step_progress: step,
                 form_data: projectData.form_data, // Le JSON avec vos balises
+                formation_id: projectData.formation_id || null,
                 updated_at: new Date()
             };
 
