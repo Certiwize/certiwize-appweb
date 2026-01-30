@@ -26,12 +26,18 @@ const profileMsg = ref({ type: '', content: '' });
 const updateProfile = async () => {
   loadingProfile.value = true;
   profileMsg.value = { type: '', content: '' };
-  
+
   try {
-    await authStore.updateProfile(fullName.value);
-    profileMsg.value = { type: 'success', content: t('settings.profile_success') };
+    const result = await authStore.updateProfile(fullName.value);
+
+    if (result?.success) {
+      profileMsg.value = { type: 'success', content: t('settings.profile_success') };
+      // Mettre à jour le nom local depuis le store
+      fullName.value = authStore.user?.user_metadata?.full_name || fullName.value;
+    }
   } catch (error) {
-    profileMsg.value = { type: 'error', content: error.message };
+    console.error('Profile update error:', error);
+    profileMsg.value = { type: 'error', content: error.message || 'Erreur lors de la mise à jour' };
   } finally {
     loadingProfile.value = false;
   }

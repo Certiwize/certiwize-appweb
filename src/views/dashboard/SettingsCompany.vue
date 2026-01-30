@@ -10,6 +10,7 @@ import InputText from 'primevue/inputtext';
 import Textarea from 'primevue/textarea';
 import Dropdown from 'primevue/dropdown';
 import InputNumber from 'primevue/inputnumber';
+import InputMask from 'primevue/inputmask';
 import Button from 'primevue/button';
 import FileUpload from 'primevue/fileupload';
 import Checkbox from 'primevue/checkbox';
@@ -22,6 +23,25 @@ const store = useCompanyStore();
 const { t } = useI18n();
 const saving = ref(false);
 const message = ref(null);
+
+// Options d'heures pour les horaires d'ouverture
+const timeOptions = [
+    '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00', '09:30',
+    '10:00', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30',
+    '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30',
+    '18:00', '18:30', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00'
+];
+
+// Jours de la semaine pour l'affichage
+const weekDays = [
+    { key: 'lundi', label: 'Lundi' },
+    { key: 'mardi', label: 'Mardi' },
+    { key: 'mercredi', label: 'Mercredi' },
+    { key: 'jeudi', label: 'Jeudi' },
+    { key: 'vendredi', label: 'Vendredi' },
+    { key: 'samedi', label: 'Samedi' },
+    { key: 'dimanche', label: 'Dimanche' }
+];
 
 // Données locales du formulaire
 const form = ref({
@@ -44,8 +64,16 @@ const form = ref({
     // D. Sociaux
     socials: { x: '', instagram: '', facebook: '', bluesky: '', autres: '' },
 
-    // E. Horaires
-    opening_hours: { lundi: '', mardi: '', mercredi: '', jeudi: '', vendredi: '', samedi: '', dimanche: '' },
+    // E. Horaires (structure améliorée avec ouverture/fermeture)
+    opening_hours: { 
+        lundi: { open: '09:00', close: '18:00', closed: false },
+        mardi: { open: '09:00', close: '18:00', closed: false },
+        mercredi: { open: '09:00', close: '18:00', closed: false },
+        jeudi: { open: '09:00', close: '18:00', closed: false },
+        vendredi: { open: '09:00', close: '18:00', closed: false },
+        samedi: { open: '', close: '', closed: true },
+        dimanche: { open: '', close: '', closed: true }
+    },
 
     // F. Comptable
     accountant_info: { name: '', address: '', zip: '', city: '', country: 'FR', phone: '', email: '', web: '', code: '', note: '' }
@@ -69,7 +97,27 @@ onMounted(async () => {
         // S'assurer que les objets imbriqués existent (au cas où la DB renvoie null)
         form.value.taxes_config = store.company.taxes_config || { vat_subject: true };
         form.value.socials = store.company.socials || {};
-        form.value.opening_hours = store.company.opening_hours || {};
+        
+        // Migration des anciens horaires texte vers le nouveau format
+        if (store.company.opening_hours) {
+            const oldHours = store.company.opening_hours;
+            // Vérifier si c'est l'ancien format (string) ou le nouveau format (object)
+            if (typeof oldHours.lundi === 'string' || oldHours.lundi === undefined) {
+                // Migrer vers le nouveau format
+                form.value.opening_hours = {
+                    lundi: { open: '09:00', close: '18:00', closed: false },
+                    mardi: { open: '09:00', close: '18:00', closed: false },
+                    mercredi: { open: '09:00', close: '18:00', closed: false },
+                    jeudi: { open: '09:00', close: '18:00', closed: false },
+                    vendredi: { open: '09:00', close: '18:00', closed: false },
+                    samedi: { open: '', close: '', closed: true },
+                    dimanche: { open: '', close: '', closed: true }
+                };
+            } else {
+                form.value.opening_hours = oldHours;
+            }
+        }
+        
         form.value.accountant_info = store.company.accountant_info || {};
     }
 });
@@ -98,6 +146,30 @@ const uploadLogo = async (event, type) => {
         else form.value.logo_square_url = urlData.publicUrl;
     }
 };
+
+// Validation du SIREN (9 chiffres)
+const validateSiren = (event) => {
+    const value = event.target.value.replace(/\D/g, '').slice(0, 9);
+    form.value.siren = value;
+};
+
+// Validation du SIRET (14 chiffres)
+const validateSiret = (event) => {
+    const value = event.target.value.replace(/\D/g, '').slice(0, 14);
+    form.value.siret = value;
+};
+
+// Validation du code postal (5 chiffres)
+const validateZipCode = (event) => {
+    const value = event.target.value.replace(/\D/g, '').slice(0, 5);
+    form.value.zip_code = value;
+};
+
+// Validation du code postal comptable (5 chiffres)
+const validateAccountantZip = (event) => {
+    const value = event.target.value.replace(/\D/g, '').slice(0, 5);
+    form.value.accountant_info.zip = value;
+};
 </script>
 
 <template>
@@ -114,21 +186,59 @@ const uploadLogo = async (event, type) => {
                 
                 <TabPanel :header="t('company.tabs.identity')">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
-                        <div class="flex flex-col gap-2"><label>{{ t('company.fields.name') }}</label><InputText v-model="form.name" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.fields.currency') }}</label><Dropdown v-model="form.currency" :options="currencies" /></div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.fields.name') }} <span class="text-red-500">*</span></label>
+                            <InputText v-model="form.name" required />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.fields.currency') }}</label>
+                            <Dropdown v-model="form.currency" :options="currencies" />
+                        </div>
                         
-                        <div class="md:col-span-2 flex flex-col gap-2"><label>{{ t('company.fields.address') }}</label><Textarea v-model="form.address" rows="2" /></div>
+                        <div class="md:col-span-2 flex flex-col gap-2">
+                            <label>{{ t('company.fields.address') }}</label>
+                            <Textarea v-model="form.address" rows="2" />
+                        </div>
                         
-                        <div class="flex flex-col gap-2"><label>{{ t('company.fields.zip') }}</label><InputText v-model="form.zip_code" maxlength="5" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.fields.city') }}</label><InputText v-model="form.city" /></div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.fields.zip') }}</label>
+                            <InputMask 
+                                v-model="form.zip_code" 
+                                mask="99999"
+                                placeholder="75001"
+                                slotChar=""
+                            />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.fields.city') }}</label>
+                            <InputText v-model="form.city" />
+                        </div>
                         
-                        <div class="flex flex-col gap-2"><label>{{ t('company.fields.country') }}</label><Dropdown v-model="form.country" :options="countries" optionLabel="label" optionValue="value" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.fields.department') }}</label><Dropdown v-model="form.department" :options="departments" editable placeholder="Sélectionner ou taper" /></div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.fields.country') }}</label>
+                            <Dropdown v-model="form.country" :options="countries" optionLabel="label" optionValue="value" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.fields.department') }}</label>
+                            <Dropdown v-model="form.department" :options="departments" editable placeholder="Sélectionner ou taper" />
+                        </div>
 
-                        <div class="flex flex-col gap-2"><label>{{ t('company.fields.phone') }}</label><InputText v-model="form.phone" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.fields.mobile') }}</label><InputText v-model="form.mobile" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.fields.email') }}</label><InputText v-model="form.email" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.fields.website') }}</label><InputText v-model="form.website" placeholder="https://" /></div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.fields.phone') }}</label>
+                            <InputMask v-model="form.phone" mask="99 99 99 99 99" placeholder="01 23 45 67 89" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.fields.mobile') }}</label>
+                            <InputMask v-model="form.mobile" mask="99 99 99 99 99" placeholder="06 12 34 56 78" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.fields.email') }}</label>
+                            <InputText v-model="form.email" type="email" placeholder="contact@entreprise.fr" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.fields.website') }}</label>
+                            <InputText v-model="form.website" type="url" placeholder="https://www.entreprise.fr" />
+                        </div>
 
                         <div class="border p-4 rounded border-dashed opacity-75">
                             <label class="block mb-2 font-bold flex items-center gap-2">
@@ -139,29 +249,92 @@ const uploadLogo = async (event, type) => {
                             <FileUpload mode="basic" name="logo" accept="image/*" disabled :chooseLabel="t('company.fields.soon')" />
                         </div>
                         
-                        <div class="md:col-span-2 flex flex-col gap-2"><label>{{ t('company.fields.internal_note') }}</label><Textarea v-model="form.note" rows="3" /></div>
+                        <div class="md:col-span-2 flex flex-col gap-2">
+                            <label>{{ t('company.fields.internal_note') }}</label>
+                            <Textarea v-model="form.note" rows="3" />
+                        </div>
                     </div>
                 </TabPanel>
 
                 <TabPanel :header="t('company.tabs.legal')">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
-                        <div class="flex flex-col gap-2"><label>{{ t('company.legal.manager') }}</label><InputText v-model="form.manager_name" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.legal.dpo') }}</label><InputText v-model="form.dpo_name" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.legal.handicap_ref') }}</label><InputText v-model="form.handicap_referent" placeholder="Nom du référent" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.legal.capital') }}</label><InputNumber v-model="form.capital" mode="currency" currency="EUR" /></div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.legal.manager') }}</label>
+                            <InputText v-model="form.manager_name" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.legal.dpo') }}</label>
+                            <InputText v-model="form.dpo_name" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.legal.handicap_ref') }}</label>
+                            <InputText v-model="form.handicap_referent" placeholder="Nom du référent" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.legal.capital') }}</label>
+                            <InputNumber v-model="form.capital" mode="currency" currency="EUR" :min="0" />
+                        </div>
                         
-                        <div class="flex flex-col gap-2"><label>{{ t('company.legal.entity_type') }}</label><Dropdown v-model="form.legal_entity_type" :options="legalEntities" editable /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.legal.fiscal_start') }}</label><Dropdown v-model="form.fiscal_year_start_month" :options="months" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.legal.vat_number') }}</label><InputText v-model="form.vat_number" /></div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.legal.entity_type') }}</label>
+                            <Dropdown v-model="form.legal_entity_type" :options="legalEntities" editable />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.legal.fiscal_start') }}</label>
+                            <Dropdown v-model="form.fiscal_year_start_month" :options="months" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.legal.vat_number') }}</label>
+                            <InputText v-model="form.vat_number" placeholder="FR12345678901" maxlength="13" />
+                        </div>
 
-                        <div class="md:col-span-3 flex flex-col gap-2"><label>{{ t('company.legal.object') }}</label><Textarea v-model="form.activity_object" rows="2" /></div>
+                        <div class="md:col-span-3 flex flex-col gap-2">
+                            <label>{{ t('company.legal.object') }}</label>
+                            <Textarea v-model="form.activity_object" rows="2" />
+                        </div>
 
-                        <div class="flex flex-col gap-2"><label>{{ t('company.legal.siren') }}</label><InputText v-model="form.siren" maxlength="9" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.legal.siret') }}</label><InputText v-model="form.siret" maxlength="14" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.legal.naf') }}</label><InputText v-model="form.naf_ape" maxlength="5" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.legal.rcs') }}</label><InputText v-model="form.rcs_rm" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.legal.eori') }}</label><InputText v-model="form.eori_number" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.legal.rna') }}</label><InputText v-model="form.rna_number" /></div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.legal.siren') }}</label>
+                            <InputMask 
+                                v-model="form.siren" 
+                                mask="999 999 999"
+                                placeholder="123 456 789"
+                                slotChar=""
+                            />
+                            <small class="text-gray-500">9 chiffres uniquement</small>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.legal.siret') }}</label>
+                            <InputMask 
+                                v-model="form.siret" 
+                                mask="999 999 999 99999"
+                                placeholder="123 456 789 00012"
+                                slotChar=""
+                            />
+                            <small class="text-gray-500">14 chiffres uniquement</small>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.legal.naf') }}</label>
+                            <InputMask 
+                                v-model="form.naf_ape" 
+                                mask="9999a"
+                                placeholder="8559A"
+                                slotChar=""
+                            />
+                            <small class="text-gray-500">4 chiffres + 1 lettre</small>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.legal.rcs') }}</label>
+                            <InputText v-model="form.rcs_rm" placeholder="Paris B 123 456 789" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.legal.eori') }}</label>
+                            <InputText v-model="form.eori_number" placeholder="FR12345678901234" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.legal.rna') }}</label>
+                            <InputText v-model="form.rna_number" placeholder="W123456789" maxlength="10" />
+                        </div>
                     </div>
                 </TabPanel>
 
@@ -196,19 +369,19 @@ const uploadLogo = async (event, type) => {
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
                         <div class="flex flex-col gap-2">
                             <label><i class="pi pi-twitter mr-2"></i>X (Twitter)</label>
-                            <InputText v-model="form.socials.x" placeholder="https://x.com/..." />
+                            <InputText v-model="form.socials.x" type="url" placeholder="https://x.com/..." />
                         </div>
                         <div class="flex flex-col gap-2">
                             <label><i class="pi pi-instagram mr-2"></i>Instagram</label>
-                            <InputText v-model="form.socials.instagram" placeholder="https://instagram.com/..." />
+                            <InputText v-model="form.socials.instagram" type="url" placeholder="https://instagram.com/..." />
                         </div>
                         <div class="flex flex-col gap-2">
                             <label><i class="pi pi-facebook mr-2"></i>Facebook</label>
-                            <InputText v-model="form.socials.facebook" placeholder="https://facebook.com/..." />
+                            <InputText v-model="form.socials.facebook" type="url" placeholder="https://facebook.com/..." />
                         </div>
                         <div class="flex flex-col gap-2">
                             <label><i class="pi pi-cloud mr-2"></i>Bluesky</label>
-                            <InputText v-model="form.socials.bluesky" placeholder="https://bsky.app/..." />
+                            <InputText v-model="form.socials.bluesky" type="url" placeholder="https://bsky.app/..." />
                         </div>
                         <div class="flex flex-col gap-2 md:col-span-2">
                             <label><i class="pi pi-globe mr-2"></i>{{ t('company.socials.other') }}</label>
@@ -218,28 +391,89 @@ const uploadLogo = async (event, type) => {
                 </TabPanel>
 
                 <TabPanel :header="t('company.tabs.hours')">
-                    <div class="grid grid-cols-1 gap-4 p-4 max-w-lg">
-                        <div v-for="(hours, day) in form.opening_hours" :key="day" class="flex items-center gap-4">
-                            <label class="capitalize w-24 font-semibold">{{ day }}</label>
-                            <InputText v-model="form.opening_hours[day]" placeholder="Ex: 09:00 - 18:00" class="flex-1" />
+                    <div class="p-4">
+                        <p class="text-gray-500 mb-4">Définissez les horaires d'ouverture de votre établissement.</p>
+                        <div class="grid grid-cols-1 gap-4 max-w-2xl">
+                            <div v-for="day in weekDays" :key="day.key" 
+                                 class="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <div class="flex items-center gap-3 w-32">
+                                    <Checkbox 
+                                        v-model="form.opening_hours[day.key].closed" 
+                                        :binary="true" 
+                                        :inputId="'closed-' + day.key"
+                                    />
+                                    <label :for="'closed-' + day.key" class="font-semibold cursor-pointer"
+                                           :class="{ 'line-through text-gray-400': form.opening_hours[day.key].closed }">
+                                        {{ day.label }}
+                                    </label>
+                                </div>
+                                
+                                <div v-if="!form.opening_hours[day.key].closed" class="flex items-center gap-2 flex-1">
+                                    <Dropdown 
+                                        v-model="form.opening_hours[day.key].open" 
+                                        :options="timeOptions" 
+                                        placeholder="Ouverture"
+                                        class="w-28"
+                                    />
+                                    <span class="text-gray-500">à</span>
+                                    <Dropdown 
+                                        v-model="form.opening_hours[day.key].close" 
+                                        :options="timeOptions" 
+                                        placeholder="Fermeture"
+                                        class="w-28"
+                                    />
+                                </div>
+                                <div v-else class="flex-1 text-gray-400 italic">
+                                    Fermé
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </TabPanel>
 
                 <TabPanel :header="t('company.tabs.accountant')">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
-                        <div class="flex flex-col gap-2"><label>{{ t('company.accountant.name') }}</label><InputText v-model="form.accountant_info.name" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.accountant.code') }}</label><InputText v-model="form.accountant_info.code" /></div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.accountant.name') }}</label>
+                            <InputText v-model="form.accountant_info.name" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.accountant.code') }}</label>
+                            <InputText v-model="form.accountant_info.code" />
+                        </div>
                         
-                        <div class="md:col-span-2 flex flex-col gap-2"><label>{{ t('company.accountant.address') }}</label><Textarea v-model="form.accountant_info.address" rows="2" /></div>
+                        <div class="md:col-span-2 flex flex-col gap-2">
+                            <label>{{ t('company.accountant.address') }}</label>
+                            <Textarea v-model="form.accountant_info.address" rows="2" />
+                        </div>
                         
-                        <div class="flex flex-col gap-2"><label>{{ t('company.accountant.zip') }}</label><InputText v-model="form.accountant_info.zip" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.accountant.city') }}</label><InputText v-model="form.accountant_info.city" /></div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.accountant.zip') }}</label>
+                            <InputMask 
+                                v-model="form.accountant_info.zip" 
+                                mask="99999"
+                                placeholder="75001"
+                                slotChar=""
+                            />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.accountant.city') }}</label>
+                            <InputText v-model="form.accountant_info.city" />
+                        </div>
                         
-                        <div class="flex flex-col gap-2"><label>{{ t('company.accountant.email') }}</label><InputText v-model="form.accountant_info.email" /></div>
-                        <div class="flex flex-col gap-2"><label>{{ t('company.accountant.phone') }}</label><InputText v-model="form.accountant_info.phone" /></div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.accountant.email') }}</label>
+                            <InputText v-model="form.accountant_info.email" type="email" placeholder="comptable@cabinet.fr" />
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <label>{{ t('company.accountant.phone') }}</label>
+                            <InputMask v-model="form.accountant_info.phone" mask="99 99 99 99 99" placeholder="01 23 45 67 89" />
+                        </div>
                         
-                        <div class="md:col-span-2 flex flex-col gap-2"><label>{{ t('company.accountant.note') }}</label><Textarea v-model="form.accountant_info.note" rows="2" /></div>
+                        <div class="md:col-span-2 flex flex-col gap-2">
+                            <label>{{ t('company.accountant.note') }}</label>
+                            <Textarea v-model="form.accountant_info.note" rows="2" />
+                        </div>
                     </div>
                 </TabPanel>
 

@@ -694,6 +694,11 @@
       "pending": "Pending",
       "finished": "Finished",
       "draft": "Draft"
+    },
+    "filters": {
+      "all": "All",
+      "pending": "Pending",
+      "finished": "Finished"
     }
   },
   "project": {

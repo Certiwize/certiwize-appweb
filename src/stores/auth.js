@@ -43,12 +43,15 @@ export const useAuthStore = defineStore('auth', () => {
     }
     initialized.value = true;
 
-    supabase.auth.onAuthStateChange(async (event, _session) => {
+    supabase.auth.onAuthStateChange((event, _session) => {
       session.value = _session;
       user.value = _session ? _session.user : null;
 
+      // Ne pas bloquer le listener avec await - exécuter en arrière-plan
       if (_session?.user) {
-        await fetchUserRole(_session.user.id);
+        fetchUserRole(_session.user.id).catch(err => {
+          console.error('Error fetching user role in listener:', err);
+        });
       } else {
         userRole.value = 'user';
       }
@@ -106,14 +109,22 @@ export const useAuthStore = defineStore('auth', () => {
   };
 
   const updateProfile = async (fullName) => {
-    const { error } = await supabase.auth.updateUser({
-      data: { full_name: fullName }
-    });
-    if (error) throw error;
+    try {
+      const { data, error } = await supabase.auth.updateUser({
+        data: { full_name: fullName }
+      });
 
-    // Mettre à jour l'utilisateur local
-    if (user.value) {
-      user.value.user_metadata.full_name = fullName;
+      if (error) throw error;
+
+      // Mettre à jour l'utilisateur local immédiatement
+      if (user.value && user.value.user_metadata) {
+        user.value.user_metadata.full_name = fullName;
+      }
+
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      throw error;
     }
   };
 

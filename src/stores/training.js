@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { supabase } from '../supabase';
 import { useAuthStore } from './auth';
+import { fetchWithTimeout } from '../utils/fetchWithTimeout';
 
 export const useTrainingStore = defineStore('training', () => {
     const loading = ref(false);
@@ -99,15 +100,15 @@ export const useTrainingStore = defineStore('training', () => {
     const generatePdf = async (trainingId, formData) => {
         loading.value = true;
         try {
-            // On appelle notre fonction serverless (à créer étape 4)
-            const response = await fetch('/api/generate-training-pdf', {
+            // Utiliser fetchWithTimeout pour éviter les requêtes infinies (timeout 30s pour génération PDF)
+            const response = await fetchWithTimeout('/api/generate-training-pdf', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${auth.session?.access_token}`
                 },
                 body: JSON.stringify({ trainingId, data: formData })
-            });
+            }, 30000); // 30 secondes - le polling prendra le relais si nécessaire
 
             const result = await response.json();
 

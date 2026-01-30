@@ -138,16 +138,6 @@ const logout = async () => {
         </Teleport>
       </div>
     </nav>
-    
-    <div class="p-4 border-t border-slate-800">
-      <button
-        @click="logout"
-        class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors w-full text-left"
-      >
-        <i class="pi pi-sign-out"></i>
-        <span class="font-medium">Déconnexion</span>
-      </button>
-    </div>
   </div>
 </template>
 

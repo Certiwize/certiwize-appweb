@@ -21,14 +21,17 @@ const FIELD_MAPPINGS = {
   formation: 'titre',
   duree_conv: 'duree',
   dates: 'dates',
-  horaires: 'horaires',
+  dates_fin: 'dates_fin',
+  horaires_debut: 'horaires_debut',
+  horaires_fin: 'horaires_fin',
   lieu_conv: 'lieu',
   contenu_forma: 'prgm',          // Programme détaillé
   moyens_pedagq: 'moyens_pedagq',
 
   // Document 3 : Convocation
   nom_formation: 'titre',
-  horaires_convoc: 'horaires',
+  horaires_convoc_debut: 'horaires_debut',
+  horaires_convoc_fin: 'horaires_fin',
   lieu_convoc: 'lieu',
   ref_handicap: 'ref_handi',
 
@@ -49,6 +52,41 @@ const FIELD_TRANSFORMERS = {
     if (formationContent.tarif) {
       projectForm.cout_ht = formationContent.tarif;
       projectForm.cout_ttc = calculateTTC(formationContent.tarif);
+    }
+  },
+
+  /**
+   * Parse les horaires depuis le format texte "09h00 - 17h00" vers des objets Date
+   * Gère la rétrocompatibilité avec les anciennes données
+   * @param {Object} formationContent - Contenu de la formation
+   * @param {Object} projectForm - Formulaire projet
+   */
+  horaires: (formationContent, projectForm) => {
+    // Si les horaires sont déjà au format Date, les utiliser directement
+    if (formationContent.horaires_debut instanceof Date && formationContent.horaires_fin instanceof Date) {
+      projectForm.horaires_debut = formationContent.horaires_debut;
+      projectForm.horaires_fin = formationContent.horaires_fin;
+      projectForm.horaires_convoc_debut = formationContent.horaires_debut;
+      projectForm.horaires_convoc_fin = formationContent.horaires_fin;
+      return;
+    }
+
+    // Sinon, parser depuis le format texte si disponible
+    const horaireStr = formationContent.horaires;
+    if (horaireStr && typeof horaireStr === 'string') {
+      const match = horaireStr.match(/(\d{2})h(\d{2})\s*-\s*(\d{2})h(\d{2})/);
+      if (match) {
+        const today = new Date();
+        const debut = new Date(today);
+        debut.setHours(parseInt(match[1]), parseInt(match[2]), 0);
+        const fin = new Date(today);
+        fin.setHours(parseInt(match[3]), parseInt(match[4]), 0);
+
+        projectForm.horaires_debut = debut;
+        projectForm.horaires_fin = fin;
+        projectForm.horaires_convoc_debut = debut;
+        projectForm.horaires_convoc_fin = fin;
+      }
     }
   }
 };

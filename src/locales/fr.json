@@ -473,6 +473,7 @@
     "btn_new_client": "Nouveau tiers",
     "btn_new_formation": "Nouvelle Formation",
     "btn_new_project": "Nouveau Projet",
+    "btn_new_learner": "Nouvel Apprenant",
     "status_draft": "Brouillon"
   },
   "chat": {
@@ -697,6 +698,11 @@
       "pending": "En attente",
       "finished": "Terminé",
       "draft": "Brouillon"
+    },
+    "filters": {
+      "all": "Tous",
+      "pending": "En attente",
+      "finished": "Terminés"
     }
   },
   "project": {

@@ -8,7 +8,9 @@ import Calendar from 'primevue/calendar';
 import Button from 'primevue/button';
 import Message from 'primevue/message';
 import Textarea from 'primevue/textarea';
+import ProgressBar from 'primevue/progressbar';
 import { useAuthStore } from '../stores/auth';
+import { fetchWithTimeout } from '../utils/fetchWithTimeout';
 
 const { t } = useI18n();
 const authStore = useAuthStore();
@@ -32,6 +34,8 @@ const loading = ref(false);
 const msg = ref({ type: '', content: '' });
 const pdfUrl = ref(null);
 const showPdfPreview = ref(false);
+const progressValue = ref(0); // Progression en % (0-100)
+const progressTime = ref(0); // Temps écoulé en secondes
 
 const type_formations = [
   { label: 'Présentiel', value: 'presentiel' },
@@ -68,6 +72,17 @@ const isFormValid = computed(() => {
 const generateDocument = async () => {
   msg.value = { type: '', content: '' };
   loading.value = true;
+  progressValue.value = 0;
+  progressTime.value = 0;
+
+  // Timer pour la barre de progression (estimation : 40s max)
+  const progressInterval = setInterval(() => {
+    progressTime.value++;
+    // Progression plus rapide au début, plus lente vers la fin
+    if (progressValue.value < 90) {
+      progressValue.value = Math.min(90, (progressTime.value / 40) * 100);
+    }
+  }, 1000);
 
   try {
     // Formater la date
@@ -92,41 +107,57 @@ const generateDocument = async () => {
       timestamp: new Date().toISOString()
     };
 
-    const response = await fetch('/api/generate-convention', {
+    const response = await fetchWithTimeout('/api/generate-convention', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${authStore.session?.access_token}`
       },
       body: JSON.stringify(payload)
-    });
+    }, 30000); // 30 secondes de timeout
 
     const result = await response.json();
 
     if (response.ok && result.pdfData) {
+      // Progression complète
+      clearInterval(progressInterval);
+      progressValue.value = 100;
+
       // Convertir le base64 en Blob
       const pdfBlob = base64ToBlob(result.pdfData, 'application/pdf');
       const blobUrl = URL.createObjectURL(pdfBlob);
-      
+
       pdfUrl.value = blobUrl;
       showPdfPreview.value = true;
-      msg.value = { 
-        type: 'success', 
-        content: 'Convention générée avec succès ! Le téléchargement va commencer...' 
+      msg.value = {
+        type: 'success',
+        content: 'Convention générée avec succès ! Le téléchargement va commencer...'
       };
 
       // Télécharger automatiquement le PDF
       downloadPdf(blobUrl);
+
+      // Réinitialiser après une courte pause
+      setTimeout(() => {
+        progressValue.value = 0;
+        progressTime.value = 0;
+      }, 2000);
     } else {
-      msg.value = { 
-        type: 'error', 
-        content: result.error || 'Erreur lors de la génération du document' 
+      clearInterval(progressInterval);
+      progressValue.value = 0;
+      progressTime.value = 0;
+      msg.value = {
+        type: 'error',
+        content: result.error || 'Erreur lors de la génération du document'
       };
     }
   } catch (error) {
+    clearInterval(progressInterval);
+    progressValue.value = 0;
+    progressTime.value = 0;
     msg.value = {
       type: 'error',
-      content: 'Erreur de communication avec le serveur'
+      content: error.message || 'Erreur de communication avec le serveur'
     };
   } finally {
     loading.value = false;
@@ -398,9 +429,9 @@ const resetForm = () => {
               </div>
 
               <!-- Messages -->
-              <Message 
-                v-if="msg.content" 
-                :severity="msg.type" 
+              <Message
+                v-if="msg.content"
+                :severity="msg.type"
                 :closable="false"
               >
                 {{ msg.content }}
@@ -408,21 +439,30 @@ const resetForm = () => {
 
               <!-- Boutons -->
               <div class="flex gap-4 pt-4">
-                <Button 
-                  type="submit" 
-                  label="Générer le document" 
+                <Button
+                  type="submit"
+                  label="Générer le document"
                   icon="pi pi-download"
                   :loading="loading"
                   :disabled="!isFormValid"
                   class="flex-1"
                 />
-                <Button 
+                <Button
                   type="button"
                   label="Réinitialiser"
                   icon="pi pi-refresh"
                   severity="secondary"
                   @click="resetForm"
                 />
+              </div>
+
+              <!-- Barre de progression -->
+              <div v-if="loading" class="mt-4 bg-gray-50 dark:bg-gray-700/30 p-4 rounded-lg">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-sm text-gray-600 dark:text-gray-300">Génération en cours...</span>
+                  <span class="text-sm font-medium text-blue-600 dark:text-blue-400">{{ progressTime }}s</span>
+                </div>
+                <ProgressBar :value="progressValue" :showValue="false" class="h-2" />
               </div>
             </form>
           </div>

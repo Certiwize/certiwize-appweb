@@ -1,12 +1,14 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { supabase } from '../../supabase';
 import { useAuthStore } from '../../stores/auth';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
 import Tag from 'primevue/tag';
+import SelectButton from 'primevue/selectbutton';
 import SlowLoadingDialog from '../../components/dashboard/SlowLoadingDialog.vue';
+import ConfirmDialog from 'primevue/confirmdialog';
 import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import { useI18n } from 'vue-i18n';
@@ -18,6 +20,22 @@ const toast = useToast();
 const projects = ref([]);
 const loading = ref(true);
 const showSlowLoading = ref(false);
+
+// Filtre par statut (admin uniquement)
+const statusFilter = ref('all');
+const filterOptions = computed(() => [
+    { label: t('project_list.filters.all'), value: 'all' },
+    { label: t('project_list.filters.pending'), value: 'En attente' },
+    { label: t('project_list.filters.finished'), value: 'Terminé' }
+]);
+
+// Projets filtrés
+const filteredProjects = computed(() => {
+    if (statusFilter.value === 'all') {
+        return projects.value;
+    }
+    return projects.value.filter(p => p.status === statusFilter.value);
+});
 
 const fetchProjects = async () => {
   if (!auth.user?.id) {
@@ -141,6 +159,7 @@ const validateProject = (id) => {
 </script>
 
 <template>
+  <ConfirmDialog />
   <div class="p-8">
     <!-- Documents de référence -->
     <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm mb-8 border-l-4 border-blue-500">
@@ -161,12 +180,23 @@ const validateProject = (id) => {
 
     <SlowLoadingDialog :visible="showSlowLoading" />
 
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
       <h1 class="text-2xl font-bold">{{ t('project_list.title') }}</h1>
-      <Button :label="t('project_list.new_project')" icon="pi pi-plus" @click="createProject" />
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Filtre par statut (admin uniquement) -->
+        <SelectButton 
+          v-if="auth.isAdmin" 
+          v-model="statusFilter" 
+          :options="filterOptions" 
+          optionLabel="label" 
+          optionValue="value"
+          :allowEmpty="false"
+        />
+        <Button :label="t('project_list.new_project')" icon="pi pi-plus" @click="createProject" />
+      </div>
     </div>
 
-    <DataTable :value="projects" :loading="loading" paginator :rows="10" 
+    <DataTable :value="filteredProjects" :loading="loading" paginator :rows="10" 
                tableStyle="min-width: 50rem" dataKey="id">
       
       <template #empty>{{ t('project_list.empty') }}</template>

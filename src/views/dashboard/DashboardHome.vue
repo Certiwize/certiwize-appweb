@@ -167,6 +167,9 @@ onMounted(() => {
                 <router-link to="/dashboard/projets/create">
                     <Button :label="$t('dashboard.btn_new_project')" icon="pi pi-plus" />
                 </router-link>
+                <router-link to="/dashboard/learners/create">
+                    <Button :label="$t('dashboard.btn_new_learner')" icon="pi pi-graduation-cap" />
+                </router-link>
             </div>
         </div>
     </div>

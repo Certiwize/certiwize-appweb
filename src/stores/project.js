@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { supabase } from '../supabase';
 import { useAuthStore } from './auth';
+import { fetchWithTimeout } from '../utils/fetchWithTimeout';
 
 export const useProjectStore = defineStore('project', () => {
     const currentProject = ref(null);
@@ -73,14 +74,14 @@ export const useProjectStore = defineStore('project', () => {
         }
     };
 
-    // Générer un document du projet
+    // Générer un document du projet avec approche hybride (API + polling)
     const generateDoc = async (docType, formData) => {
         if (!currentProject.value?.id) return { success: false, error: "Sauvegardez d'abord le projet" };
 
         loading.value = true;
         try {
-            // 1. Appel API Cloudflare -> n8n
-            const response = await fetch('/api/generate-project-doc', {
+            // Lancer l'appel API avec un timeout de 30s (suffisant pour les cas rapides)
+            const response = await fetchWithTimeout('/api/generate-project-doc', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -91,7 +92,7 @@ export const useProjectStore = defineStore('project', () => {
                     docType: docType,
                     data: formData
                 })
-            });
+            }, 30000); // 30 secondes - le polling prendra le relais si nécessaire
 
             const result = await response.json();
 
@@ -113,25 +114,29 @@ export const useProjectStore = defineStore('project', () => {
                 throw new Error(`Le webhook n8n n'a pas renvoyé de "${columnName}". Vérifiez la configuration n8n.`);
             }
 
-            // 2. Récupérer l'URL publique via Supabase Storage
+            // Récupérer l'URL publique via Supabase Storage
             const { data: urlData } = supabase.storage
                 .from('project-docs')
                 .getPublicUrl(fileName);
 
-            // 3. Mettre à jour la base de données (colonne spécifique au type de document)
+            // Mettre à jour la base de données (colonne spécifique au type de document)
             const updatePayload = {
-                [columnName]: urlData.publicUrl
+                [columnName]: urlData.publicUrl,
+                form_data: formData, // Mettre à jour aussi les form_data pour garantir la cohérence
+                updated_at: new Date()
             };
 
-            const { error: updateError } = await supabase
+            const { data: updatedProject, error: updateError } = await supabase
                 .from('projects')
                 .update(updatePayload)
-                .eq('id', currentProject.value.id);
+                .eq('id', currentProject.value.id)
+                .select()
+                .single();
 
             if (updateError) throw updateError;
 
-            // Mise à jour locale
-            currentProject.value[columnName] = urlData.publicUrl;
+            // Mise à jour locale en remplaçant l'objet complet pour garantir la réactivité
+            currentProject.value = updatedProject;
 
             return { success: true, url: urlData.publicUrl };
 
