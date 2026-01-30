@@ -14,9 +14,9 @@ const submenuStyle = ref({});
 
 const navigation = [
   { name: 'dashboard', href: '/dashboard', icon: 'pi-home' },
-  { 
-    name: 'tiers', 
-    href: '/dashboard/tiers', 
+  {
+    name: 'tiers',
+    href: '/dashboard/tiers',
     icon: 'pi-users',
     submenu: [
       { name: 'tiers_list', href: '/dashboard/tiers', icon: 'pi-list' },
@@ -24,9 +24,9 @@ const navigation = [
     ]
   },
   { name: 'catalogue', href: '/dashboard/catalogue', icon: 'pi-book' },
-  { 
-    name: 'projects', 
-    href: '/dashboard/projets', 
+  {
+    name: 'projects',
+    href: '/dashboard/projets',
     icon: 'pi-briefcase',
     submenu: [
       { name: 'formations', href: '/dashboard/projets', icon: 'pi-graduation-cap' },
@@ -36,6 +36,15 @@ const navigation = [
   { name: 'analysis', href: '/dashboard/analyse-doc', icon: 'pi-search' },
   { name: 'manual', href: '/dashboard/manuel-qualiopi', icon: 'pi-book' },
   { name: 'genedoc', href: 'https://qualiopi-modelisation.genedoc.fr/', icon: 'pi-link' },
+  {
+    name: 'settings',
+    href: '/dashboard/company',
+    icon: 'pi-cog',
+    submenu: [
+      { name: 'company_settings', href: '/dashboard/company', icon: 'pi-building' },
+      { name: 'quiz_settings', href: '/dashboard/quiz-settings', icon: 'pi-question-circle' }
+    ]
+  },
 ];
 
 const isCurrent = (path) => {

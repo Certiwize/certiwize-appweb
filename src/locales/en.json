@@ -17,7 +17,10 @@
     "analysis": "Document Analysis",
     "manual": "Qualiopi Manual RNQ",
     "my_company": "My Company",
-    "genedoc": "White Audit Report"
+    "genedoc": "White Audit Report",
+    "settings": "Settings",
+    "company_settings": "Company Settings",
+    "quiz_settings": "Quiz Settings"
   },
   "manual": {
     "title": "Quality Manual & Tools",
@@ -110,6 +113,10 @@
     "webhook_pending": "Document added (webhook not configured).",
     "no_project_warning": "No linked project - some documents are unavailable",
     "doc_ready_hint": "Grayed out documents are not yet generated in the project.",
+    "quiz_link_label": "Quiz Link",
+    "quiz_link_placeholder": "https://forms.google.com/...",
+    "quiz_link_help": "Questionnaire link to send (editable before sending)",
+    "no_quiz_link": "No quiz link configured",
     "columns": {
       "name": "Name",
       "email": "Email",
@@ -483,6 +490,21 @@
   "navbar": {
     "settings": "Settings",
     "logout": "Logout"
+  },
+  "quiz_settings": {
+    "title": "Quiz Settings",
+    "subtitle": "Configure default links for quizzes sent to learners",
+    "save": "Save",
+    "active": "Active",
+    "default_link": "Default Link",
+    "link_placeholder": "https://forms.google.com/...",
+    "link_help": "E.g.: Google Forms, Typeform, or any online questionnaire link",
+    "test_link": "Test Link",
+    "no_quiz": "No quiz configured",
+    "save_success": "Settings saved successfully!",
+    "save_error": "Error while saving: {error}",
+    "load_error": "Error loading settings",
+    "invalid_url": "The link for \"{label}\" is not a valid URL"
   },
   "tiers": {
     "title": "Create Third Party",

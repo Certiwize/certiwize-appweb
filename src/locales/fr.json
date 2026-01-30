@@ -17,7 +17,10 @@
     "analysis": "Analyse documentaire",
     "manual": "Manuel Qualiopi RNQ",
     "my_company": "Ma Société",
-    "genedoc": "Rapport d'audit blanc"
+    "genedoc": "Rapport d'audit blanc",
+    "settings": "Paramètres",
+    "company_settings": "Configuration Société",
+    "quiz_settings": "Paramètres des Quiz"
   },
   "manual": {
     "title": "Manuel Qualité & Outils",
@@ -113,6 +116,10 @@
     "webhook_pending": "Document ajouté (webhook non configuré).",
     "no_project_warning": "Aucun projet lié - certains documents ne sont pas disponibles",
     "doc_ready_hint": "Les documents grisés ne sont pas encore générés dans le projet.",
+    "quiz_link_label": "Lien du quiz",
+    "quiz_link_placeholder": "https://forms.google.com/...",
+    "quiz_link_help": "Lien du questionnaire à envoyer (modifiable avant l'envoi)",
+    "no_quiz_link": "Aucun lien de quiz configuré",
     "columns": {
       "name": "Nom",
       "email": "Email",
@@ -486,6 +493,21 @@
   "navbar": {
     "settings": "Paramètres",
     "logout": "Se déconnecter"
+  },
+  "quiz_settings": {
+    "title": "Paramètres des Quiz",
+    "subtitle": "Configurez les liens par défaut pour les quiz envoyés aux apprenants",
+    "save": "Enregistrer",
+    "active": "Actif",
+    "default_link": "Lien par défaut",
+    "link_placeholder": "https://forms.google.com/...",
+    "link_help": "Ex: Google Forms, Typeform, ou tout autre lien de questionnaire en ligne",
+    "test_link": "Tester le lien",
+    "no_quiz": "Aucun quiz configuré",
+    "save_success": "Paramètres enregistrés avec succès !",
+    "save_error": "Erreur lors de l'enregistrement: {error}",
+    "load_error": "Erreur lors du chargement des paramètres",
+    "invalid_url": "Le lien pour \"{label}\" n'est pas une URL valide"
   },
   "tiers": {
     "title": "Création d'un tiers",

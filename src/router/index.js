@@ -110,6 +110,11 @@ const routes = [
     path: '/dashboard/company',
     component: () => import('../views/dashboard/SettingsCompany.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/dashboard/quiz-settings',
+    component: () => import('../views/dashboard/QuizSettings.vue'),
+    meta: { requiresAuth: true }
   }
 ];
 

@@ -26,6 +26,9 @@ const showSendDialog = ref(false);
 const sendingDoc = ref(false);
 const sendError = ref('');
 const sendSuccess = ref('');
+const quizSettings = ref([]);
+const selectedDocType = ref(null);
+const quizLink = ref('');
 
 // Document types for webhook - mapped to project fields
 const documentTypes = [
@@ -58,6 +61,20 @@ const fetchLearners = async () => {
   }
 };
 
+const fetchQuizSettings = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('quiz_settings')
+      .select('*')
+      .eq('is_active', true);
+
+    if (error) throw error;
+    quizSettings.value = data || [];
+  } catch (err) {
+    console.error('Error loading quiz settings:', err);
+  }
+};
+
 const navigate = (path) => {
   window.location.href = path;
 };
@@ -83,9 +100,32 @@ const confirmDelete = (id) => {
 
 const openSendDialog = (learner) => {
   selectedLearner.value = learner;
+  selectedDocType.value = null;
+  quizLink.value = '';
   sendError.value = '';
   sendSuccess.value = '';
   showSendDialog.value = true;
+};
+
+// Get the default quiz link for a quiz type
+const getDefaultQuizLink = (docType) => {
+  const quizSetting = quizSettings.value.find(q => q.quiz_type === docType);
+  return quizSetting?.default_link || '';
+};
+
+// Check if a document type is a quiz
+const isQuizType = (docType) => {
+  return docType === 'positioning_quiz' || docType === 'evaluation_quiz';
+};
+
+// Handle document selection (especially for quizzes)
+const selectDocument = (docType) => {
+  selectedDocType.value = docType;
+
+  // If it's a quiz, load the default link
+  if (isQuizType(docType)) {
+    quizLink.value = getDefaultQuizLink(docType);
+  }
 };
 
 // Check if a document is ready to be sent
@@ -109,20 +149,33 @@ const isDocReady = (docType) => {
 const sendDocument = async (docType) => {
   if (!selectedLearner.value) return;
   if (!isDocReady(docType)) return;
-  
+
+  // For quizzes, validate that we have a link
+  if (isQuizType(docType) && !quizLink.value) {
+    sendError.value = t('learner.no_quiz_link');
+    return;
+  }
+
   sendingDoc.value = true;
   sendError.value = '';
   sendSuccess.value = '';
 
   try {
     // 1. Create a pending record in learner_documents
+    const insertData = {
+      learner_id: selectedLearner.value.id,
+      doc_type: docType,
+      webhook_status: 'pending'
+    };
+
+    // Add quiz link if it's a quiz
+    if (isQuizType(docType)) {
+      insertData.quiz_link = quizLink.value;
+    }
+
     const { data: docRecord, error: insertError } = await supabase
       .from('learner_documents')
-      .insert({
-        learner_id: selectedLearner.value.id,
-        doc_type: docType,
-        webhook_status: 'pending'
-      })
+      .insert(insertData)
       .select()
       .single();
 
@@ -148,6 +201,11 @@ const sendDocument = async (docType) => {
         tier: selectedLearner.value.tiers,
         document_id: docRecord.id
       };
+
+      // Add quiz link if it's a quiz
+      if (isQuizType(docType)) {
+        payload.quiz_link = quizLink.value;
+      }
 
       const response = await fetch(webhookUrl, {
         method: 'POST',
@@ -201,11 +259,20 @@ const sendAllDocuments = async () => {
     const { data: docRecords, error: insertError } = await supabase
       .from('learner_documents')
       .insert(
-        readyDocs.map(docType => ({
-          learner_id: selectedLearner.value.id,
-          doc_type: docType,
-          webhook_status: 'pending'
-        }))
+        readyDocs.map(docType => {
+          const record = {
+            learner_id: selectedLearner.value.id,
+            doc_type: docType,
+            webhook_status: 'pending'
+          };
+
+          // Add default quiz link if it's a quiz
+          if (isQuizType(docType)) {
+            record.quiz_link = getDefaultQuizLink(docType);
+          }
+
+          return record;
+        })
       )
       .select();
 
@@ -229,7 +296,14 @@ const sendAllDocuments = async () => {
         send_all: true,
         project: selectedLearner.value.projects,
         tier: selectedLearner.value.tiers,
-        document_ids: docRecords.map(r => r.id)
+        document_ids: docRecords.map(r => r.id),
+        // Include quiz links for each quiz document
+        quiz_links: readyDocs.reduce((acc, docType) => {
+          if (isQuizType(docType)) {
+            acc[docType] = getDefaultQuizLink(docType);
+          }
+          return acc;
+        }, {})
       };
 
       const response = await fetch(webhookUrl, {
@@ -272,7 +346,10 @@ const getStatusSeverity = (status) => {
   }
 };
 
-onMounted(fetchLearners);
+onMounted(() => {
+  fetchLearners();
+  fetchQuizSettings();
+});
 </script>
 
 <template>
@@ -347,16 +424,55 @@ onMounted(fetchLearners);
         <Message v-if="sendError" severity="error" :closable="false">{{ sendError }}</Message>
         <Message v-if="sendSuccess" severity="success" :closable="false">{{ sendSuccess }}</Message>
 
+        <!-- Quiz Link Input (shown when a quiz is selected) -->
+        <div v-if="selectedDocType && isQuizType(selectedDocType)" class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+          <div class="flex items-start gap-3 mb-3">
+            <i class="pi pi-link text-blue-500 mt-1"></i>
+            <div class="flex-1">
+              <label class="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+                {{ t('learner.quiz_link_label') }}
+              </label>
+              <InputText
+                v-model="quizLink"
+                :placeholder="t('learner.quiz_link_placeholder')"
+                class="w-full"
+              />
+              <small class="text-gray-600 dark:text-gray-400 block mt-1">
+                {{ t('learner.quiz_link_help') }}
+              </small>
+            </div>
+          </div>
+          <div class="flex gap-2">
+            <Button
+              label="Envoyer le quiz"
+              icon="pi pi-send"
+              size="small"
+              :loading="sendingDoc"
+              :disabled="!quizLink"
+              @click="sendDocument(selectedDocType)"
+              class="flex-1"
+            />
+            <Button
+              label="Annuler"
+              icon="pi pi-times"
+              size="small"
+              outlined
+              severity="secondary"
+              @click="selectedDocType = null"
+            />
+          </div>
+        </div>
+
         <div class="grid grid-cols-2 gap-3">
-          <Button 
-            v-for="doc in documentTypes" 
+          <Button
+            v-for="doc in documentTypes"
             :key="doc.value"
             :label="doc.label"
             :icon="`pi ${doc.icon}`"
             outlined
             :loading="sendingDoc"
             :disabled="!isDocReady(doc.value)"
-            @click="sendDocument(doc.value)"
+            @click="isQuizType(doc.value) ? selectDocument(doc.value) : sendDocument(doc.value)"
             class="justify-start"
             :class="{ 'opacity-50 cursor-not-allowed': !isDocReady(doc.value) }"
           >

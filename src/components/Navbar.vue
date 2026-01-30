@@ -108,14 +108,6 @@ const toggleMobileMenu = () => {
             >
               {{ t('nav.dashboard') }}
             </a>
-
-            <router-link 
-              to="/dashboard/company" 
-              class="flex items-center gap-2 text-gray-700 dark:text-white hover:text-primary transition font-medium mr-2"
-            >
-              <i class="pi pi-building"></i>
-              <span>{{ t('nav.my_company') }}</span>
-            </router-link>
             
             <!-- Bouton Profil avec menu déroulant -->
             <button 
@@ -191,13 +183,6 @@ const toggleMobileMenu = () => {
             class="block py-3 px-4 bg-primary text-white rounded-lg text-center font-semibold"
           >
             <i class="pi pi-th-large mr-2"></i>{{ t('nav.dashboard') }}
-          </router-link>
-          
-          <router-link 
-            to="/dashboard/company" 
-            class="block py-3 px-4 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
-          >
-            <i class="pi pi-building mr-3"></i>{{ t('nav.my_company') }}
           </router-link>
           
           <router-link 
