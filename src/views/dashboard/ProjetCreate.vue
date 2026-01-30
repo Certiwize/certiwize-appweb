@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useProjectStore } from '../../stores/project';
 import { useDataStore } from '../../stores/data';
 import { useTrainingStore } from '../../stores/training';
@@ -19,7 +19,6 @@ import Message from 'primevue/message';
 import Tag from 'primevue/tag';
 import { useConfirm } from 'primevue/useconfirm';
 
-const router = useRouter();
 const confirm = useConfirm();
 const route = useRoute();
 const projectStore = useProjectStore();
@@ -238,7 +237,7 @@ const save = async () => {
     });
     if(res.success && !projectId.value) {
         projectId.value = res.id;
-        router.replace(`/dashboard/projets/edit/${res.id}`);
+        window.location.replace(`/dashboard/projets/edit/${res.id}`);
     }
     return res.success;
 };
@@ -271,7 +270,7 @@ const submitForValidation = async () => {
 };
 
 const goBack = () => {
-    router.push('/dashboard/projets');
+    window.location.href = '/dashboard/projets';
 };
 
 // --- Timeline Progress ---

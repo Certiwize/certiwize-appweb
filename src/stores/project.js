@@ -65,7 +65,9 @@ export const useProjectStore = defineStore('project', () => {
             if (error) throw error;
             currentProject.value = data;
         } catch (err) {
-            // Erreur silencieuse
+            console.error('[ProjectStore] Error fetching project:', err);
+            currentProject.value = null;
+            throw err; // Propager l'erreur pour que le composant puisse la gérer
         } finally {
             loading.value = false;
         }
@@ -143,10 +145,18 @@ export const useProjectStore = defineStore('project', () => {
     // Changer le statut du projet
     const updateStatus = async (newStatus) => {
         try {
-            await supabase.from('projects').update({ status: newStatus }).eq('id', currentProject.value.id);
+            const { error } = await supabase
+                .from('projects')
+                .update({ status: newStatus })
+                .eq('id', currentProject.value.id);
+
+            if (error) throw error;
+
             currentProject.value.status = newStatus;
+            return { success: true };
         } catch (e) {
-            // Erreur silencieuse
+            console.error('[ProjectStore] Error updating project status:', e);
+            return { success: false, error: e.message };
         }
     };
 

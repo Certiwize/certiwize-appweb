@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
 import { supabase } from '../../supabase';
 import { useAuthStore } from '../../stores/auth';
 import DataTable from 'primevue/datatable';
@@ -12,7 +11,6 @@ import { useConfirm } from 'primevue/useconfirm';
 import { useToast } from 'primevue/usetoast';
 import { useI18n } from 'vue-i18n';
 
-const router = useRouter();
 const auth = useAuthStore();
 const { t } = useI18n();
 const confirm = useConfirm();
@@ -66,7 +64,11 @@ onMounted(() => {
 });
 
 const editProject = (id) => {
-  router.push(`/dashboard/projets/edit/${id}`);
+  window.location.href = `/dashboard/projets/edit/${id}`;
+};
+
+const createProject = () => {
+  window.location.href = '/dashboard/projets/create';
 };
 
 const deleteProject = (id) => {
@@ -161,7 +163,7 @@ const validateProject = (id) => {
 
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold">{{ t('project_list.title') }}</h1>
-      <Button :label="t('project_list.new_project')" icon="pi pi-plus" @click="router.push('/dashboard/projets/create')" />
+      <Button :label="t('project_list.new_project')" icon="pi pi-plus" @click="createProject" />
     </div>
 
     <DataTable :value="projects" :loading="loading" paginator :rows="10" 

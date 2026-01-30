@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue';
 import { useAuthStore } from '../stores/auth';
-import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
@@ -9,7 +8,6 @@ import Message from 'primevue/message';
 
 const { t } = useI18n();
 const auth = useAuthStore();
-const router = useRouter();
 const password = ref('');
 const confirmPassword = ref('');
 const loading = ref(false);
@@ -27,7 +25,7 @@ const handleUpdate = async () => {
   try {
     await auth.updateUserPassword(password.value);
     alert(t('update_password.success'));
-    router.push('/dashboard');
+    window.location.href = '/dashboard';
   } catch (error) {
     msg.value = "Erreur: " + error.message;
   } finally {

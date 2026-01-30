@@ -1,6 +1,5 @@
 <script setup>
 import { onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
 import { useTrainingStore } from '../../stores/training';
 import { useAuthStore } from '../../stores/auth';
 import { storeToRefs } from 'pinia';
@@ -11,7 +10,6 @@ import Tag from 'primevue/tag';
 import SlowLoadingDialog from '../../components/dashboard/SlowLoadingDialog.vue';
 import { useI18n } from 'vue-i18n';
 
-const router = useRouter();
 const trainingStore = useTrainingStore();
 const authStore = useAuthStore();
 const { t } = useI18n();
@@ -20,7 +18,7 @@ const { formations, loading } = storeToRefs(trainingStore);
 const showSlowLoading = ref(false);
 
 const navigate = (path) => {
-    router.push(path);
+    window.location.href = path;
 };
 
 onMounted(async () => {

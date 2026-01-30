@@ -33,7 +33,9 @@ export const useTrainingStore = defineStore('training', () => {
             if (err) throw err;
             formations.value = data || [];
         } catch (err) {
-            // Erreur silencieuse
+            console.error('[TrainingStore] Error fetching formations:', err);
+            formations.value = [];
+            throw err;
         } finally {
             loading.value = false;
         }

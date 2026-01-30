@@ -1,6 +1,5 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
 import { supabase } from '../../supabase';
 import { useAuthStore } from '../../stores/auth';
 import { useI18n } from 'vue-i18n';
@@ -17,7 +16,6 @@ import { useToast } from 'primevue/usetoast';
 
 const { t } = useI18n();
 const authStore = useAuthStore();
-const router = useRouter();
 const confirmDialog = useConfirm();
 const toast = useToast();
 
@@ -61,7 +59,7 @@ const fetchLearners = async () => {
 };
 
 const navigate = (path) => {
-  router.push(path);
+  window.location.href = path;
 };
 
 const confirmDelete = (id) => {

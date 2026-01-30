@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useTrainingStore } from '../../stores/training';
 import { supabase } from '../../supabase';
 import { useI18n } from 'vue-i18n';
@@ -14,7 +14,6 @@ import Calendar from 'primevue/calendar';
 import Message from 'primevue/message';
 import { useConfirm } from 'primevue/useconfirm';
 
-const router = useRouter();
 const confirm = useConfirm();
 const route = useRoute();
 const trainingStore = useTrainingStore();
@@ -82,7 +81,7 @@ onMounted(async () => {
                 }
             }
         } catch (err) {
-            router.push('/dashboard/catalogue');
+            window.location.href = '/dashboard/catalogue';
         }
     }
 });
@@ -129,7 +128,7 @@ const resetForm = () => {
 };
 
 const goBack = () => {
-    router.push('/dashboard/catalogue');
+    window.location.href = '/dashboard/catalogue';
 };
 </script>
 

@@ -23,11 +23,13 @@ export const useAuthStore = defineStore('auth', () => {
         .single();
 
       if (error) {
+        console.error('[AuthStore] Error fetching user role:', error);
         userRole.value = 'user';
       } else {
         userRole.value = data.role || 'user';
       }
     } catch (err) {
+      console.error('[AuthStore] Exception fetching user role:', err);
       userRole.value = 'user';
     }
   };

@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue';
 import { useAuthStore } from '../stores/auth';
-import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import InputText from 'primevue/inputtext';
 import Password from 'primevue/password';
@@ -10,7 +9,6 @@ import Message from 'primevue/message';
 
 const { t } = useI18n();
 const auth = useAuthStore();
-const router = useRouter();
 
 const email = ref('');
 const password = ref('');
@@ -23,7 +21,7 @@ const handleLogin = async () => {
   
   try {
     await auth.signIn(email.value, password.value);
-    router.push('/dashboard');
+    window.location.href = '/dashboard';
   } catch (error) {
     errorMsg.value = t('login.error');
   } finally {

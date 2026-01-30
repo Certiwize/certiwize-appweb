@@ -8,12 +8,10 @@ import Button from 'primevue/button';
 import Tag from 'primevue/tag';
 import InputText from 'primevue/inputtext';
 import Dropdown from 'primevue/dropdown';
-import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '../../stores/auth';
 import SlowLoadingDialog from '../../components/dashboard/SlowLoadingDialog.vue';
 
-const router = useRouter();
 const dataStore = useDataStore();
 const authStore = useAuthStore();
 const { tiers, loading } = storeToRefs(dataStore); // Réactivité directe
@@ -42,7 +40,7 @@ const filteredTiers = computed(() => {
 });
 
 const navigate = (path) => {
-    router.push(path);
+    window.location.href = path;
 };
 
 // Chargement initial des données

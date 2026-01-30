@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useDataStore } from '../../stores/data';
-import { useRouter, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
 // Supabase import retiré car plus besoin de charger la liste des utilisateurs
 
 // Imports PrimeVue
@@ -20,7 +20,6 @@ import AccordionHeader from 'primevue/accordionheader';
 import AccordionContent from 'primevue/accordioncontent';
 import Chips from 'primevue/chips';
 
-const router = useRouter();
 const route = useRoute();
 const dataStore = useDataStore();
 
@@ -144,7 +143,7 @@ const handleSubmit = async () => {
     }
 
     if (result.success) {
-        router.push('/dashboard/tiers');
+        window.location.href = '/dashboard/tiers';
     } else {
         errorMsg.value = "Erreur lors de l'enregistrement : " + result.error;
     }
@@ -160,7 +159,7 @@ const onLogoUpload = (_event) => {
 };
 
 const goBack = () => {
-    router.push('/dashboard/tiers');
+    window.location.href = '/dashboard/tiers';
 };
 </script>
 

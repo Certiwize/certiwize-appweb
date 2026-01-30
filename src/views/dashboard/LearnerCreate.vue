@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { supabase } from '../../supabase';
 import { useAuthStore } from '../../stores/auth';
 import { useI18n } from 'vue-i18n';
@@ -10,7 +10,6 @@ import Button from 'primevue/button';
 import Message from 'primevue/message';
 
 const route = useRoute();
-const router = useRouter();
 const authStore = useAuthStore();
 const { t } = useI18n();
 
@@ -120,7 +119,7 @@ const saveLearner = async () => {
 
     success.value = true;
     setTimeout(() => {
-      router.push('/dashboard/learners');
+      window.location.href = '/dashboard/learners';
     }, 1000);
   } catch (err) {
     error.value = err.message;
@@ -130,7 +129,7 @@ const saveLearner = async () => {
 };
 
 const navigate = (path) => {
-  router.push(path);
+  window.location.href = path;
 };
 
 onMounted(async () => {
