@@ -274,14 +274,15 @@ onMounted(() => {
                                 <div class="flex justify-between items-start">
                                     <Tag :value="doc.code.toUpperCase()" :severity="getSeverity(doc.code)" class="font-mono text-sm" v-if="doc.code" />
                                     <div class="flex items-center gap-2">
-                                        <i class="pi pi-file-pdf text-red-500 text-xl opacity-80 group-hover:opacity-100"></i>
+                                        <i class="pi pi-file-pdf text-red-500 text-xl"></i>
                                         <Button
                                             icon="pi pi-trash"
                                             text
                                             rounded
                                             severity="danger"
                                             size="small"
-                                            class="opacity-0 group-hover:opacity-100 transition-opacity"
+                                            class="!opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex-shrink-0"
+                                            v-tooltip.top="'Supprimer'"
                                             @click="(e) => deleteDocument(doc, e)"
                                         />
                                     </div>
@@ -329,7 +330,8 @@ onMounted(() => {
                                     text
                                     rounded
                                     severity="danger"
-                                    class="opacity-0 group-hover:opacity-100 transition-opacity"
+                                    class="!opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity flex-shrink-0"
+                                    v-tooltip.top="'Supprimer'"
                                     @click="(e) => deleteDocument(tool, e)"
                                 />
                             </div>
