@@ -263,63 +263,63 @@
     "feature_15_benefit_4": "Clear financial vision",
     "modules": {
       "dashboard": {
-        "title": "Dashboard & KPIs",
-        "description": "Visualize your training organization's activity at a glance. Monitor key indicators (turnover, number of trainees, satisfaction rate) to steer your business.",
+        "title": "Dashboard & Management",
+        "description": "Visualize your training organization's activity at a glance. Quickly access all your projects, customers, learners, and trainings from a centralized and intuitive dashboard.",
         "benefits": [
-          "Synthetic and graphical views",
-          "Entry/exit tracking",
-          "Qualiopi indicators",
-          "Alerts and notifications"
+          "Quick access to all modules",
+          "Real-time activity overview",
+          "Intuitive and smooth navigation",
+          "Modern and responsive interface"
         ]
       },
       "crm": {
-        "title": "Stakeholder Management (CRM)",
-        "description": "Centralize the management of your Clients, Trainers, and Suppliers. A unique database to easily find all contact details and associated documents.",
+        "title": "Customer & Learner Management",
+        "description": "Centralize the management of your Clients, Prospects, Suppliers, OPCOs, and Trainers. Also manage your learner space with automatic document sending (welcome booklet, summons, certificates, questionnaires).",
         "benefits": [
-          "Detailed sheets (Clients, Trainers...)",
-          "Contact management",
-          "Representative assignment",
-          "Exchange history"
+          "Complete Client/OPCO/Trainer management",
+          "Learner space with webhooks",
+          "Automatic document sending",
+          "Detailed sheets with history"
         ]
       },
       "catalogue": {
-        "title": "Training Catalogue",
-        "description": "Manage your training offer with precision. Create complete program sheets, define objectives, prerequisites, and evaluation methods.",
+        "title": "AI Training Catalogue",
+        "description": "Create your training catalog with the help of artificial intelligence. Generate complete, detailed, and Qualiopi-compliant training programs in just a few clicks thanks to AI.",
         "benefits": [
-          "Compliant program sheets",
-          "Version management",
-          "Pricing and modalities",
-          "Detailed program per module"
+          "AI-powered program generation",
+          "Qualiopi-compliant sheets",
+          "Professional PDF export",
+          "Version and status management"
         ]
       },
       "workflow": {
-        "title": "Project Management (Workflow)",
-        "description": "A complete workflow to manage the lifecycle of your training sessions, from the initial request to the closure of the file and sending of documents.",
+        "title": "Project & Document Management",
+        "description": "A complete workflow to manage your training sessions. Automatically generate agreements, summons, welcome booklets, and link your trainings. Track each step of the training until closure.",
         "benefits": [
-          "Guided workflow (Identification -> Closure)",
           "Automatic document generation",
-          "Agreements and Summons",
-          "Attendance tracking"
+          "AI-powered agreements and summons",
+          "Personalized welcome booklets",
+          "Link with catalog trainings"
         ]
       },
       "ia": {
         "title": "AI Document Analysis",
-        "description": "Save time with artificial intelligence. Automatically analyze your documents (CVs, Certificates, Programs) to extract essential data.",
+        "description": "Automatically analyze your documents with artificial intelligence. Support for over 30 document types (questionnaires, certificates, invoices, CVs, programs, contracts, etc.) with intelligent data extraction.",
         "benefits": [
-          "Automatic Recognition (OCR)",
-          "Key data extraction",
-          "PDF, DOCX, Image support",
-          "Fluid integration into the file"
+          "Over 30 document types",
+          "Intelligent and accurate analysis",
+          "PDF, DOCX, JPG, PNG support",
+          "Automatic data extraction"
         ]
       },
       "config": {
-        "title": "Configuration & Compliance",
-        "description": "Administer your organization serenely. Configure your legal information, logos, reference documents (T&Cs, Internal Rules), and Quality tracking.",
+        "title": "Configuration & Qualiopi Manual",
+        "description": "Configure your organization with legal information, contact details, and logos. Access the complete RNQ Quality Manual with all documents classified by Qualiopi indicators (C1I1, C2I8, etc.) and the downloadable Excel toolbox.",
         "benefits": [
-          "Legal information and logos",
-          "Tax and VAT management",
-          "Reference documents (T&Cs...)",
-          "Representative tracking (Disability...)"
+          "Complete company configuration",
+          "RNQ Quality Manual by indicators",
+          "Downloadable Excel toolbox",
+          "Disability referent and compliance"
         ]
       }
     }

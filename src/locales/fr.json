@@ -266,63 +266,63 @@
     "feature_15_benefit_4": "Vision financière claire",
     "modules": {
       "dashboard": {
-        "title": "Tableau de bord & KPI",
-        "description": "Visualisez en un coup d'œil l'activité de votre organisme de formation. Suivez les indicateurs clés (CA, nombre de stagiaires, taux de satisfaction) pour piloter votre activité.",
+        "title": "Tableau de bord & Pilotage",
+        "description": "Visualisez en un coup d'œil l'activité de votre organisme de formation. Accédez rapidement à tous vos projets, tiers, apprenants et formations depuis un tableau de bord centralisé et intuitif.",
         "benefits": [
-          "Vues synthétiques et graphiques",
-          "Suivi des entrées/sorties",
-          "Indicateurs Qualiopi",
-          "Alertes et notifications"
+          "Accès rapide à tous les modules",
+          "Aperçu de l'activité en temps réel",
+          "Navigation intuitive et fluide",
+          "Interface moderne et responsive"
         ]
       },
       "crm": {
-        "title": "Gestion des tiers (CRM)",
-        "description": "Centralisez la gestion de vos Clients, Formateurs et Fournisseurs. Une base de données unique pour retrouver facilement toutes les coordonnées et documents associés.",
+        "title": "Gestion des Tiers & Apprenants",
+        "description": "Centralisez la gestion de vos Clients, Prospects, Fournisseurs, OPCO et Formateurs. Gérez également votre espace apprenant avec envoi automatique de documents (livret, convocation, certificats, questionnaires).",
         "benefits": [
-          "Fiches détaillées (Clients, Formateurs...)",
-          "Gestion des contacts",
-          "Assignation de référents",
-          "Historique des échanges"
+          "Gestion complète Clients/OPCO/Formateurs",
+          "Espace apprenant avec webhooks",
+          "Envoi automatique de documents",
+          "Fiches détaillées avec historique"
         ]
       },
       "catalogue": {
-        "title": "Catalogue de formations",
-        "description": "Gérez votre offre de formation avec précision. Créez des fiches programmes complètes, définissez les objectifs, prérequis et modalités d'évaluation.",
+        "title": "Catalogue de Formations IA",
+        "description": "Créez votre catalogue de formations avec l'aide de l'intelligence artificielle. Générez des programmes de formation complets, détaillés et conformes Qualiopi en quelques clics grâce à l'IA.",
         "benefits": [
-          "Fiches programmes conformes",
-          "Gestion des versions",
-          "Tarification et modalités",
-          "Programme détaillé par module"
+          "Génération IA de programmes",
+          "Fiches conformes Qualiopi",
+          "Export PDF professionnel",
+          "Gestion des versions et statuts"
         ]
       },
       "workflow": {
-        "title": "Gestion de projets (Workflow)",
-        "description": "Un workflow complet pour gérer le cycle de vie de vos sessions de formation, de la demande initiale jusqu'à la clôture du dossier et l'envoi des documents.",
+        "title": "Gestion de Projets & Documents",
+        "description": "Un workflow complet pour gérer vos sessions de formation. Générez automatiquement les conventions, convocations, livrets d'accueil et liez vos formations. Suivez chaque étape de la formation jusqu'à la clôture.",
         "benefits": [
-          "Workflow guidé (Identification -> Clôture)",
           "Génération automatique de documents",
-          "Conventions et Convocations",
-          "Suivi des émargements"
+          "Conventions et convocations IA",
+          "Livrets d'accueil personnalisés",
+          "Liaison avec formations du catalogue"
         ]
       },
       "ia": {
-        "title": "Analyse IA de documents",
-        "description": "Gagnez du temps grâce à l'intelligence artificielle. Analysez automatiquement vos documents (CV, Certificats, Programmes) pour en extraire les données essentielles.",
+        "title": "Analyse Documentaire IA",
+        "description": "Analysez automatiquement vos documents grâce à l'intelligence artificielle. Support de plus de 30 types de documents (questionnaires, certificats, factures, CV, programmes, contrats, etc.) avec extraction intelligente des données.",
         "benefits": [
-          "Reconnaissance automatique (OCR)",
-          "Extractions de données clés",
-          "Support PDF, DOCX, Images",
-          "Intégration fluide au dossier"
+          "Plus de 30 types de documents",
+          "Analyse intelligente et précise",
+          "Support PDF, DOCX, JPG, PNG",
+          "Extraction automatique des données"
         ]
       },
       "config": {
-        "title": "Configuration & conformité",
-        "description": "Administrez votre organisme sereinement. Configurez vos informations légales, logos, documents de référence (CGV, Règlement intérieur) et suivis Qualité.",
+        "title": "Configuration & Manuel Qualiopi",
+        "description": "Configurez votre organisme avec vos informations légales, coordonnées et logos. Accédez au Manuel Qualité RNQ complet avec tous les documents classés par indicateurs Qualiopi (C1I1, C2I8, etc.) et la boîte à outils Excel.",
         "benefits": [
-          "Informations légales et logos",
-          "Gestion des taxes et TVA",
-          "Documents de référence (CGV...)",
-          "Suivi des référents (Handicap...)"
+          "Configuration entreprise complète",
+          "Manuel Qualité RNQ par indicateurs",
+          "Boîte à outils Excel téléchargeable",
+          "Référent handicap et conformité"
         ]
       }
     }

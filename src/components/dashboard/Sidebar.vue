@@ -2,9 +2,11 @@
 import { ref, computed, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { useAuthStore } from '../../stores/auth';
 
 const route = useRoute();
 const { t } = useI18n();
+const authStore = useAuthStore();
 
 // Track which menu is hovered and its position
 const hoveredMenu = ref(null);
@@ -54,6 +56,11 @@ const handleMouseEnter = (event, itemName) => {
 
 const handleMouseLeave = () => {
   hoveredMenu.value = null;
+};
+
+const logout = async () => {
+  await authStore.signOut();
+  window.location.href = '/';
 };
 </script>
 
@@ -124,13 +131,13 @@ const handleMouseLeave = () => {
     </nav>
     
     <div class="p-4 border-t border-slate-800">
-      <router-link
-        to="/login"
-        class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+      <button
+        @click="logout"
+        class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors w-full text-left"
       >
         <i class="pi pi-sign-out"></i>
         <span class="font-medium">Déconnexion</span>
-      </router-link>
+      </button>
     </div>
   </div>
 </template>

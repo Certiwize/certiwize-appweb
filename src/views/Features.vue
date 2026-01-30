@@ -144,27 +144,5 @@ const features = computed(() => [
         </div>
       </div>
     </div>
-
-    <!-- CTA Section -->
-    <div class="max-w-4xl mx-auto text-center mt-20 bg-gradient-to-r from-primary to-primary-dark text-white p-12 rounded-2xl shadow-2xl">
-      <h2 class="text-3xl font-bold mb-4">{{ t('features.cta_title') }}</h2>
-      <p class="text-xl mb-8 text-white/90">
-        {{ t('features.cta_subtitle') }}
-      </p>
-      <div class="flex flex-col sm:flex-row justify-center gap-4">
-        <router-link 
-          to="/contact" 
-          class="bg-white text-primary px-8 py-4 rounded-xl text-lg font-bold hover:bg-gray-100 transition shadow-lg"
-        >
-          {{ t('features.cta_demo') }}
-        </router-link>
-        <router-link 
-          to="/faq" 
-          class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-xl text-lg font-bold hover:bg-white/10 transition"
-        >
-          {{ t('features.cta_faq') }}
-        </router-link>
-      </div>
-    </div>
   </div>
 </template>

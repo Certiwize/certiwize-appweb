@@ -7,8 +7,6 @@ import ProjectCreate from '../views/dashboard/ProjetCreate.vue';
 const routes = [
   { path: '/', component: Home },
   { path: '/features', component: () => import('../views/Features.vue') },
-  { path: '/contact', component: () => import('../views/Contact.vue') },
-  { path: '/faq', component: () => import('../views/FAQ.vue') },
   { path: '/login', component: Login },
   { path: '/register', component: () => import('../views/Register.vue') },
   { path: '/forgot-password', component: () => import('../views/ForgotPassword.vue') },

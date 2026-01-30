@@ -20,19 +20,6 @@ const benefits = computed(() => [
     desc: t('home.benefit_sync_desc') 
   }
 ]);
-
-const testimonials = computed(() => [
-  { 
-    name: t('home.testimonial_1_name'), 
-    role: t('home.testimonial_1_role'), 
-    quote: t('home.testimonial_1_quote') 
-  },
-  { 
-    name: t('home.testimonial_2_name'), 
-    role: t('home.testimonial_2_role'), 
-    quote: t('home.testimonial_2_quote') 
-  }
-]);
 </script>
 
 <template>
@@ -45,7 +32,7 @@ const testimonials = computed(() => [
         {{ t('home.hero_subtitle') }}
       </p>
       <div class="flex flex-col sm:flex-row justify-center gap-4">
-        <router-link to="/contact" class="bg-primary text-white px-8 py-4 rounded-xl text-lg font-bold hover:bg-primary-dark transition shadow-lg hover:shadow-xl hover:-translate-y-1 transform duration-200">
+        <router-link to="/register" class="bg-primary text-white px-8 py-4 rounded-xl text-lg font-bold hover:bg-primary-dark transition shadow-lg hover:shadow-xl hover:-translate-y-1 transform duration-200">
           {{ t('home.cta') }}
         </router-link>
         <router-link to="/features" class="bg-white dark:bg-gray-700 text-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-600 transition shadow-sm">
@@ -65,27 +52,6 @@ const testimonials = computed(() => [
           </div>
           <h3 class="text-xl font-bold mb-3 text-gray-900 dark:text-white">{{ benefit.title }}</h3>
           <p class="text-gray-600 dark:text-gray-400 leading-relaxed">{{ benefit.desc }}</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-24 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-    <div class="max-w-5xl mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center mb-16 text-gray-900 dark:text-white">{{ t('home.testimonials_title') }}</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div v-for="(item, index) in testimonials" :key="index" class="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-sm relative">
-          <i class="pi pi-quote-left text-4xl text-gray-200 dark:text-gray-700 absolute top-6 right-6"></i>
-          <p class="text-lg text-gray-700 dark:text-gray-300 italic mb-6">"{{ item.quote }}"</p>
-          <div class="flex items-center">
-            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold mr-4">
-              {{ item.name.charAt(0) }}
-            </div>
-            <div>
-              <p class="font-bold text-gray-900 dark:text-white">{{ item.name }}</p>
-              <p class="text-sm text-gray-500">{{ item.role }}</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
