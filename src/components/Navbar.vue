@@ -85,13 +85,7 @@ const toggleMobileMenu = () => {
 
         <!-- Desktop Navigation -->
         <div class="hidden md:flex items-center space-x-4">
-          <router-link 
-            to="/" 
-            class="text-gray-600 dark:text-gray-300 hover:text-primary transition"
-            :class="!isScrolled ? 'text-gray-700 dark:text-white' : ''"
-          >
-            {{ t('nav.home') }}
-          </router-link>
+
           
           <router-link 
             v-if="!authStore.user" 
@@ -161,12 +155,7 @@ const toggleMobileMenu = () => {
       class="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 shadow-lg"
     >
       <div class="px-4 py-4 space-y-3">
-        <router-link 
-          to="/" 
-          class="block py-3 px-4 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition"
-        >
-          <i class="pi pi-home mr-3"></i>{{ t('nav.home') }}
-        </router-link>
+
         
         <template v-if="!authStore.user">
           <router-link 

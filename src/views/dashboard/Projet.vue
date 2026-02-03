@@ -53,6 +53,7 @@ const fetchProjects = async () => {
   }, 10000);
 
   try {
+    await auth.refreshSession();
     const checkAdmin = auth.userRole === 'admin';
 
     let query = supabase
@@ -97,6 +98,7 @@ const deleteProject = (id) => {
     acceptClass: 'p-button-danger',
     accept: async () => {
       try {
+        await auth.refreshSession();
         const { error } = await supabase.from('projects').delete().eq('id', id);
         if (error) throw error;
         projects.value = projects.value.filter(p => p.id !== id);
@@ -139,6 +141,7 @@ const validateProject = (id) => {
     acceptClass: 'p-button-success',
     accept: async () => {
       try {
+        await auth.refreshSession();
         const { error } = await supabase
           .from('projects')
           .update({ status: 'Validé' })
@@ -152,6 +155,43 @@ const validateProject = (id) => {
         toast.add({ severity: 'success', summary: 'Succès', detail: t('project_list.success_validate'), life: 3000 });
       } catch (e) {
         toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur validation: ' + e.message, life: 3000 });
+      }
+    }
+  });
+};
+
+// Check if all documents are generated
+const areAllDocsGenerated = (project) => {
+  return (
+    project.convention && project.convention.trim() !== '' &&
+    project.convocation && project.convocation.trim() !== '' &&
+    project.livret && project.livret.trim() !== ''
+  );
+};
+
+// Terminer le projet
+const finishProject = (id) => {
+  confirm.require({
+    message: 'Êtes-vous sûr de vouloir terminer ce projet ? Cette action est irréversible.',
+    header: 'Terminer le projet',
+    icon: 'pi pi-flag-fill',
+    acceptClass: 'p-button-info',
+    accept: async () => {
+      try {
+        await auth.refreshSession();
+        const { error } = await supabase
+          .from('projects')
+          .update({ status: 'Terminé' })
+          .eq('id', id);
+
+        if (error) throw error;
+
+        const project = projects.value.find(p => p.id === id);
+        if (project) project.status = 'Terminé';
+
+        toast.add({ severity: 'success', summary: 'Succès', detail: 'Projet marqué comme terminé', life: 3000 });
+      } catch (e) {
+        toast.add({ severity: 'error', summary: 'Erreur', detail: 'Erreur: ' + e.message, life: 3000 });
       }
     }
   });
@@ -260,6 +300,10 @@ const validateProject = (id) => {
                     icon="pi pi-check" text rounded severity="success" 
                     @click="validateProject(slotProps.data.id)" 
                     v-tooltip.top="'Valider'" />
+            <Button v-if="slotProps.data.status !== 'Terminé' && areAllDocsGenerated(slotProps.data)" 
+                    icon="pi pi-flag-fill" text rounded severity="info" 
+                    @click="finishProject(slotProps.data.id)" 
+                    v-tooltip.top="'Terminer le projet'" />
             <Button icon="pi pi-pencil" text rounded severity="info" 
                     @click="editProject(slotProps.data.id)" 
                     v-tooltip.top="'Éditer'" />

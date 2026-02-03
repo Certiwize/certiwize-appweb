@@ -20,7 +20,8 @@
     "genedoc": "White Audit Report",
     "settings": "Settings",
     "company_settings": "Company Settings",
-    "quiz_settings": "Quiz Settings"
+    "quiz_settings": "Quiz Settings",
+    "admin": "Administration"
   },
   "manual": {
     "title": "Quality Manual & Tools",
@@ -107,12 +108,16 @@
     "save_success": "Learner saved successfully!",
     "error_required": "First Name, Last Name, and Email are required.",
     "send_docs": "Send documents",
-    "send_dialog_title": "Send Document",
+    "send_dialog_title": "Send Documents",
     "send_success": "Document sent successfully!",
+    "send_all_success": "{count} documents sent successfully!",
+    "send_btn": "Send documents",
     "send_error": "Error sending document",
     "webhook_pending": "Document added (webhook not configured).",
     "no_project_warning": "No linked project - some documents are unavailable",
     "doc_ready_hint": "Grayed out documents are not yet generated in the project.",
+    "sender_email_label": "Sender email",
+    "sender_email_placeholder": "noreply@certiwize.com",
     "quiz_link_label": "Quiz Link",
     "quiz_link_placeholder": "https://forms.google.com/...",
     "quiz_link_help": "Questionnaire link to send (editable before sending)",
@@ -820,6 +825,45 @@
       "pedagogy": "Materials, tools...",
       "rules": "Internal rules...",
       "accessibility": "Accessibility..."
+    }
+  },
+  "admin": {
+    "title": "Administration",
+    "subtitle": "Commercial Dashboard - Users Overview",
+    "stats": {
+      "total_users": "Total Users",
+      "admins": "Administrators",
+      "regular_users": "Regular Users",
+      "recent_users": "New (30d)"
+    },
+    "users_list": "Users List",
+    "search_placeholder": "Search by name or email...",
+    "empty_list": "No users found.",
+    "loading_data": "Loading users...",
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "last_activity": "Last Activity",
+      "actions": "Actions"
+    },
+    "role_admin": "Admin",
+    "role_user": "User",
+    "access_denied": "Access denied. This page is reserved for administrators.",
+    "you": "you",
+    "promote": "Promote",
+    "demote": "Demote",
+    "role_change": {
+      "dialog_title": "Change User Role",
+      "current": "Current",
+      "new": "New",
+      "confirm": "Confirm Change",
+      "warning_promote": "This user will have access to all administration features, including managing other users.",
+      "warning_demote": "This user will lose all administration rights and will no longer have access to this page.",
+      "success_title": "Role Changed",
+      "success_message": "{name}'s role has been changed to {role}.",
+      "error_title": "Error",
+      "error_message": "An error occurred while changing the role."
     }
   },
   "company": {

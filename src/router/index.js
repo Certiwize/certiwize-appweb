@@ -1,12 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
-import Home from '../views/Home.vue';
+
 import Login from '../views/Login.vue';
 import ProjectCreate from '../views/dashboard/ProjetCreate.vue';
 
 const routes = [
-  { path: '/', component: Home },
-  { path: '/features', component: () => import('../views/Features.vue') },
+  {
+    path: '/',
+    redirect: to => {
+      const authStore = useAuthStore();
+      if (authStore.user) {
+        return '/dashboard';
+      } else {
+        return '/login';
+      }
+    }
+  },
   { path: '/login', component: Login },
   { path: '/register', component: () => import('../views/Register.vue') },
   { path: '/forgot-password', component: () => import('../views/ForgotPassword.vue') },
@@ -78,6 +87,12 @@ const routes = [
         path: 'learners/edit/:id',
         name: 'dashboard-learners-edit',
         component: () => import('../views/dashboard/LearnerCreate.vue')
+      },
+      {
+        path: 'admin',
+        name: 'dashboard-admin',
+        component: () => import('../views/dashboard/AdminDashboard.vue'),
+        meta: { requiresAdmin: true }
       }
     ]
   },
@@ -128,16 +143,21 @@ router.beforeEach(async (to, from, next) => {
 
   // Attendre que l'authentification soit initialisée avant de vérifier
   if (!authStore.initialized && to.meta.requiresAuth) {
-    // Attendre max 2 secondes que l'auth soit initialisée
-    const maxWait = 2000;
-    const startTime = Date.now();
-    while (!authStore.initialized && (Date.now() - startTime) < maxWait) {
-      await new Promise(resolve => setTimeout(resolve, 50));
+    // Utiliser la méthode Promise-based au lieu du polling
+    try {
+      await Promise.race([
+        authStore.waitForInit(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Auth init timeout')), 2000))
+      ]);
+    } catch (err) {
+      console.warn('[Router] Auth initialization timeout, proceeding anyway');
     }
   }
 
   if (to.meta.requiresAuth && !authStore.user) {
     next('/login');
+  } else if (to.meta.requiresAdmin && authStore.userRole !== 'admin') {
+    next('/dashboard');
   } else {
     next();
   }

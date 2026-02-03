@@ -42,6 +42,7 @@ const statusOptions = [
 // Fetch projects and tiers for dropdown
 const fetchOptions = async () => {
   try {
+    await authStore.refreshSession();
     const [projectsRes, tiersRes] = await Promise.all([
       supabase.from('projects').select('id, name').order('name'),
       supabase.from('tiers').select('id, name').order('name')
@@ -60,6 +61,7 @@ const loadLearner = async () => {
   
   loading.value = true;
   try {
+    await authStore.refreshSession();
     const { data, error: fetchErr } = await supabase
       .from('learners')
       .select('*')
@@ -96,6 +98,7 @@ const saveLearner = async () => {
   error.value = '';
 
   try {
+    await authStore.refreshSession();
     const payload = {
       ...form.value,
       user_id: authStore.user.id,

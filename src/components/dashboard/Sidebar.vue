@@ -12,7 +12,7 @@ const authStore = useAuthStore();
 const hoveredMenu = ref(null);
 const submenuStyle = ref({});
 
-const navigation = [
+const baseNavigation = [
   { name: 'dashboard', href: '/dashboard', icon: 'pi-home' },
   {
     name: 'tiers',
@@ -46,6 +46,17 @@ const navigation = [
     ]
   },
 ];
+
+// Admin-only menu item
+const adminNavItem = { name: 'admin', href: '/dashboard/admin', icon: 'pi-shield', adminOnly: true };
+
+// Computed navigation based on user role
+const navigation = computed(() => {
+  if (authStore.isAdmin) {
+    return [...baseNavigation, adminNavItem];
+  }
+  return baseNavigation;
+});
 
 const isCurrent = (path) => {
   if (path === '/dashboard') {

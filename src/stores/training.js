@@ -100,7 +100,10 @@ export const useTrainingStore = defineStore('training', () => {
     const generatePdf = async (trainingId, formData) => {
         loading.value = true;
         try {
-            // Utiliser fetchWithTimeout pour éviter les requêtes infinies (timeout 30s pour génération PDF)
+            // Refresh session before API call to ensure token is valid
+            await auth.refreshSession();
+
+            // Utiliser fetchWithTimeout pour éviter les requêtes infinies (timeout 60s pour génération PDF)
             const response = await fetchWithTimeout('/api/generate-training-pdf', {
                 method: 'POST',
                 headers: {
@@ -108,7 +111,7 @@ export const useTrainingStore = defineStore('training', () => {
                     'Authorization': `Bearer ${auth.session?.access_token}`
                 },
                 body: JSON.stringify({ trainingId, data: formData })
-            }, 30000); // 30 secondes - le polling prendra le relais si nécessaire
+            }, 60000); // 60 secondes
 
             const result = await response.json();
 

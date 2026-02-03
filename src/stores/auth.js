@@ -3,12 +3,28 @@ import { ref, computed } from 'vue';
 import { supabase } from '../supabase';
 import { useRouter } from 'vue-router';
 
+// BroadcastChannel pour synchroniser l'auth entre onglets
+const AUTH_CHANNEL_NAME = 'certiwize-auth-sync';
+let authChannel = null;
+
+// Créer le channel si supporté par le navigateur
+if (typeof BroadcastChannel !== 'undefined') {
+  authChannel = new BroadcastChannel(AUTH_CHANNEL_NAME);
+}
+
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null);
   const session = ref(null);
   const initialized = ref(false);
   const userRole = ref('user'); // 'admin' ou 'user'
   const router = useRouter();
+
+  // Subscription pour le listener auth (pour cleanup)
+  let authSubscription = null;
+
+  // Promise pour attendre l'initialisation
+  let initPromise = null;
+  let initResolve = null;
 
   // Computed pour vérifier si l'utilisateur est admin
   const isAdmin = computed(() => userRole.value === 'admin');
@@ -34,32 +50,153 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
-  const initializeAuth = async () => {
-    const { data } = await supabase.auth.getSession();
-    if (data.session) {
-      session.value = data.session;
-      user.value = data.session.user;
-      await fetchUserRole(data.session.user.id);
+  // Broadcast un événement auth aux autres onglets
+  const broadcastAuthEvent = (event, data) => {
+    if (authChannel) {
+      authChannel.postMessage({ event, data, timestamp: Date.now() });
     }
-    initialized.value = true;
+  };
 
-    supabase.auth.onAuthStateChange((event, _session) => {
-      session.value = _session;
-      user.value = _session ? _session.user : null;
+  // Gérer les messages reçus des autres onglets
+  const handleCrossTabMessage = async (message) => {
+    const { event, data } = message.data;
 
-      // Ne pas bloquer le listener avec await - exécuter en arrière-plan
-      if (_session?.user) {
-        fetchUserRole(_session.user.id).catch(err => {
-          console.error('Error fetching user role in listener:', err);
-        });
-      } else {
+    switch (event) {
+      case 'SIGNED_OUT':
+        // Un autre onglet s'est déconnecté
+        user.value = null;
+        session.value = null;
         userRole.value = 'user';
+        router.push('/login');
+        break;
+
+      case 'SIGNED_IN':
+      case 'TOKEN_REFRESHED':
+        // Un autre onglet s'est connecté ou a rafraîchi le token
+        // Récupérer la session actuelle depuis Supabase
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (sessionData.session) {
+          session.value = sessionData.session;
+          user.value = sessionData.session.user;
+          await fetchUserRole(sessionData.session.user.id);
+        }
+        break;
+
+      case 'USER_UPDATED':
+        // Un autre onglet a mis à jour le profil
+        if (data?.user && user.value) {
+          user.value = { ...user.value, ...data.user };
+        }
+        break;
+    }
+  };
+
+  // Configurer le listener cross-tab
+  if (authChannel) {
+    authChannel.onmessage = handleCrossTabMessage;
+  }
+
+  const initializeAuth = async () => {
+    // Si déjà initialisé, retourner immédiatement
+    if (initialized.value) {
+      return;
+    }
+
+    // Si initialisation en cours, attendre la promise existante
+    if (initPromise) {
+      return initPromise;
+    }
+
+    // Créer une promise pour l'initialisation
+    initPromise = new Promise((resolve) => {
+      initResolve = resolve;
+    });
+
+    try {
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        session.value = data.session;
+        user.value = data.session.user;
+        await fetchUserRole(data.session.user.id);
       }
 
-      if (event === 'PASSWORD_RECOVERY') {
-        router.push('/update-password');
+      // Nettoyer l'ancienne subscription si elle existe
+      if (authSubscription) {
+        authSubscription.unsubscribe();
       }
+
+      // Créer le listener auth et stocker la subscription
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, _session) => {
+        session.value = _session;
+        user.value = _session ? _session.user : null;
+
+        if (_session?.user) {
+          await fetchUserRole(_session.user.id);
+        } else {
+          userRole.value = 'user';
+        }
+
+        // Broadcast l'événement aux autres onglets
+        switch (event) {
+          case 'SIGNED_IN':
+            broadcastAuthEvent('SIGNED_IN', { userId: _session?.user?.id });
+            break;
+          case 'SIGNED_OUT':
+            broadcastAuthEvent('SIGNED_OUT', null);
+            break;
+          case 'TOKEN_REFRESHED':
+            broadcastAuthEvent('TOKEN_REFRESHED', null);
+            break;
+          case 'USER_UPDATED':
+            broadcastAuthEvent('USER_UPDATED', { user: _session?.user });
+            break;
+          case 'PASSWORD_RECOVERY':
+            router.push('/update-password');
+            break;
+        }
+      });
+
+      authSubscription = subscription;
+    } finally {
+      initialized.value = true;
+      if (initResolve) {
+        initResolve();
+      }
+    }
+
+    return initPromise;
+  };
+
+  // Méthode pour attendre l'initialisation (pour le router)
+  const waitForInit = () => {
+    if (initialized.value) {
+      return Promise.resolve();
+    }
+    if (initPromise) {
+      return initPromise;
+    }
+    // Si pas encore initialisé, créer une promise qui attend
+    return new Promise((resolve) => {
+      const check = () => {
+        if (initialized.value) {
+          resolve();
+        } else {
+          setTimeout(check, 10);
+        }
+      };
+      check();
     });
+  };
+
+  // Cleanup pour quand le store est détruit
+  const cleanup = () => {
+    if (authSubscription) {
+      authSubscription.unsubscribe();
+      authSubscription = null;
+    }
+    if (authChannel) {
+      authChannel.close();
+    }
   };
 
   const signIn = async (email, password) => {
@@ -83,6 +220,8 @@ export const useAuthStore = defineStore('auth', () => {
     if (error) throw error;
     user.value = null;
     session.value = null;
+    userRole.value = 'user';
+    // Le broadcast se fait automatiquement via onAuthStateChange
     router.push('/login');
   };
 
@@ -128,6 +267,31 @@ export const useAuthStore = defineStore('auth', () => {
     }
   };
 
+  // Rafraîchir la session (utile quand un onglet redevient visible)
+  const refreshSession = async () => {
+    try {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error('[AuthStore] Error refreshing session:', error);
+        return;
+      }
+
+      if (data.session) {
+        session.value = data.session;
+        user.value = data.session.user;
+        await fetchUserRole(data.session.user.id);
+      } else if (session.value) {
+        // Session expirée
+        user.value = null;
+        session.value = null;
+        userRole.value = 'user';
+        router.push('/login');
+      }
+    } catch (err) {
+      console.error('[AuthStore] Exception refreshing session:', err);
+    }
+  };
+
   return {
     user,
     session,
@@ -135,12 +299,20 @@ export const useAuthStore = defineStore('auth', () => {
     userRole,
     isAdmin,
     initializeAuth,
+    waitForInit,
+    cleanup,
     signIn,
     signUp,
     signOut,
     resetPasswordEmail,
     verifyCurrentPassword,
     updateUserPassword,
-    updateProfile
+    updateProfile,
+    refreshSession
   };
+}, {
+  persist: {
+    key: 'certiwize-auth',
+    pick: ['userRole'], // Ne persister que le rôle, pas la session (gérée par Supabase)
+  }
 });

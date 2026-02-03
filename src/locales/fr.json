@@ -20,7 +20,8 @@
     "genedoc": "Rapport d'audit blanc",
     "settings": "Paramètres",
     "company_settings": "Configuration Société",
-    "quiz_settings": "Paramètres des Quiz"
+    "quiz_settings": "Paramètres des Quiz",
+    "admin": "Administration"
   },
   "manual": {
     "title": "Manuel Qualité & Outils",
@@ -107,15 +108,17 @@
     "save_success": "Apprenant enregistré avec succès !",
     "error_required": "Prénom, Nom et Email sont obligatoires.",
     "send_docs": "Envoyer des documents",
-    "send_dialog_title": "Envoyer un document",
+    "send_dialog_title": "Envoyer des documents",
     "send_success": "Document envoyé avec succès !",
     "send_all_success": "{count} documents envoyés avec succès !",
-    "send_all_btn": "Envoyer tous les documents",
+    "send_btn": "Envoyer les documents",
     "no_docs_available": "Aucun document disponible à envoyer.",
     "send_error": "Erreur lors de l'envoi",
     "webhook_pending": "Document ajouté (webhook non configuré).",
     "no_project_warning": "Aucun projet lié - certains documents ne sont pas disponibles",
     "doc_ready_hint": "Les documents grisés ne sont pas encore générés dans le projet.",
+    "sender_email_label": "Email expéditeur",
+    "sender_email_placeholder": "noreply@certiwize.com",
     "quiz_link_label": "Lien du quiz",
     "quiz_link_placeholder": "https://forms.google.com/...",
     "quiz_link_help": "Lien du questionnaire à envoyer (modifiable avant l'envoi)",
@@ -831,6 +834,45 @@
       "pedagogy": "Matériel, supports, outils...",
       "rules": "Règlement intérieur, consignes...",
       "accessibility": "Accessibilité, aménagements..."
+    }
+  },
+  "admin": {
+    "title": "Administration",
+    "subtitle": "Tableau de bord commercial - Vue d'ensemble des utilisateurs",
+    "stats": {
+      "total_users": "Total utilisateurs",
+      "admins": "Administrateurs",
+      "regular_users": "Utilisateurs standard",
+      "recent_users": "Nouveaux (30j)"
+    },
+    "users_list": "Liste des utilisateurs",
+    "search_placeholder": "Rechercher par nom ou email...",
+    "empty_list": "Aucun utilisateur trouvé.",
+    "loading_data": "Chargement des utilisateurs...",
+    "columns": {
+      "name": "Nom",
+      "email": "Email",
+      "role": "Rôle",
+      "last_activity": "Dernière activité",
+      "actions": "Actions"
+    },
+    "role_admin": "Admin",
+    "role_user": "Utilisateur",
+    "access_denied": "Accès refusé. Cette page est réservée aux administrateurs.",
+    "you": "vous",
+    "promote": "Promouvoir",
+    "demote": "Rétrograder",
+    "role_change": {
+      "dialog_title": "Modifier le rôle utilisateur",
+      "current": "Actuel",
+      "new": "Nouveau",
+      "confirm": "Confirmer le changement",
+      "warning_promote": "Cet utilisateur aura accès à toutes les fonctionnalités d'administration, y compris la gestion des autres utilisateurs.",
+      "warning_demote": "Cet utilisateur perdra tous ses droits d'administration et n'aura plus accès à cette page.",
+      "success_title": "Rôle modifié",
+      "success_message": "Le rôle de {name} a été changé en {role}.",
+      "error_title": "Erreur",
+      "error_message": "Une erreur est survenue lors de la modification du rôle."
     }
   },
   "company": {

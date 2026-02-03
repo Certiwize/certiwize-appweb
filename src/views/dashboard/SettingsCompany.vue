@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useCompanyStore } from '../../stores/company';
+import { useAuthStore } from '../../stores/auth';
 import { supabase } from '../../supabase';
 
 // PrimeVue Imports
@@ -20,6 +21,7 @@ import Message from 'primevue/message';
 import { useI18n } from 'vue-i18n';
 
 const store = useCompanyStore();
+const authStore = useAuthStore();
 const { t } = useI18n();
 const saving = ref(false);
 const message = ref(null);
@@ -158,6 +160,7 @@ const handleSave = async () => {
 
 // Upload Logo
 const uploadLogo = async (event, type) => {
+    await authStore.refreshSession();
     const file = event.files[0];
     const fileName = `${Date.now()}-${type}-${file.name}`;
     const { data, error } = await supabase.storage.from('company-logos').upload(fileName, file);

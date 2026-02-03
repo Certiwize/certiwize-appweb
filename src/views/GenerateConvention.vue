@@ -85,6 +85,9 @@ const generateDocument = async () => {
   }, 1000);
 
   try {
+    // Refresh session before API call
+    await authStore.refreshSession();
+
     // Formater la date
     const dateObj = new Date(form.value.date);
     const formattedDate = dateObj.toLocaleDateString('fr-FR');
@@ -114,7 +117,7 @@ const generateDocument = async () => {
         'Authorization': `Bearer ${authStore.session?.access_token}`
       },
       body: JSON.stringify(payload)
-    }, 30000); // 30 secondes de timeout
+    }, 60000); // 60 secondes de timeout
 
     const result = await response.json();
 

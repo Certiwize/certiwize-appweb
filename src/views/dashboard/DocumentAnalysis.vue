@@ -1,12 +1,14 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '../../stores/auth';
+import { fetchWithTimeout } from '../../utils/fetchWithTimeout';
 import FileUpload from 'primevue/fileupload';
 import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
 import Message from 'primevue/message';
 import Textarea from 'primevue/textarea';
+import ProgressBar from 'primevue/progressbar';
 import SlowLoadingDialog from '../../components/dashboard/SlowLoadingDialog.vue'; // Ajout
 
 const { t } = useI18n();
@@ -18,6 +20,8 @@ const showSlowLoading = ref(false); // Ajout
 const success = ref(false);
 const error = ref(null);
 const analysisResult = ref('');
+const progressValue = ref(0);
+let progressInterval = null;
 
 const docTypes = computed(() => [
     //{ name: t('analysis.types.activity_declaration'), code: 'DECLARATION_ACTIVITE' },
@@ -54,6 +58,46 @@ const onFileSelect = (event) => {
     analysisResult.value = '';
 };
 
+const startProgress = () => {
+    progressValue.value = 0;
+    let elapsed = 0;
+    progressInterval = setInterval(() => {
+        elapsed++;
+        // Progression rapide au début, puis ralentit (max 90%)
+        if (progressValue.value < 30) {
+            progressValue.value = Math.min(30, elapsed * 3);
+        } else if (progressValue.value < 60) {
+            progressValue.value = Math.min(60, 30 + (elapsed - 10) * 2);
+        } else if (progressValue.value < 90) {
+            progressValue.value = Math.min(90, 60 + (elapsed - 25));
+        }
+    }, 1000);
+};
+
+const stopProgress = (complete = false) => {
+    if (progressInterval) {
+        clearInterval(progressInterval);
+        progressInterval = null;
+    }
+    if (complete) {
+        progressValue.value = 100;
+    }
+};
+
+onUnmounted(() => {
+    stopProgress();
+});
+
+const finishWithSuccess = async (result) => {
+    success.value = true;
+    analysisResult.value = result.text || JSON.stringify(result, null, 2);
+    stopProgress(true);
+    // Petit délai pour voir la barre à 100%
+    await new Promise(resolve => setTimeout(resolve, 500));
+    loading.value = false;
+    showSlowLoading.value = false;
+};
+
 const sendDocument = async () => {
     if (!file.value || !selectedType.value) return;
 
@@ -62,49 +106,33 @@ const sendDocument = async () => {
     success.value = false;
     analysisResult.value = '';
     showSlowLoading.value = false;
-
-    // Timer pour popup si traitement long (n8n peut prendre du temps)
-    // Désactivé pour l'analyse de doc (webhook)
-    /*
-    const slowTimer = setTimeout(() => {
-        if (loading.value) {
-            showSlowLoading.value = true;
-        }
-    }, 3000);
-    */
+    startProgress();
 
     try {
         const formData = new FormData();
         formData.append('file', file.value);
         formData.append('docType', selectedType.value.code);
 
-        // Appel à notre API intermédiaire
-        const response = await fetch('/api/analyze-doc', {
+        // Refresh session before API call
+        await auth.refreshSession();
+
+        // Appel à notre API intermédiaire avec timeout 60s
+        const response = await fetchWithTimeout('/api/analyze-doc', {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${auth.session?.access_token}`
             },
             body: formData
-        });
+        }, 60000);
 
         const result = await response.json();
 
         if (!response.ok) throw new Error(result.error || "Erreur lors de l'envoi");
 
-        success.value = true;
-        
-        // Afficher le résultat renvoyé par n8n (supposons que c'est dans result.text ou result.output)
-        // Sinon, on affiche tout le JSON pour le debug
-        analysisResult.value = result.text || JSON.stringify(result, null, 2);
-        
-        // On garde le fichier sélectionné pour référence ou on reset ?
-        // Reset pour nouvelle analyse
-        // file.value = null; 
-        // selectedType.value = null; 
+        await finishWithSuccess(result);
     } catch (err) {
         error.value = err.message;
-    } finally {
-        // clearTimeout(slowTimer);
+        stopProgress(false);
         loading.value = false;
         showSlowLoading.value = false;
     }
@@ -158,9 +186,13 @@ const sendDocument = async () => {
                 <i class="pi pi-file-edit text-primary"></i> {{ t('analysis.result_title') }}
             </h2>
             
-            <div v-if="loading" class="flex-1 flex flex-col items-center justify-center text-gray-500 min-h-[300px]">
-                <i class="pi pi-spin pi-spinner text-4xl mb-4 text-primary"></i>
-                <p>{{ t('analysis.analyzing') }}</p>
+            <div v-if="loading" class="flex-1 flex flex-col items-center justify-center text-gray-500 min-h-[300px] gap-4">
+                <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+                <p class="font-medium">{{ t('analysis.analyzing') }}</p>
+                <div class="w-full max-w-xs">
+                    <ProgressBar :value="progressValue" :showValue="false" class="h-2" />
+                    <p class="text-xs text-center mt-2 text-gray-400">{{ Math.round(progressValue) }}%</p>
+                </div>
             </div>
 
             <div v-else class="flex-1 flex flex-col min-h-[300px]">

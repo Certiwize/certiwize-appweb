@@ -80,7 +80,10 @@ export const useProjectStore = defineStore('project', () => {
 
         loading.value = true;
         try {
-            // Lancer l'appel API avec un timeout de 30s (suffisant pour les cas rapides)
+            // Refresh session before API call to ensure token is valid
+            await auth.refreshSession();
+
+            // Lancer l'appel API avec un timeout de 60s (suffisant pour les cas rapides)
             const response = await fetchWithTimeout('/api/generate-project-doc', {
                 method: 'POST',
                 headers: {
@@ -92,7 +95,7 @@ export const useProjectStore = defineStore('project', () => {
                     docType: docType,
                     data: formData
                 })
-            }, 30000); // 30 secondes - le polling prendra le relais si nécessaire
+            }, 60000); // 60 secondes
 
             const result = await response.json();
 

@@ -2,6 +2,7 @@
 import { ref, nextTick, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '../stores/auth';
+import { fetchWithTimeout } from '../utils/fetchWithTimeout';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 
@@ -41,15 +42,18 @@ const sendMessage = async () => {
   scrollToBottom();
 
   try {
-    // 2. Appel à notre API Cloudflare (avec authentification)
-    const response = await fetch('/api/chat', {
+    // Refresh session before API call
+    await auth.refreshSession();
+
+    // 2. Appel à notre API Cloudflare (avec authentification et timeout 60s)
+    const response = await fetchWithTimeout('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${auth.session?.access_token || ''}`
       },
       body: JSON.stringify({ message: userText })
-    });
+    }, 60000);
 
     const data = await response.json();
 

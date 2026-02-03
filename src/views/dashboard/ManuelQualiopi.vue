@@ -49,6 +49,7 @@ const typeOptions = computed(() => {
 // - Manuels (type='Manuel') : propres à chaque user OU admin voit tout
 const fetchResources = async () => {
     try {
+        await authStore.refreshSession();
         const { data, error: supabaseError } = await supabase
             .from('resources')
             .select('*')
@@ -84,6 +85,7 @@ const submitDocument = async () => {
     uploadError.value = '';
 
     try {
+        await authStore.refreshSession();
         const file = newDoc.value.file;
         // On nettoie le nom du fichier pour éviter les caractères spéciaux
         const cleanFileName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
@@ -182,6 +184,7 @@ const deleteDocument = (doc, event) => {
         acceptClass: 'p-button-danger',
         accept: async () => {
             try {
+                await authStore.refreshSession();
                 // A. Extraire le chemin du fichier depuis l'URL
                 // URL format: https://xxx.supabase.co/storage/v1/object/public/qualiopi-files/C2I8/xxxxx_file.pdf
                 const urlParts = doc.file_url.split('/qualiopi-files/');
