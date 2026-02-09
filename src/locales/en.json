@@ -432,8 +432,8 @@
     "actions": "Quick Actions",
     "click_to_execute": "Click to execute",
     "simulation_prefix": "Simulation: Workflow",
-    "confirm_trigger": "Do you want to launch the automation: \"{title}\"?",
-    "success": "Success: The workflow \"{title}\" has been triggered.",
+    "confirm_trigger": "Do you want to launch the automation: '{title}'?",
+    "success": "Success: The workflow '{title}' has been triggered.",
     "error": "Error: {error}",
     "communication_error": "Server communication error.",
     "category_documents": "Document Generation",
@@ -509,7 +509,7 @@
     "save_success": "Settings saved successfully!",
     "save_error": "Error while saving: {error}",
     "load_error": "Error loading settings",
-    "invalid_url": "The link for \"{label}\" is not a valid URL"
+    "invalid_url": "The link for '{label}' is not a valid URL"
   },
   "tiers": {
     "title": "Create Third Party",

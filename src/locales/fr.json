@@ -433,8 +433,8 @@
     "actions": "Actions rapides",
     "click_to_execute": "Cliquer pour exécuter",
     "simulation_prefix": "Simulation workflow",
-    "confirm_trigger": "Voulez-vous lancer l'automatisation : \"{title}\" ?",
-    "success": "Succès : Le workflow \"{title}\" a été déclenché.",
+    "confirm_trigger": "Voulez-vous lancer l'automatisation : '{title}' ?",
+    "success": "Succès : Le workflow '{title}' a été déclenché.",
     "error": "Erreur : {error}",
     "communication_error": "Erreur de communication avec le serveur.",
     "category_documents": "Génération de documents",
@@ -511,7 +511,7 @@
     "save_success": "Paramètres enregistrés avec succès !",
     "save_error": "Erreur lors de l'enregistrement: {error}",
     "load_error": "Erreur lors du chargement des paramètres",
-    "invalid_url": "Le lien pour \"{label}\" n'est pas une URL valide"
+    "invalid_url": "Le lien pour '{label}' n'est pas une URL valide"
   },
   "tiers": {
     "title": "Création d'un tiers",

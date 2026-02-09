@@ -25,7 +25,11 @@
       "Bash(npm install:*)",
       "Bash(npm run build:*)",
       "Bash(unzip:*)",
-      "mcp__supabase__get_project_url"
+      "mcp__supabase__get_project_url",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(node -e:*)"
     ]
   }
 }
