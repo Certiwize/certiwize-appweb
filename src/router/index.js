@@ -147,7 +147,7 @@ router.beforeEach(async (to, from, next) => {
     try {
       await Promise.race([
         authStore.waitForInit(),
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Auth init timeout')), 2000))
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Auth init timeout')), 5000))
       ]);
     } catch (err) {
       console.warn('[Router] Auth initialization timeout, proceeding anyway');

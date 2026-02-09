@@ -4,6 +4,7 @@ import { supabase } from '../../supabase';
 import { useAuthStore } from '../../stores/auth';
 import { fetchWithTimeout } from '../../utils/fetchWithTimeout';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Button from 'primevue/button';
@@ -21,6 +22,7 @@ const { t } = useI18n();
 const authStore = useAuthStore();
 const confirmDialog = useConfirm();
 const toast = useToast();
+const router = useRouter();
 
 const learners = ref([]);
 const loading = ref(true);
@@ -99,7 +101,7 @@ const fetchQuizSettings = async () => {
 };
 
 const navigate = (path) => {
-  window.location.href = path;
+  router.push(path);
 };
 
 const confirmDelete = (id) => {
@@ -300,7 +302,7 @@ const sendSelectedDocuments = async () => {
 
       if (response.ok) {
         sendSuccess.value = t('learner.send_all_success', { count: docsToSend.length });
-        window.location.reload();
+        await fetchLearners();
       } else {
         throw new Error('Webhook returned an error');
       }

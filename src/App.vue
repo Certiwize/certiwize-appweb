@@ -14,15 +14,20 @@ let lastRefresh = Date.now();
 const MIN_REFRESH_INTERVAL = 30000; // 30 secondes minimum entre les rafraîchissements
 
 // Handler pour quand l'onglet redevient visible
-const handleVisibilityChange = () => {
+const handleVisibilityChange = async () => {
   if (document.visibilityState === 'visible') {
     const now = Date.now();
     // Rafraîchir seulement si assez de temps s'est écoulé
     if (now - lastRefresh > MIN_REFRESH_INTERVAL) {
       lastRefresh = now;
-      // Rafraîchir la session auth
+      // Rafraîchir la session auth avec gestion d'erreur
       if (authStore.initialized && authStore.user) {
-        authStore.refreshSession();
+        try {
+          await authStore.refreshSession();
+        } catch (err) {
+          console.warn('[App] Failed to refresh session on visibility change:', err);
+          // Ne pas bloquer l'UI si le refresh échoue
+        }
       }
     }
   }

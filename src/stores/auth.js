@@ -67,18 +67,36 @@ export const useAuthStore = defineStore('auth', () => {
         user.value = null;
         session.value = null;
         userRole.value = 'user';
-        router.push('/login');
+
+        // Vérifier que le router est disponible et que l'app est montée
+        // avant de naviguer pour éviter les pages blanches
+        if (router && initialized.value) {
+          try {
+            await router.push('/login');
+          } catch (err) {
+            console.warn('[AuthStore] Navigation to /login failed during cross-tab sync:', err);
+            // Fallback: recharger la page si la navigation échoue
+            window.location.href = '/login';
+          }
+        } else {
+          // Si l'app n'est pas encore initialisée, recharger directement
+          window.location.href = '/login';
+        }
         break;
 
       case 'SIGNED_IN':
       case 'TOKEN_REFRESHED':
         // Un autre onglet s'est connecté ou a rafraîchi le token
         // Récupérer la session actuelle depuis Supabase
-        const { data: sessionData } = await supabase.auth.getSession();
-        if (sessionData.session) {
-          session.value = sessionData.session;
-          user.value = sessionData.session.user;
-          await fetchUserRole(sessionData.session.user.id);
+        try {
+          const { data: sessionData } = await supabase.auth.getSession();
+          if (sessionData.session) {
+            session.value = sessionData.session;
+            user.value = sessionData.session.user;
+            await fetchUserRole(sessionData.session.user.id);
+          }
+        } catch (err) {
+          console.error('[AuthStore] Error syncing session from cross-tab:', err);
         }
         break;
 
@@ -194,8 +212,11 @@ export const useAuthStore = defineStore('auth', () => {
       authSubscription.unsubscribe();
       authSubscription = null;
     }
+    // Ne pas fermer le BroadcastChannel car il est partagé au niveau du module
+    // et peut encore être utilisé par d'autres composants dans cet onglet.
+    // Le channel se fermera automatiquement quand l'onglet sera fermé.
     if (authChannel) {
-      authChannel.close();
+      authChannel.onmessage = null; // Retirer seulement le listener
     }
   };
 
