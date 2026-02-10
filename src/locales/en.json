@@ -370,7 +370,9 @@
     "submit": "Sign in",
     "error": "Incorrect credentials or connection error.",
     "no_account": "Don't have an account yet?",
-    "create_account": "Create a free account"
+    "create_account": "Create a free account",
+    "no_account_pricing": "No account yet?",
+    "see_pricing": "See our plans"
   },
   "register": {
     "title": "Create an account",
@@ -932,5 +934,143 @@
       "phone": "Phone",
       "note": "Note"
     }
+  },
+  "pricing": {
+    "title": "Pricing",
+    "hero": {
+      "title": "Automate your Qualiopi compliance",
+      "subtitle": "Manage your training and certifications with ease",
+      "watch_video": "Watch video"
+    },
+    "plans": {
+      "title": "Choose your plan",
+      "subtitle": "Simple and transparent pricing",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "per_month": "/ month",
+      "per_year": "/ year",
+      "save_badge": "Save 2 months",
+      "billed_monthly": "Billed monthly",
+      "billed_yearly": "Billed yearly"
+    },
+    "features": {
+      "title": "Included features",
+      "all_features": "All features",
+      "unlimited_projects": "Unlimited projects",
+      "unlimited_learners": "Unlimited learners",
+      "document_generation": "Document generation",
+      "ai_assistance": "AI assistant",
+      "priority_support": "Priority support",
+      "updates": "Automatic updates"
+    },
+    "cta": {
+      "subscribe": "Subscribe",
+      "schedule_demo": "Schedule a demo",
+      "or": "or"
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "q1": "Can I change my plan later?",
+      "a1": "Yes, you can change your plan anytime from your dashboard.",
+      "q2": "Is there a commitment?",
+      "a2": "No, you can cancel your subscription at any time.",
+      "q3": "What payment methods do you accept?",
+      "a3": "We accept credit cards and SEPA direct debits.",
+      "q4": "Is my data secure?",
+      "a4": "Yes, we use bank-level encryption and are hosted on secure servers."
+    }
+  },
+  "checkout": {
+    "title": "Complete your subscription",
+    "subtitle": "You're one step away from simplifying your Qualiopi management",
+    "plan_summary": {
+      "title": "Summary",
+      "plan": "Selected plan",
+      "billing": "Billing",
+      "total": "Total"
+    },
+    "form": {
+      "title": "Contact information",
+      "first_name": "First name",
+      "first_name_placeholder": "John",
+      "last_name": "Last name",
+      "last_name_placeholder": "Doe",
+      "company": "Company name",
+      "company_placeholder": "My Training Organization",
+      "tax_id": "Tax identification number",
+      "tax_id_placeholder": "VAT number or tax ID",
+      "email": "Email",
+      "email_placeholder": "john.doe{'@'}company.com",
+      "email_helper": "You will receive your login credentials at this address",
+      "phone": "Phone number",
+      "phone_placeholder": "+1 234 567 890",
+      "payment_title": "Payment information"
+    },
+    "payment_methods": {
+      "card": "Credit card",
+      "ideal": "iDeal",
+      "bancontact": "Bancontact",
+      "sepa_info": "Your payment will be processed via secure SEPA direct debit. You will be redirected to GoCardless to authorize the mandate.",
+      "powered_by": "Powered by",
+      "step1": "You will be redirected to the secure GoCardless page",
+      "step2": "You authorize a SEPA direct debit mandate",
+      "step3": "Your account is automatically created and you are logged in"
+    },
+    "cta": {
+      "proceed": "Proceed to payment",
+      "back": "Back to pricing",
+      "secure": "100% secure payment"
+    },
+    "error": "An error occurred. Please try again.",
+    "validation": {
+      "required_fields": "Please fill in all required fields."
+    },
+    "loading": "Redirecting to payment..."
+  },
+  "checkout_success": {
+    "title": "Payment successful!",
+    "subtitle": "Welcome to Certiwize",
+    "creating_account": "Creating your account...",
+    "almost_ready": "Your account will be ready in a few moments",
+    "redirecting": "Logging in and redirecting to your dashboard...",
+    "message": "Thank you for your trust! We are finalizing your subscription and logging you in automatically.",
+    "taking_longer": "This is taking longer than expected...",
+    "manual_login": "Your account has been created. Click below to log in.",
+    "go_to_login": "Log in",
+    "session_lost": "Your session has expired. Your payment was recorded — check your emails to log in.",
+    "error": "An error occurred during finalization. Your payment was received. Contact us at contact{'@'}certiwize.com"
+  },
+  "schedule": {
+    "title": "Schedule a demo",
+    "subtitle": "Let's discuss your needs and discover how Certiwize can help you",
+    "intro": "Book a 30-minute slot with our team to discover Certiwize and see how we can automate your training organization.",
+    "form": {
+      "title": "Your details",
+      "full_name": "Full name",
+      "full_name_placeholder": "John Doe",
+      "email": "Professional email",
+      "email_placeholder": "john.doe{'@'}company.com",
+      "phone": "Phone",
+      "phone_placeholder": "+1 234 567 890",
+      "company": "Your organization name",
+      "company_placeholder": "Pro Training",
+      "message": "Tell us about your project",
+      "message_placeholder": "Number of learners, types of training, specific needs...",
+      "submit": "Request a demo"
+    },
+    "success": {
+      "title": "Request sent!",
+      "message": "Thank you for your interest. We will contact you within 24 hours to schedule your demo.",
+      "back_home": "Back to home"
+    },
+    "calendly": {
+      "title": "Choose your time slot",
+      "loading": "Loading calendar...",
+      "coming_soon": "Calendar coming soon",
+      "placeholder": "Fill in the form and we will contact you to schedule a time together."
+    },
+    "error": "An error occurred. Please try again.",
+    "or": "or",
+    "contact_us": "Contact us directly"
   }
 }

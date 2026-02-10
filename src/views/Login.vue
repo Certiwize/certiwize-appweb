@@ -60,15 +60,12 @@ const handleLogin = async () => {
         <Button type="submit" :label="t('login.submit')" :loading="loading" class="w-full" />
 
         <div class="text-center mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-          <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            {{ t('login.no_account') }}
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            {{ t('login.no_account_pricing') }}
+            <router-link to="/pricing" class="text-primary hover:underline font-semibold ml-1">
+              {{ t('login.see_pricing') }}
+            </router-link>
           </p>
-          <router-link 
-            to="/register" 
-            class="text-primary hover:text-primary-dark font-semibold transition"
-          >
-            {{ t('login.create_account') }}
-          </router-link>
         </div>
       </form>
     </div>

@@ -371,7 +371,9 @@
     "submit": "Se connecter",
     "error": "Identifiants incorrects ou erreur de connexion.",
     "no_account": "Vous n'avez pas encore de compte ?",
-    "create_account": "Créer un compte gratuitement"
+    "create_account": "Créer un compte gratuitement",
+    "no_account_pricing": "Pas encore de compte ?",
+    "see_pricing": "Découvrir nos offres"
   },
   "register": {
     "title": "Créer un compte",
@@ -941,5 +943,165 @@
       "phone": "Téléphone",
       "note": "Note"
     }
+  },
+  "pricing": {
+    "title": "Tarifs",
+    "hero": {
+      "title": "Automatisez la gestion de votre centre formation en un clic.",
+      "subtitle": "Gagnez du temps sur vos processus administratifs : gestion de la convention de formation jusqu'à la facturation, automatisez l'intégralité de votre processus administratif.",
+      "watch_video": "Regarder la vidéo"
+    },
+    "features": {
+      "title": "Fonctionnalités",
+      "f1": "Tableau de bord et pilotage",
+      "f2": "Gestion des tiers et des apprenants",
+      "f3": "Gestion de votre catalogue de formation",
+      "f4": "Workflow complet de gestion de vos formations",
+      "f5": "Analyse documentaire par notre intelligence artificielle",
+      "f6": "Manuel Qualiopi",
+      "f7": "Génération du bilan pédagogique",
+      "f8": "Veille réglementaire",
+      "f9": "Option : génération de rapports Qualiopi"
+    },
+    "plans": {
+      "title": "Choisissez votre plan",
+      "subtitle": "Paiement mensuel ou à l'année · Paiement sécurisé",
+      "monthly": "Mensuel",
+      "yearly": "Annuel",
+      "per_month": "par mois",
+      "per_year": "par an",
+      "monthly_price": "144 €",
+      "yearly_price": "1 440 €",
+      "yearly_per_month": "soit 120,00 €/mois",
+      "save_badge": "-2 MOIS",
+      "billed_monthly": "Facturé mensuellement",
+      "billed_yearly": "Facturé annuellement"
+    },
+    "guarantee": {
+      "title": "Garantie sans risque",
+      "text": "Si pour une quelconque raison vous n'êtes pas satisfait du programme je vous rembourse sans conditions. Il suffit d'un mail au service client et nous vous retournons 100% de votre investissement, donc vous ne prenez aucun risque. La demande de remboursement doit se faire dans un délai de 30 jours."
+    },
+    "cta": {
+      "subscribe": "Valider ma commande",
+      "schedule_demo": "Planifier une démo",
+      "or": "ou"
+    },
+    "badges": {
+      "monthly": "Paiement mensuel ou à l'année",
+      "secure": "Paiement sécurisé",
+      "guarantee": "Garantie sans risque"
+    },
+    "faq": {
+      "title": "Foire aux questions",
+      "q1": "Mon centre de formation doit-il être certifié Qualiopi pour profiter de la plateforme ?",
+      "a1": "Non, la plateforme est accessible à tous les organismes de formation, certifiés ou en cours de certification Qualiopi. Elle vous aide précisément à préparer et maintenir votre certification.",
+      "q2": "La plateforme est-elle adaptée aux formateurs indépendants / auto-entrepreneurs ?",
+      "a2": "Oui, la solution est conçue pour s'adapter à toutes les tailles de structures, des formateurs indépendants aux organismes de formation de grande taille.",
+      "q3": "Les documents générés sont-ils conformes aux exigences légales ?",
+      "a3": "Oui, tous les documents sont générés selon les exigences légales en vigueur et les critères du référentiel national Qualiopi.",
+      "q4": "Où sont hébergées mes données ?",
+      "a4": "Vos données sont hébergées en France et en Europe, sur des serveurs sécurisés conformes aux réglementations RGPD.",
+      "q5": "La plateforme est-elle conforme au RGPD ?",
+      "a5": "Oui, nous sommes entièrement conformes au Règlement Général sur la Protection des Données (RGPD). Vos données vous appartiennent.",
+      "q6": "Puis-je exporter mes données si je quitte la plateforme ?",
+      "a6": "Oui, vous pouvez exporter l'intégralité de vos données à tout moment, dans des formats standards (CSV, PDF)."
+    }
+  },
+  "checkout": {
+    "title": "Finaliser votre commande",
+    "subtitle": "Vous êtes à un pas de simplifier votre gestion Qualiopi",
+    "plan_summary": {
+      "title": "Récapitulatif",
+      "plan": "Plan sélectionné",
+      "billing": "Facturation",
+      "total": "Total"
+    },
+    "form": {
+      "title": "Informations de contact",
+      "first_name": "Prénom",
+      "first_name_placeholder": "Jean",
+      "last_name": "Nom de famille",
+      "last_name_placeholder": "Dupont",
+      "company": "Nom de l'entreprise",
+      "company_placeholder": "Mon Organisme de Formation",
+      "tax_id": "Numéro d'identification fiscale",
+      "tax_id_placeholder": "SIRET ou numéro TVA",
+      "email": "Email",
+      "email_placeholder": "jean.dupont{'@'}entreprise.fr",
+      "email_helper": "Vous recevrez vos identifiants de connexion à cette adresse",
+      "phone": "Numéro de téléphone",
+      "phone_placeholder": "06 12 34 56 78",
+      "payment_title": "Informations de paiement",
+      "card": "Carte de crédit",
+      "card_number": "1234 1234 1234 1234",
+      "card_expiry": "MM / AA",
+      "card_cvc": "CVC"
+    },
+    "payment_methods": {
+      "card": "Carte de crédit",
+      "ideal": "iDeal",
+      "bancontact": "Bancontact",
+      "sepa_info": "Votre paiement sera traité via prélèvement SEPA sécurisé. Vous serez redirigé vers GoCardless pour autoriser le mandat.",
+      "powered_by": "Propulsé par",
+      "step1": "Vous serez redirigé vers la page sécurisée GoCardless",
+      "step2": "Vous autorisez un mandat de prélèvement SEPA",
+      "step3": "Votre compte est créé automatiquement et vous êtes connecté"
+    },
+    "cta": {
+      "proceed": "Valider ma commande",
+      "back": "Retour aux tarifs",
+      "secure": "Paiement 100% sécurisé"
+    },
+    "error": "Une erreur est survenue. Veuillez réessayer.",
+    "validation": {
+      "required_fields": "Veuillez remplir tous les champs obligatoires."
+    },
+    "loading": "Redirection vers le paiement..."
+  },
+  "checkout_success": {
+    "title": "Paiement réussi !",
+    "subtitle": "Bienvenue sur Certiwize",
+    "creating_account": "Création de votre compte en cours...",
+    "almost_ready": "Votre compte sera prêt dans quelques instants",
+    "redirecting": "Connexion et redirection vers votre tableau de bord...",
+    "message": "Merci pour votre confiance ! Nous finalisons votre abonnement et vous connectons automatiquement.",
+    "taking_longer": "Cela prend plus de temps que prévu...",
+    "manual_login": "Votre compte a été créé. Cliquez ci-dessous pour vous connecter.",
+    "go_to_login": "Me connecter",
+    "session_lost": "Votre session a expiré. Votre paiement a bien été enregistré — consultez vos emails pour vous connecter.",
+    "error": "Une erreur est survenue lors de la finalisation. Votre paiement a été reçu. Contactez-nous à contact{'@'}certiwize.com"
+  },
+  "schedule": {
+    "title": "Planifier une démo",
+    "subtitle": "Discutons de vos besoins et découvrez comment Certiwize peut vous aider",
+    "intro": "Réservez un créneau de 30 minutes avec notre équipe pour découvrir Certiwize et voir comment nous pouvons automatiser votre organisme de formation.",
+    "form": {
+      "title": "Vos coordonnées",
+      "full_name": "Nom complet",
+      "full_name_placeholder": "Jean Dupont",
+      "email": "Email professionnel",
+      "email_placeholder": "jean.dupont{'@'}entreprise.fr",
+      "phone": "Téléphone",
+      "phone_placeholder": "06 12 34 56 78",
+      "company": "Nom de votre organisme",
+      "company_placeholder": "Formation Pro",
+      "message": "Parlez-nous de votre projet",
+      "message_placeholder": "Nombre d'apprenants, types de formations, besoins spécifiques...",
+      "submit": "Demander une démo"
+    },
+    "success": {
+      "title": "Demande envoyée !",
+      "message": "Merci pour votre intérêt. Nous vous contacterons dans les 24h pour planifier votre démo.",
+      "back_home": "Retour à l'accueil"
+    },
+    "calendly": {
+      "title": "Choisissez votre créneau",
+      "loading": "Chargement du calendrier...",
+      "coming_soon": "Calendrier bientôt disponible",
+      "placeholder": "Remplissez le formulaire ci-contre et nous vous contacterons pour fixer un créneau ensemble."
+    },
+    "error": "Une erreur est survenue. Veuillez réessayer.",
+    "or": "ou",
+    "contact_us": "Contactez-nous directement"
   }
 }

@@ -12,7 +12,7 @@ const routes = [
       if (authStore.user) {
         return '/dashboard';
       } else {
-        return '/login';
+        return '/pricing';
       }
     }
   },
@@ -22,6 +22,23 @@ const routes = [
   {
     path: '/update-password',
     component: () => import('../views/UpdatePassword.vue')
+  },
+  // Public pages (Sales Funnel)
+  {
+    path: '/pricing',
+    component: () => import('../views/public/Pricing.vue')
+  },
+  {
+    path: '/checkout',
+    component: () => import('../views/public/Checkout.vue')
+  },
+  {
+    path: '/checkout/success',
+    component: () => import('../views/public/CheckoutSuccess.vue')
+  },
+  {
+    path: '/schedule',
+    component: () => import('../views/public/Schedule.vue')
   },
   {
     path: '/settings',
@@ -155,7 +172,7 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (to.meta.requiresAuth && !authStore.user) {
-    next('/login');
+    next('/pricing');
   } else if (to.meta.requiresAdmin && authStore.userRole !== 'admin') {
     next('/dashboard');
   } else {
