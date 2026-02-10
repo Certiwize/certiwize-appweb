@@ -115,7 +115,7 @@ const handleScheduleDemo = () => {
           <div class="rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-8 flex flex-col">
             <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">{{ t('pricing.plans.monthly') }}</h3>
             <div class="mb-1">
-              <span class="text-4xl font-extrabold text-gray-900 dark:text-white">144 €</span>
+              <span class="text-4xl font-extrabold text-gray-900 dark:text-white">120 € HT</span>
               <span class="text-gray-500 dark:text-gray-400 ml-2 text-base">{{ t('pricing.plans.per_month') }}</span>
             </div>
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">{{ t('pricing.plans.billed_monthly') }}</p>
@@ -144,7 +144,7 @@ const handleScheduleDemo = () => {
             </div>
             <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 mt-2">{{ t('pricing.plans.yearly') }}</h3>
             <div class="mb-1">
-              <span class="text-4xl font-extrabold text-gray-900 dark:text-white">1 440 €</span>
+              <span class="text-4xl font-extrabold text-gray-900 dark:text-white">1 200 € HT</span>
               <span class="text-gray-500 dark:text-gray-400 ml-2 text-base">{{ t('pricing.plans.per_year') }}</span>
             </div>
             <p class="text-sm font-semibold text-primary mb-1">{{ t('pricing.plans.yearly_per_month') }}</p>

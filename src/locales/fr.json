@@ -970,9 +970,9 @@
       "yearly": "Annuel",
       "per_month": "par mois",
       "per_year": "par an",
-      "monthly_price": "144 €",
-      "yearly_price": "1 440 €",
-      "yearly_per_month": "soit 120,00 €/mois",
+      "monthly_price": "120 € HT",
+      "yearly_price": "1 200 € HT",
+      "yearly_per_month": "soit 100,00 € HT/mois",
       "save_badge": "-2 MOIS",
       "billed_monthly": "Facturé mensuellement",
       "billed_yearly": "Facturé annuellement"
