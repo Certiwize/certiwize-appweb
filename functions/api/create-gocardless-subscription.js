@@ -78,19 +78,18 @@ export async function onRequestPost(context) {
             family_name: lastName,
             email,
             ...(company && { company_name: company }),
-            ...(phone && { phone_number: phone }),
             country_code: 'FR'
-          },
-          scheme: 'sepa_core'
+          }
         }
       })
     });
 
     if (!gcResponse.ok) {
       const errorData = await gcResponse.json();
-      console.error('GoCardless error:', errorData);
+      console.error('GoCardless error:', JSON.stringify(errorData, null, 2));
+      const fieldErrors = errorData?.error?.errors?.map(e => `${e.field}: ${e.message}`).join(', ') || '';
       return new Response(
-        JSON.stringify({ error: 'Erreur GoCardless', details: errorData }),
+        JSON.stringify({ error: 'Erreur GoCardless', details: errorData, fieldErrors }),
         { status: gcResponse.status, headers: corsHeaders }
       );
     }

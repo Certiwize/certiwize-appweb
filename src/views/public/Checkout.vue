@@ -84,7 +84,8 @@ const handleCheckout = async () => {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || 'Erreur lors de la création du flux de paiement');
+      const detail = data.fieldErrors || data.details?.error?.errors?.map(e => `${e.field}: ${e.message}`).join(', ') || data.details?.error?.message || '';
+      throw new Error(`${data.error || 'Erreur'}${detail ? ` : ${detail}` : ''}`);
     }
 
     // Redirect to GoCardless hosted payment page
