@@ -52,8 +52,8 @@ export async function onRequestPost(context) {
     : 'https://api-sandbox.gocardless.com';
 
   const planDescriptions = {
-    monthly: 'Certigestion — Abonnement mensuel (144 €/mois)',
-    yearly: 'Certigestion — Abonnement annuel (1 440 €/an)'
+    monthly: 'Certigestion — Abonnement mensuel TEST (1 €/mois)',
+    yearly: 'Certigestion — Abonnement annuel TEST (1 €/an)'
   };
 
   const description = planDescriptions[plan] || planDescriptions.monthly;
