@@ -29,18 +29,18 @@ const selectedPlan = ref(route.query.plan || 'monthly');
 
 const plans = {
   monthly: {
-    name: 'Certigestion — Abonnement mensuel',
-    price: 144,
-    priceFormatted: '144,00 €',
+    name: 'Certigestion — Abonnement mensuel (TEST)',
+    price: 1,
+    priceFormatted: '1,00 €',
     period: t('pricing.plans.per_month'),
-    billing: t('pricing.plans.billed_monthly')
+    billing: 'TEST : 1€ facturé mensuellement'
   },
   yearly: {
-    name: 'Certigestion — Abonnement annuel',
-    price: 1440,
-    priceFormatted: '1 440,00 €',
+    name: 'Certigestion — Abonnement annuel (TEST)',
+    price: 1,
+    priceFormatted: '1,00 €',
     period: t('pricing.plans.per_year'),
-    billing: t('pricing.plans.billed_yearly')
+    billing: 'TEST : 1€ facturé annuellement'
   }
 };
 

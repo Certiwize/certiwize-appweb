@@ -102,8 +102,8 @@ export async function onRequestPost(context) {
 
     // ── Step 2: Create GoCardless subscription ────────────────────────────────
     const planConfig = {
-      monthly: { amount: 14400, interval_unit: 'monthly', interval: 1, name: 'Certigestion — Abonnement mensuel' },
-      yearly:  { amount: 144000, interval_unit: 'yearly',  interval: 1, name: 'Certigestion — Abonnement annuel'  }
+      monthly: { amount: 100, interval_unit: 'monthly', interval: 1, name: 'Certigestion — Abonnement mensuel (TEST 1€)' },
+      yearly:  { amount: 100, interval_unit: 'yearly',  interval: 1, name: 'Certigestion — Abonnement annuel (TEST 1€)'  }
     };
 
     const selectedPlan = planConfig[plan] || planConfig.monthly;
