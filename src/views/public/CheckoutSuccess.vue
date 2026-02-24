@@ -23,8 +23,11 @@ onMounted(async () => {
   // GoCardless redirects back with ?redirect_flow_id=RF...
   const redirectFlowId = route.query.redirect_flow_id;
 
+  console.log('[CheckoutSuccess] redirect_flow_id:', redirectFlowId);
+
   if (!redirectFlowId) {
     // No redirect flow ID → user navigated directly, go to pricing
+    console.log('[CheckoutSuccess] No redirect_flow_id, redirecting to /pricing');
     router.push('/pricing');
     return;
   }
@@ -34,8 +37,11 @@ onMounted(async () => {
   const plan = sessionStorage.getItem('checkout_plan');
   const formDataRaw = sessionStorage.getItem('checkout_form');
 
+  console.log('[CheckoutSuccess] sessionStorage data:', { sessionToken, plan, formDataRaw });
+
   if (!sessionToken || !plan || !formDataRaw) {
     // Session data lost (e.g., different browser tab)
+    console.error('[CheckoutSuccess] Session data lost');
     errorMsg.value = t('checkout_success.session_lost');
     loading.value = false;
     showManualLogin.value = true;
@@ -56,6 +62,13 @@ onMounted(async () => {
 
   try {
     // Call edge function to complete GoCardless flow + create user + generate magic link
+    console.log('[CheckoutSuccess] Calling complete-gocardless-checkout with:', {
+      redirect_flow_id: redirectFlowId,
+      session_token: sessionToken,
+      plan,
+      email: formData.email
+    });
+
     const response = await fetch('/api/complete-gocardless-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -72,7 +85,10 @@ onMounted(async () => {
       })
     });
 
+    console.log('[CheckoutSuccess] Response status:', response.status);
+
     const data = await response.json();
+    console.log('[CheckoutSuccess] Response data:', data);
 
     if (!response.ok) {
       throw new Error(data.error || 'Erreur lors de la finalisation du paiement');

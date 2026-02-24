@@ -78,6 +78,8 @@ export async function onRequestPost(context) {
 
   try {
     // ── Step 1: Complete the GoCardless redirect flow ─────────────────────────
+    console.log('[complete-gocardless-checkout] Step 1: Completing redirect flow', redirect_flow_id);
+
     const completeRes = await fetch(
       `${gcBaseUrl}/redirect_flows/${redirect_flow_id}/actions/complete`,
       {
@@ -87,8 +89,20 @@ export async function onRequestPost(context) {
       }
     );
 
+    console.log('[complete-gocardless-checkout] Complete flow response status:', completeRes.status);
+    console.log('[complete-gocardless-checkout] Complete flow response headers:', Object.fromEntries(completeRes.headers));
+
     if (!completeRes.ok) {
-      const errData = await completeRes.json();
+      const rawText = await completeRes.text();
+      console.error('[complete-gocardless-checkout] Error response text:', rawText);
+
+      let errData;
+      try {
+        errData = JSON.parse(rawText);
+      } catch {
+        errData = { message: rawText };
+      }
+
       console.error('GoCardless complete flow error:', errData);
       return new Response(
         JSON.stringify({ error: 'Échec de la validation GoCardless', details: errData }),
@@ -96,11 +110,18 @@ export async function onRequestPost(context) {
       );
     }
 
-    const completeData = await completeRes.json();
+    const rawText = await completeRes.text();
+    console.log('[complete-gocardless-checkout] Complete flow raw response:', rawText.substring(0, 200));
+
+    const completeData = JSON.parse(rawText);
     const mandateId = completeData.redirect_flows.links.mandate;
     const gcCustomerId = completeData.redirect_flows.links.customer;
 
+    console.log('[complete-gocardless-checkout] Mandate ID:', mandateId, 'Customer ID:', gcCustomerId);
+
     // ── Step 2: Create GoCardless subscription ────────────────────────────────
+    console.log('[complete-gocardless-checkout] Step 2: Creating GoCardless subscription');
+
     const planConfig = {
       monthly: { amount: 100, interval_unit: 'monthly', interval: 1, name: 'Certigestion — Abonnement mensuel (TEST 1€)' },
       yearly:  { amount: 100, interval_unit: 'yearly',  interval: 1, name: 'Certigestion — Abonnement annuel (TEST 1€)'  }
@@ -123,8 +144,19 @@ export async function onRequestPost(context) {
       })
     });
 
+    console.log('[complete-gocardless-checkout] Subscription response status:', subscriptionRes.status);
+
     if (!subscriptionRes.ok) {
-      const errData = await subscriptionRes.json();
+      const rawText = await subscriptionRes.text();
+      console.error('[complete-gocardless-checkout] Subscription error response text:', rawText);
+
+      let errData;
+      try {
+        errData = JSON.parse(rawText);
+      } catch {
+        errData = { message: rawText };
+      }
+
       console.error('GoCardless create subscription error:', errData);
       return new Response(
         JSON.stringify({ error: 'Échec de la création de l\'abonnement GoCardless', details: errData }),
@@ -132,10 +164,16 @@ export async function onRequestPost(context) {
       );
     }
 
-    const subscriptionData = await subscriptionRes.json();
+    const subRawText = await subscriptionRes.text();
+    console.log('[complete-gocardless-checkout] Subscription raw response:', subRawText.substring(0, 200));
+
+    const subscriptionData = JSON.parse(subRawText);
     const gcSubscriptionId = subscriptionData.subscriptions.id;
+    console.log('[complete-gocardless-checkout] Subscription ID:', gcSubscriptionId);
 
     // ── Step 3: Get plan from Supabase ────────────────────────────────────────
+    console.log('[complete-gocardless-checkout] Step 3: Getting plan from Supabase');
+
     const planRes = await fetch(
       `${supabaseUrl}/rest/v1/subscription_plans?name=eq.${plan}&select=id`,
       {
@@ -147,7 +185,12 @@ export async function onRequestPost(context) {
       }
     );
 
-    const plans = await planRes.json();
+    console.log('[complete-gocardless-checkout] Plan response status:', planRes.status);
+
+    const planRawText = await planRes.text();
+    console.log('[complete-gocardless-checkout] Plan raw response:', planRawText);
+
+    const plans = JSON.parse(planRawText);
     const planId = plans[0]?.id;
 
     if (!planId) {
@@ -157,8 +200,12 @@ export async function onRequestPost(context) {
       );
     }
 
+    console.log('[complete-gocardless-checkout] Plan ID:', planId);
+
     // ── Step 4: Find or create Supabase user ──────────────────────────────────
     // Search for existing user by email
+    console.log('[complete-gocardless-checkout] Step 4: Finding/creating Supabase user');
+
     const usersRes = await fetch(
       `${supabaseUrl}/auth/v1/admin/users?page=1&per_page=1&filter=${encodeURIComponent(email)}`,
       {
@@ -169,7 +216,12 @@ export async function onRequestPost(context) {
       }
     );
 
-    const usersData = await usersRes.json();
+    console.log('[complete-gocardless-checkout] Users search response status:', usersRes.status);
+
+    const usersRawText = await usersRes.text();
+    console.log('[complete-gocardless-checkout] Users raw response:', usersRawText.substring(0, 200));
+
+    const usersData = JSON.parse(usersRawText);
     let userId;
     let isNewUser = false;
 
@@ -177,8 +229,11 @@ export async function onRequestPost(context) {
 
     if (existingUser) {
       userId = existingUser.id;
+      console.log('[complete-gocardless-checkout] User already exists:', userId);
     } else {
       // Create new user with email already confirmed
+      console.log('[complete-gocardless-checkout] Creating new user');
+
       const createUserRes = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
         method: 'POST',
         headers: {
@@ -199,8 +254,19 @@ export async function onRequestPost(context) {
         })
       });
 
+      console.log('[complete-gocardless-checkout] Create user response status:', createUserRes.status);
+
       if (!createUserRes.ok) {
-        const errData = await createUserRes.json();
+        const rawText = await createUserRes.text();
+        console.error('[complete-gocardless-checkout] Create user error response text:', rawText);
+
+        let errData;
+        try {
+          errData = JSON.parse(rawText);
+        } catch {
+          errData = { message: rawText };
+        }
+
         console.error('Supabase create user error:', errData);
         return new Response(
           JSON.stringify({ error: 'Échec de la création du compte utilisateur', details: errData }),
@@ -208,12 +274,17 @@ export async function onRequestPost(context) {
         );
       }
 
-      const newUser = await createUserRes.json();
+      const newUserRawText = await createUserRes.text();
+      console.log('[complete-gocardless-checkout] Create user success:', newUserRawText.substring(0, 200));
+
+      const newUser = JSON.parse(newUserRawText);
       userId = newUser.id;
       isNewUser = true;
     }
 
     // ── Step 5: Create or update subscription in Supabase ────────────────────
+    console.log('[complete-gocardless-checkout] Step 5: Upserting subscription in Supabase');
+
     const startsAt = new Date().toISOString();
     const endsAt = plan === 'yearly'
       ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
@@ -247,15 +318,31 @@ export async function onRequestPost(context) {
       })
     });
 
+    console.log('[complete-gocardless-checkout] Subscription upsert response status:', subUpsertRes.status);
+
     if (!subUpsertRes.ok) {
-      const errData = await subUpsertRes.json();
+      const rawText = await subUpsertRes.text();
+      console.error('[complete-gocardless-checkout] Subscription upsert error response text:', rawText);
+
+      let errData;
+      try {
+        errData = JSON.parse(rawText);
+      } catch {
+        errData = { message: rawText };
+      }
+
       console.error('Supabase upsert subscription error:', errData);
       // Non-blocking: continue to generate magic link anyway
+    } else {
+      const subUpsertRawText = await subUpsertRes.text();
+      console.log('[complete-gocardless-checkout] Subscription upsert success:', subUpsertRawText.substring(0, 200));
     }
 
     // ── Step 6: Generate Supabase magic link for auto-login ───────────────────
+    console.log('[complete-gocardless-checkout] Step 6: Generating magic link for user:', userId);
+
     const magicLinkRes = await fetch(
-      `${supabaseUrl}/auth/v1/admin/users/${userId}/generate_link`,
+      `${supabaseUrl}/auth/v1/admin/generate_link`,
       {
         method: 'POST',
         headers: {
@@ -273,8 +360,19 @@ export async function onRequestPost(context) {
       }
     );
 
+    console.log('[complete-gocardless-checkout] Magic link response status:', magicLinkRes.status);
+
     if (!magicLinkRes.ok) {
-      const errData = await magicLinkRes.json();
+      const rawText = await magicLinkRes.text();
+      console.error('[complete-gocardless-checkout] Magic link error response text:', rawText);
+
+      let errData;
+      try {
+        errData = JSON.parse(rawText);
+      } catch {
+        errData = { message: rawText };
+      }
+
       console.error('Supabase magic link error:', errData);
       // Fallback: return success without magic link, user will login manually
       return new Response(
@@ -288,7 +386,10 @@ export async function onRequestPost(context) {
       );
     }
 
-    const magicLinkData = await magicLinkRes.json();
+    const magicLinkRawText = await magicLinkRes.text();
+    console.log('[complete-gocardless-checkout] Magic link raw response:', magicLinkRawText.substring(0, 200));
+
+    const magicLinkData = JSON.parse(magicLinkRawText);
     const magicLinkUrl = magicLinkData.hashed_token
       ? `${supabaseUrl}/auth/v1/verify?token=${magicLinkData.hashed_token}&type=magiclink&redirect_to=${encodeURIComponent(`${appUrl}/dashboard`)}`
       : magicLinkData.action_link;
